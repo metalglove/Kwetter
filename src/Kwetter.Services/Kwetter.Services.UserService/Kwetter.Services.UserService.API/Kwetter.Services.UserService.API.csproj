@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="FluentValidation" Version="9.5.3" />
+    <PackageReference Include="MediatR" Version="9.0.0" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.1.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Application\Behaviours\" />
+    <Folder Include="Application\Models\" />
+    <Folder Include="Application\IntegrationEvents\" />
+    <Folder Include="Application\Queries\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Kwetter.Services.Common\Kwetter.Services.Common.API\Kwetter.Services.Common.API.csproj" />
+    <ProjectReference Include="..\Kwetter.Services.UserService.Domain\Kwetter.Services.UserService.Domain.csproj" />
+    <ProjectReference Include="..\Kwetter.Services.UserService.Infrastructure\Kwetter.Services.UserService.Infrastructure.csproj" />
+  </ItemGroup>
+
+</Project>
