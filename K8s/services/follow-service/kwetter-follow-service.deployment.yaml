@@ -1,0 +1,46 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: kwetter-follow-service
+  namespace: kwetter
+  labels:
+    app: kwetter-follow-service
+    service: kwetter-follow-service
+spec:
+  selector:
+    app: kwetter-follow-service-pod
+  ports:
+  - protocol: TCP
+    name: http
+    port: 80
+    targetPort: 80
+  type: LoadBalancer
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kwetter-follow-service
+  namespace: kwetter
+spec:
+  selector:
+    matchLabels:
+      app: kwetter-follow-service-pod
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: kwetter-follow-service-pod
+        version: v1
+    spec:
+      containers:
+      - name: kwetter-follow-container
+        image: 192.168.1.99:7676/kwetter-follow-service:v1
+        imagePullPolicy: Always
+        resources:
+          limits:
+            memory: 600Mi
+            cpu: 1000m
+        ports:
+        - containerPort: 80
+      imagePullSecrets:
+        - name: mydockercredentials
