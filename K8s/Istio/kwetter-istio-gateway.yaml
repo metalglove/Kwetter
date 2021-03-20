@@ -1,0 +1,49 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: kwetter-ingress-gateway
+  namespace: kwetter
+spec:
+  selector:
+    istio: ingressgateway
+  servers:
+    - port:
+        number: 80 # 443
+        name: http # https
+        protocol: HTTP # HTTPS
+      hosts:
+        - "*"
+      # tls:
+      #   mode: SIMPLE
+      #   credentialName: kwetter-ingress-gateway-tls-credentials
+      # https://istio.io/latest/docs/tasks/traffic-management/ingress/secure-ingress/
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: kwetter-ingress-gateway-virtual-service
+  namespace: kwetter
+spec:
+  hosts:
+  - "*"
+  gateways:
+  - kwetter-ingress-gateway
+  http:
+  - name: kwetter-user-service-v1-routes
+    match:
+    - uri:
+        prefix: /api/User
+    route:
+    - destination:
+        port:
+          number: 80
+        host: kwetter-user-service
+  - name: kwetter-follow-service-v1-routes
+    match:
+    - uri:
+        prefix: /api/Follow
+    route:
+    - destination:
+        port:
+          number: 80
+        host: kwetter-follow-service

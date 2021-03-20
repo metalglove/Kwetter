@@ -1,0 +1,60 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: kwetter-user-db
+  namespace: kwetter
+  labels:
+    app: kwetter-user-db
+    service: kwetter-user-db
+spec:
+  selector:
+    app: kwetter-user-db-pod
+  ports:
+  - protocol: TCP
+    name: mssql
+    port: 1433
+    targetPort: 1433
+  type: LoadBalancer
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kwetter-user-db
+  namespace: kwetter
+spec:
+  selector:
+    matchLabels:
+      app: kwetter-user-db-pod
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: kwetter-user-db-pod
+        version: v1
+    spec:
+      containers:
+      - name: kwetter-user-db-container
+        image: mcr.microsoft.com/mssql/server:2019-latest
+        resources:
+          limits:
+            memory: 3Gi
+            cpu: 1000m
+        ports:
+        - containerPort: 1433
+        env:
+        - name: MSSQL_SA_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mssql
+              key: SA_PASSWORD
+        - name: ACCEPT_EULA
+          value: "Y"
+        - name: MSSQL_PID
+          value: "Developer"
+        volumeMounts:
+        - name: kwetter-user-db-volume
+          mountPath: /var/opt/mssql
+      volumes:
+      - name: kwetter-user-db-volume
+        persistentVolumeClaim:
+          claimName: kwetter-user-db-volume-claim
