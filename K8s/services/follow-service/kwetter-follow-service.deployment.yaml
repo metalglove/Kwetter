@@ -34,7 +34,7 @@ spec:
     spec:
       containers:
       - name: kwetter-follow-container
-        image: 192.168.1.99:7676/kwetter-follow-service:v1
+        image: neuralm.net:7676/kwetter-follow-service:v1
         imagePullPolicy: Always
         resources:
           limits:

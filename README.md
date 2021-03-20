@@ -23,9 +23,8 @@ minikube start --cpus 6 --memory 8192 --embed-certs
 ```
 Prepare data directory for persistent volume
 ```
-minikube ssh
-sudo mkdir /mnt/data
-sudo chown 10001:0 /mnt/data
+minikube ssh -- sudo mkdir /mnt/data
+minikube ssh -- sudo chown 10001:0 /mnt/data
 ```
 Create kwetter namespace for kubernetes
 ```
@@ -41,7 +40,7 @@ kubectl config use-context kwetter
 ```
 Add credentials to store
 ```
-kubectl create secret docker-registry mydockercredentials --docker-server <DOCKER-REGSITRY>:<PORT> --docker-username <USERNAME> --docker-password <PASSWORD>
+kubectl create secret docker-registry mydockercredentials --docker-server neuralm.net:7676 --docker-username <USERNAME> --docker-password <PASSWORD>
 kubectl create secret generic mssql --from-literal=SA_PASSWORD="MyC0m9l&xP@ssw0rd"
 ```
 > **_NOTE:_** We might want to make a difference between development and production contexts in the same way.
