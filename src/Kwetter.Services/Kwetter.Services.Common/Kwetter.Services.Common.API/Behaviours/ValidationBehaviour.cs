@@ -42,7 +42,7 @@ namespace Kwetter.Services.Common.API.Behaviours
         /// </summary>
         /// <param name="request">The request.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
-        /// <param name="next">The request handler delagate.</param>
+        /// <param name="next">The request handler delegate.</param>
         /// <returns>Returns the response.</returns>
         public async Task<TResponse> Handle(TRequest request, CancellationToken cancellationToken, RequestHandlerDelegate<TResponse> next)
         {

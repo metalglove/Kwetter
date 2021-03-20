@@ -1,7 +1,7 @@
 ﻿using Kwetter.Services.Common.Domain;
+using Kwetter.Services.UserService.Domain.AggregatesModel.UserAggregate.Events;
 using Kwetter.Services.UserService.Domain.Exceptions;
 using System;
-using Kwetter.Services.UserService.Domain.AggregatesModel.UserAggregate.Events;
 
 namespace Kwetter.Services.UserService.Domain.AggregatesModel.UserAggregate
 {

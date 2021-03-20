@@ -6,7 +6,7 @@
 
   <ItemGroup>
     <Content Include="appsettings.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory Condition="Exists(%(Identity))">PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
 

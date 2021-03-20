@@ -1,7 +1,10 @@
 using Kwetter.Services.Common.API;
+// using Kwetter.Services.Common.EventBus.Abstractions;
 using Kwetter.Services.Common.Infrastructure;
 using Kwetter.Services.UserService.API.Application.Commands.CreateUserCommand;
+// using Kwetter.Services.UserService.API.Application.DomainEventHandlers;
 using Kwetter.Services.UserService.Domain.AggregatesModel.UserAggregate;
+// using Kwetter.Services.UserService.Domain.AggregatesModel.UserAggregate.Events;
 using Kwetter.Services.UserService.Infrastructure;
 using Kwetter.Services.UserService.Infrastructure.Repositories;
 using MediatR;
@@ -59,11 +62,11 @@ namespace Kwetter.Services.UserService.API
             // TODO: Add health checks?
         }
 
-       /// <summary>
-       /// Configures the application request response flow (middleware).
-       /// </summary>
-       /// <param name="app">The application builder.</param>
-       /// <param name="env">The web host environment.</param>
+        /// <summary>
+        /// Configures the application request response flow (middleware).
+        /// </summary>
+        /// <param name="app">The application builder.</param>
+        /// <param name="env">The web host environment.</param>
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
@@ -73,6 +76,12 @@ namespace Kwetter.Services.UserService.API
                 string version = _configuration["Service:Version"];
                 string title = _configuration["Service:Title"];
                 app.UseSwaggerUI(c => c.SwaggerEndpoint($"/swagger/{version}/swagger.json", $"{title} {version}"));
+
+                // IEventBus eventBus = app.ApplicationServices.GetRequiredService<IEventBus>();
+                // IMessageSerializer messageSerializer = app.ApplicationServices.GetRequiredService<IMessageSerializer>();
+                // ILogger<UserCreatedDomainEventListener> logger = app.ApplicationServices.GetRequiredService<ILogger<UserCreatedDomainEventListener>>();
+                // UserCreatedDomainEventListener listener = new UserCreatedDomainEventListener(logger, messageSerializer);
+                // eventBus.Subscribe<UserCreatedDomainEvent, UserCreatedDomainEventListener>("DomainEvents", listener);
             }
 
             app.UseRouting();
