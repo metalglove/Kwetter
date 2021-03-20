@@ -28,3 +28,12 @@ example
 ```
 echo "http://$GATEWAY_URL/api/Follow"
 ```
+for the lazy
+```
+gate() {
+export INGRESS_PORT=$(kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.spec.ports[?(@.name=="http2")].nodePort}')
+export INGRESS_HOST=$(minikube ip)
+export GATEWAY_URL=$INGRESS_HOST:$INGRESS_PORT
+echo "http://$GATEWAY_URL/api/Follow"
+}
+```
