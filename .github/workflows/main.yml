@@ -1,0 +1,123 @@
+name: .NET build & test
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - src/**
+  pull_request:
+    types: [opened, synchronize, reopened]
+    paths:
+      - src/**
+
+defaults:
+  run:
+    working-directory: src
+
+jobs:
+
+  # Builds the code 
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@main
+    - name: Setup .NET SDK
+      uses: actions/setup-dotnet@v1.7.2
+      with:
+        dotnet-version: '5.0.x'
+    - name: Install dependencies
+      run: dotnet restore
+    - name: Build
+      run: dotnet build --no-restore
+  
+  # Runs the tests with sonarscan
+  test:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+    - name: Test
+      uses: highbyte/sonarscan-dotnet@v2.1.1-beta
+      env:
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        sonarProjectKey: metalglove_Kwetter
+        sonarProjectName: Kwetter
+        sonarOrganization: metalglove-github
+        dotnetTestArguments: --logger trx --collect:"XPlat Code Coverage" -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=opencover
+        sonarBeginArguments: /d:sonar.cs.opencover.reportsPaths="**/TestResults/**/coverage.opencover.xml" -d:sonar.cs.vstest.reportsPaths="**/TestResults/*.trx"
+
+  # Builds and publishes the docker images
+  docker:
+    needs: test
+    name: Build and push Docker images
+    environment:
+      name: docker
+    runs-on: ubuntu-latest
+    steps:
+      # Checks out the code
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      # Prepares the docker build
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+      
+      # Caches the docker layers
+      - name: Cache Docker layers
+        uses: actions/cache@v2
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-buildx-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-buildx-
+
+      # Logs in to the neuralm registry
+      - name: Login to Neuralm Docker registry
+        uses: docker/login-action@v1 
+        with:
+          registry: ${{ secrets.NEURALM_REGISTRY }}
+          username: ${{ secrets.NEURALM_DOCKER_USERNAME }}
+          password: ${{ secrets.NEURALM_DOCKER_PASSWORD }}
+      
+      # Builds and publishes the UserService
+      - name: Build and push UserService Docker image 
+        uses: docker/build-push-action@v2.3.0
+        with:
+          context: ./src
+          file: ./src/kwetter-user-service.Dockerfile
+          push: true
+          tags: ${{ secrets.NEURALM_REGISTRY }}/kwetter-user-service:latest
+          cache-from: type=local,src=/tmp/.buildx-cache
+          cache-to: type=local,dest=/tmp/.buildx-cache-new
+      
+      # Builds and publishes the FollowService
+      - name: Build and push FollowService Docker image 
+        uses: docker/build-push-action@v2.3.0
+        with:
+          context: ./src
+          file: ./src/kwetter-follow-service.Dockerfile
+          push: true
+          tags: ${{ secrets.NEURALM_REGISTRY }}/kwetter-follow-service:latest
+          cache-from: type=local,src=/tmp/.buildx-cache
+          cache-to: type=local,dest=/tmp/.buildx-cache-new
+
+      # Temporary fix for fast growing cache
+      # https://github.com/docker/build-push-action/issues/252
+      # https://github.com/moby/buildkit/issues/1896
+      - name: Move cache
+        run: |
+          rm -rf /tmp/.buildx-cache
+          mv /tmp/.buildx-cache-new /tmp/.buildx-cache
+
+  # Deploy to production
+  production:
+    needs: docker
+    name: Deploy to Kubernetes
+    environment:
+      name: production
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to Kubernetes
+      
