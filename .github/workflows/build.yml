@@ -19,7 +19,7 @@ jobs:
       working-directory: src
       run: dotnet restore
     - name: Build
-      run: dotnet build --configuration Release --no-restore
+      run: dotnet build --no-restore
       working-directory: src
     - name: Test
       run: dotnet test --no-build
