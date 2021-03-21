@@ -6,7 +6,7 @@ namespace Kwetter.Services.UserService.Domain.Exceptions
     /// <summary>
     /// Represents the <see cref="UserDomainException"/> class.
     /// </summary>
-    internal sealed class UserDomainException : DomainException
+    public sealed class UserDomainException : DomainException
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="UserDomainException"/> class.

@@ -43,10 +43,12 @@ namespace Kwetter.Services.UserService.Domain.AggregatesModel.UserAggregate
         /// <summary>
         /// Sets the username.
         /// </summary>
-        /// <exception cref="UserDomainException">Thrown when the provided username exceeds 64 characters.</exception>
+        /// <exception cref="UserDomainException">Thrown when the provided username exceeds 64 characters or is empty.</exception>
         /// <param name="username">The username.</param>
         public void SetUsername(string username)
         {
+            if (string.IsNullOrWhiteSpace(username))
+                throw new UserDomainException("The username is null, empty or contains only whitespaces.");
             if (username?.Length > 64)
                 throw new UserDomainException("The length of the username exceeded 64.");
             Username = username;
