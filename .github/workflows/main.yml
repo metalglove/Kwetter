@@ -79,8 +79,7 @@ jobs:
     # Adds the Neuralm certificate for the registry
     - name: Add Neuralm certificate
       run: |
-        touch /etc/docker/daemon.json
-        openssl s_client -showcerts -connect ${{ secrets.NEURALM_REGISTRY }} < /dev/null | sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' > /etc/docker/certs.d/${{ secrets.NEURALM_REGISTRY }}/ca.crt
+        sudo openssl s_client -showcerts -connect ${{ secrets.NEURALM_REGISTRY }} < /dev/null | sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' > /etc/docker/certs.d/${{ secrets.NEURALM_REGISTRY }}/ca.crt
 
     # Prepares the docker build
     - name: Set up Docker Buildx
