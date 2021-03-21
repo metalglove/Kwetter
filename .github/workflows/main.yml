@@ -38,8 +38,6 @@ jobs:
     name: Test
     runs-on: ubuntu-latest
     steps:
-    - name: hmm
-      run: ls
     - name: Test
       uses: highbyte/sonarscan-dotnet@v2.1.1-beta
       env:
