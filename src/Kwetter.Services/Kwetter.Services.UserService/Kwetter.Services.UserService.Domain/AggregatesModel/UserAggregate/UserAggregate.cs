@@ -7,7 +7,7 @@ namespace Kwetter.Services.UserService.Domain.AggregatesModel.UserAggregate
 {
     /// <summary>
     /// Represents the <see cref="UserAggregate"/> class.
-    /// The user aggregate is the root aggregate for the UserService.
+    /// The user aggregate is the aggregate root for the UserService.
     /// </summary>
     public class UserAggregate : Entity, IAggregateRoot
     {

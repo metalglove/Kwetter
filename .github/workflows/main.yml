@@ -1,4 +1,4 @@
-name: .NET build & test
+name: Main
 
 on:
   push:
@@ -35,7 +35,7 @@ jobs:
   # Runs the tests with sonarscan
   test:
     needs: build
-    name: Testing
+    name: Test
     runs-on: ubuntu-latest
     steps:
     - name: Test
@@ -47,8 +47,8 @@ jobs:
         sonarProjectKey: metalglove_Kwetter
         sonarProjectName: Kwetter
         sonarOrganization: metalglove-github
-        dotnetBuildArguments: ./src
-        dotnetTestArguments: ./src --logger trx --collect:"XPlat Code Coverage" -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=opencover
+        dotnetBuildArguments: ./src/Kwetter.sln
+        dotnetTestArguments: ./src/Kwetter.sln --logger trx --collect:"XPlat Code Coverage" -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=opencover
         sonarBeginArguments: /d:sonar.cs.opencover.reportsPaths="**/TestResults/**/coverage.opencover.xml" -d:sonar.cs.vstest.reportsPaths="**/TestResults/*.trx"
 
   # Builds and publishes the docker images
