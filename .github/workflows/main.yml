@@ -120,4 +120,5 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Deploy to Kubernetes
+        run: echo "Hello deploy! SoonTM"
       
