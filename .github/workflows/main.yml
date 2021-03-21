@@ -75,6 +75,12 @@ jobs:
     # Checks out the code
     - name: Checkout
       uses: actions/checkout@v2
+    
+    # Adds the Neuralm certificate for the registry
+    - name: Add Neuralm certificate
+      run: |
+        sudo ${{ secrets.NEURALM_CERTIFICATE }} >> /usr/local/share/ca-certificates/neuralm-docker-registry.crt
+        sudo update-ca-certificates
 
     # Prepares the docker build
     - name: Set up Docker Buildx
