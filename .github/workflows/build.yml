@@ -7,8 +7,7 @@ on:
     paths:
       - src/**
   pull_request:
-    branches:
-      - main
+    types: [opened, synchronize, reopened]
     paths:
       - src/**
 
@@ -31,3 +30,14 @@ jobs:
       run: dotnet build --no-restore
     - name: Test
       run: dotnet test --no-build
+    - name: sonarscan-dotnet
+      uses: highbyte/sonarscan-dotnet@v2.1.1-beta
+      env:
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        sonarProjectKey: metalglove_Kwetter
+        sonarProjectName: Kwetter
+        sonarOrganization: metalglove-github
+        dotnetTestArguments: --logger trx --collect:"XPlat Code Coverage" -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=opencover
+        sonarBeginArguments: /d:sonar.cs.opencover.reportsPaths="**/TestResults/**/coverage.opencover.xml" -d:sonar.cs.vstest.reportsPaths="**/TestResults/*.trx"
