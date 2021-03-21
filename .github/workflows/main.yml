@@ -38,6 +38,8 @@ jobs:
     name: Test
     runs-on: ubuntu-latest
     steps:
+    - name: hmm
+      run: ls
     - name: Test
       uses: highbyte/sonarscan-dotnet@v2.1.1-beta
       env:
@@ -47,8 +49,8 @@ jobs:
         sonarProjectKey: metalglove_Kwetter
         sonarProjectName: Kwetter
         sonarOrganization: metalglove-github
-        dotnetBuildArguments: ./src/Kwetter.sln
-        dotnetTestArguments: ./src/Kwetter.sln --logger trx --collect:"XPlat Code Coverage" -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=opencover
+        dotnetBuildArguments: ./Kwetter.sln
+        dotnetTestArguments: ./Kwetter.sln --logger trx --collect:"XPlat Code Coverage" -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=opencover
         sonarBeginArguments: /d:sonar.cs.opencover.reportsPaths="**/TestResults/**/coverage.opencover.xml" -d:sonar.cs.vstest.reportsPaths="**/TestResults/*.trx"
 
   # Builds and publishes the docker images
