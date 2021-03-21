@@ -1,11 +1,21 @@
 name: .NET build & test
+
 on:
   push:
     branches:
       - main
+    paths:
+      - src/**
   pull_request:
     branches:
       - main
+    paths:
+      - src/**
+
+defaults:
+  run:
+    working-directory: src
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -16,11 +26,8 @@ jobs:
       with:
         dotnet-version: '5.0.x'
     - name: Install dependencies
-      working-directory: src
       run: dotnet restore
     - name: Build
       run: dotnet build --no-restore
-      working-directory: src
     - name: Test
       run: dotnet test --no-build
-      working-directory: src
