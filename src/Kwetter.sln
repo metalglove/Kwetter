@@ -13,8 +13,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Kwetter.Services.Common", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Kwetter.Services.Common.Domain", "Kwetter.Services\Kwetter.Services.Common\Kwetter.Services.Common.Domain\Kwetter.Services.Common.Domain.csproj", "{F7AD40E6-E650-419A-8A5F-428BB5C6D369}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ApiGateways", "ApiGateways", "{82F615FF-CD9E-472E-B8AC-0F1217E60631}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Kwetter.Services.UserService.Infrastructure", "Kwetter.Services\Kwetter.Services.UserService\Kwetter.Services.UserService.Infrastructure\Kwetter.Services.UserService.Infrastructure.csproj", "{80F404A3-FB48-4B58-A2FE-0C955B783792}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Kwetter.Services.UserService.API", "Kwetter.Services\Kwetter.Services.UserService\Kwetter.Services.UserService.API\Kwetter.Services.UserService.API.csproj", "{168A977F-1C01-4D46-B4D1-E9B933F13354}"
@@ -28,6 +26,8 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Kwetter.Services.FollowService", "Kwetter.Services.FollowService", "{9F321EF0-D855-465C-B704-102335DA377B}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Kwetter.Services.FollowService.API", "Kwetter.Services\Kwetter.Services.FollowService\Kwetter.Services.FollowService.API\Kwetter.Services.FollowService.API.csproj", "{EC8D5704-CDCE-4B71-9792-F07B8A0BE8E4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kwetter.Services.UserService.Tests", "Kwetter.Services\Kwetter.Services.UserService\Kwetter.Services.UserService.Tests\Kwetter.Services.UserService.Tests.csproj", "{915F748A-E8E5-4386-8AC6-AD36AA1B1619}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -67,6 +67,10 @@ Global
 		{EC8D5704-CDCE-4B71-9792-F07B8A0BE8E4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EC8D5704-CDCE-4B71-9792-F07B8A0BE8E4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EC8D5704-CDCE-4B71-9792-F07B8A0BE8E4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{915F748A-E8E5-4386-8AC6-AD36AA1B1619}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{915F748A-E8E5-4386-8AC6-AD36AA1B1619}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{915F748A-E8E5-4386-8AC6-AD36AA1B1619}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{915F748A-E8E5-4386-8AC6-AD36AA1B1619}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -83,6 +87,7 @@ Global
 		{55E1A97B-2B3C-4606-8E13-4C0BB5ED6ADE} = {4E35589F-5912-4F50-85F2-1909246512CD}
 		{9F321EF0-D855-465C-B704-102335DA377B} = {316126FB-31AD-403A-B600-CF5DC5489D43}
 		{EC8D5704-CDCE-4B71-9792-F07B8A0BE8E4} = {9F321EF0-D855-465C-B704-102335DA377B}
+		{915F748A-E8E5-4386-8AC6-AD36AA1B1619} = {4D6E8A7B-F6B3-4537-B0F8-253435E09388}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {B4A5CA09-D8B5-43B6-BB96-97B00B1EC94A}

@@ -1,4 +1,4 @@
-name: dotnet package
+name: .NET build & test
 on:
   push:
     branches:
@@ -14,10 +14,12 @@ jobs:
     - name: Setup .NET SDK
       uses: actions/setup-dotnet@v1.7.2
       with:
-        dotnet-version: '5.0.201'
+        dotnet-version: '5.0.x'
     - name: Install dependencies
       working-directory: src
       run: dotnet restore
     - name: Build
       run: dotnet build --configuration Release --no-restore
       working-directory: src
+    - name: Test
+      run: dotnet test --no-build
