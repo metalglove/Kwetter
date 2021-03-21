@@ -43,5 +43,18 @@ namespace Kwetter.Services.UserService.Tests.Aggregates
             UserDomainException userDomainException = Assert.ThrowsException<UserDomainException>(() => new UserAggregate(userId, username, profileDescription));
             Assert.IsTrue(userDomainException.Message.Equals("The username is null, empty or contains only whitespaces."));
         }
+
+        [TestMethod]
+        public void Should_Throw_UserDomainException_With_Username_Exceeding_64_Length()
+        {
+            // Arrange
+            Guid userId = Guid.NewGuid();
+            string username = "Hello super long username that exceeds sixtyfour characters oh no!";
+            string profileDescription = "Hello everyone!";
+            
+            // Act & Assert
+            UserDomainException userDomainException = Assert.ThrowsException<UserDomainException>(() => new UserAggregate(userId, username, profileDescription));
+            Assert.IsTrue(userDomainException.Message.Equals("The length of the username exceeded 64."));
+        }
     }
 }
