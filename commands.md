@@ -37,3 +37,9 @@ export GATEWAY_URL=$INGRESS_HOST:$INGRESS_PORT
 echo "http://$GATEWAY_URL/api/Follow"
 }
 ```
+For windows, the above commands might not work.
+A workaround is to expose the istio-ingressgateway using the `minikube service` command.
+```
+minikube service -n istio-system istio-ingressgateway --url
+```
+Then the second url is the one for http.
