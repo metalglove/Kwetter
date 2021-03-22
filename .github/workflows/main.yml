@@ -79,8 +79,12 @@ jobs:
     # Adds the Neuralm certificate for the registry
     - name: Add Neuralm certificate
       run: |
-        sudo mkdir -p /etc/docker/certs.d/${{ secrets.NEURALM_REGISTRY }}/
-        sudo echo "${{ secrets.NEURALM_CERTIFICATE }}" > /etc/docker/certs.d/${{ secrets.NEURALM_REGISTRY }}/ca.crt
+        echo "First step!"
+        sudo mkdir -p /usr/local/share/ca-certificates/${{ secrets.NEURALM_REGISTRY }}/
+        echo "Second step!"
+        sudo echo "${{ secrets.NEURALM_CERTIFICATE }}" > /usr/local/share/ca-certificates/${{ secrets.NEURALM_REGISTRY }}/ca.crt
+        echo "Third step!"
+        sudo update-ca-certificates
 
     # Prepares the docker build
     - name: Set up Docker Buildx
