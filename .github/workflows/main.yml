@@ -85,7 +85,7 @@ jobs:
         sudo printf "${{ secrets.NEURALM_CERTIFICATE }}" >> neuralm.crt
         echo "Create docker directory"
         sudo mkdir -p /etc/docker/
-        echo "Create docker deamon json"
+        echo "Create docker daemon json"
         sudo touch /etc/docker/daemon.json
         echo "Copy certificate to the ca-certificates directory"
         sudo cp neuralm.crt /usr/local/share/ca-certificates/${{ secrets.NEURALM_REGISTRY }}/ca.crt
@@ -122,33 +122,48 @@ jobs:
     
     # Builds and publishes the UserService
     - name: Build and push UserService Docker image 
-      uses: docker/build-push-action@v2.3.0
-      with:
-        context: ./src
-        file: ./src/kwetter-user-service.Dockerfile
-        push: true
-        tags: ${{ secrets.NEURALM_REGISTRY }}/kwetter-user-service:latest
-        cache-from: type=local,src=/tmp/.buildx-cache
-        cache-to: type=local,dest=/tmp/.buildx-cache-new
+      run: |
+        echo "Building UserService docker image"
+        docker build -t ${{ secrets.NEURALM_REGISTRY }}/kwetter-user-service:latest -f ./kwetter-user-service.Dockerfile .
+        echo "Publishing UserService docker image"
+        docker push ${{ secrets.NEURALM_REGISTRY }}/kwetter-user-service:latest
     
     # Builds and publishes the FollowService
     - name: Build and push FollowService Docker image 
-      uses: docker/build-push-action@v2.3.0
-      with:
-        context: ./src
-        file: ./src/kwetter-follow-service.Dockerfile
-        push: true
-        tags: ${{ secrets.NEURALM_REGISTRY }}/kwetter-follow-service:latest
-        cache-from: type=local,src=/tmp/.buildx-cache
-        cache-to: type=local,dest=/tmp/.buildx-cache-new
+      run: |
+        echo "Building FollowService docker image"
+        docker build -t ${{ secrets.NEURALM_REGISTRY }}/kwetter-follow-service:latest -f ./kwetter-follow-service.Dockerfile .
+        echo "Publishing FollowService docker image"
+        docker push ${{ secrets.NEURALM_REGISTRY }}/kwetter-follow-service:latest
+    # Builds and publishes the UserService
+    # - name: Build and push UserService Docker image 
+    #   uses: docker/build-push-action@v2.3.0
+    #   with:
+    #     context: ./src
+    #     file: ./src/kwetter-user-service.Dockerfile
+    #     push: true
+    #     tags: ${{ secrets.NEURALM_REGISTRY }}/kwetter-user-service:latest
+    #     cache-from: type=local,src=/tmp/.buildx-cache
+    #     cache-to: type=local,dest=/tmp/.buildx-cache-new
+    
+    # # Builds and publishes the FollowService
+    # - name: Build and push FollowService Docker image 
+    #   uses: docker/build-push-action@v2.3.0
+    #   with:
+    #     context: ./src
+    #     file: ./src/kwetter-follow-service.Dockerfile
+    #     push: true
+    #     tags: ${{ secrets.NEURALM_REGISTRY }}/kwetter-follow-service:latest
+    #     cache-from: type=local,src=/tmp/.buildx-cache
+    #     cache-to: type=local,dest=/tmp/.buildx-cache-new
 
     # Temporary fix for fast growing cache
     # https://github.com/docker/build-push-action/issues/252
     # https://github.com/moby/buildkit/issues/1896
-    - name: Move cache
-      run: |
-        rm -rf /tmp/.buildx-cache
-        mv /tmp/.buildx-cache-new /tmp/.buildx-cache
+    # - name: Move cache
+    #   run: |
+    #     rm -rf /tmp/.buildx-cache
+    #     mv /tmp/.buildx-cache-new /tmp/.buildx-cache
 
   # Deploy to production
   production:
