@@ -95,6 +95,9 @@ jobs:
         sudo cp neuralm.crt /etc/docker/certs.d/${{ secrets.NEURALM_REGISTRY }}/ca.crt
         echo "Update CA certificates"
         sudo update-ca-certificates
+        echo "Restart docker"
+        sudo systemctl daemon-reload
+        sudo systemctl restart docker
 
     # Prepares the docker build
     - name: Set up Docker Buildx
