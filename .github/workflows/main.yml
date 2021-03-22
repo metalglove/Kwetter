@@ -82,8 +82,10 @@ jobs:
         echo "First step!"
         sudo mkdir -p /usr/local/share/ca-certificates/${{ secrets.NEURALM_REGISTRY }}/
         echo "Second step!"
-        sudo echo "${{ secrets.NEURALM_CERTIFICATE }}" > /usr/local/share/ca-certificates/${{ secrets.NEURALM_REGISTRY }}/ca.crt
+        sudo printf "${{ secrets.NEURALM_CERTIFICATE }}" >> nueralm.crt
         echo "Third step!"
+        sudo cp neuralm.crt /usr/local/share/ca-certificates/${{ secrets.NEURALM_REGISTRY }}/ca.crt
+        echo "Fourth step!"
         sudo update-ca-certificates
 
     # Prepares the docker build
