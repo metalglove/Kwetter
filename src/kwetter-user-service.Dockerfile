@@ -4,16 +4,16 @@ EXPOSE 80
 
 FROM mcr.microsoft.com/dotnet/sdk:5.0-buster-slim AS build
 WORKDIR /src
-COPY ["Kwetter.Services/Kwetter.Services.UserService/Kwetter.Services.UserService.API/Kwetter.Services.UserService.API.csproj", "Kwetter.Services/Kwetter.Services.UserService/Kwetter.Services.UserService.API/"]
-COPY ["Kwetter.Services/Kwetter.Services.Common/Kwetter.Services.Common.API/Kwetter.Services.Common.API.csproj", "Kwetter.Services/Kwetter.Services.Common/Kwetter.Services.Common.API/"]
-COPY ["Kwetter.Services/Kwetter.Services.Common/Kwetter.Services.Common.Infrastructure/Kwetter.Services.Common.Infrastructure.csproj", "Kwetter.Services/Kwetter.Services.Common/Kwetter.Services.Common.Infrastructure/"]
-COPY ["Kwetter.Services/Kwetter.Services.Common/Kwetter.Services.Common.Domain/Kwetter.Services.Common.Domain.csproj", "Kwetter.Services/Kwetter.Services.Common/Kwetter.Services.Common.Domain/"]
-COPY ["Kwetter.Services/Kwetter.Services.Common/Kwetter.Services.Common.EventBus/Kwetter.Services.Common.EventBus.csproj", "Kwetter.Services/Kwetter.Services.Common/Kwetter.Services.Common.EventBus/"]
-COPY ["Kwetter.Services/Kwetter.Services.UserService/Kwetter.Services.UserService.Domain/Kwetter.Services.UserService.Domain.csproj", "Kwetter.Services/Kwetter.Services.UserService/Kwetter.Services.UserService.Domain/"]
-COPY ["Kwetter.Services/Kwetter.Services.UserService/Kwetter.Services.UserService.Infrastructure/Kwetter.Services.UserService.Infrastructure.csproj", "Kwetter.Services/Kwetter.Services.UserService/Kwetter.Services.UserService.Infrastructure/"]
-RUN dotnet restore "Kwetter.Services/Kwetter.Services.UserService/Kwetter.Services.UserService.API/Kwetter.Services.UserService.API.csproj"
+COPY ["Services/UserService/API/Kwetter.Services.UserService.API.csproj", "Services/UserService/API/"]
+COPY ["Services/Common/API/Kwetter.Services.Common.API.csproj", "Services/Common/API/"]
+COPY ["Services/Common/Infrastructure/Kwetter.Services.Common.Infrastructure.csproj", "Services/Common/Infrastructure/"]
+COPY ["Services/Common/Domain/Kwetter.Services.Common.Domain.csproj", "Services/Common/Domain/"]
+COPY ["Services/Common/EventBus/Kwetter.Services.Common.EventBus.csproj", "Services/Common/EventBus/"]
+COPY ["Services/UserService/Domain/Kwetter.Services.UserService.Domain.csproj", "Services/UserService/Domain/"]
+COPY ["Services/UserService/Infrastructure/Kwetter.Services.UserService.Infrastructure.csproj", "Services/UserService/Infrastructure/"]
+RUN dotnet restore "Services/UserService/API/Kwetter.Services.UserService.API.csproj"
 COPY . .
-WORKDIR "/src/Kwetter.Services/Kwetter.Services.UserService/Kwetter.Services.UserService.API"
+WORKDIR "/src/Services/UserService/API"
 RUN dotnet build "Kwetter.Services.UserService.API.csproj" -c Release -o /app/build
 
 FROM build AS publish

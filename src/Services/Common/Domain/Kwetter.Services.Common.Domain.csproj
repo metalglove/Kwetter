@@ -9,7 +9,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Kwetter.Services.Common.EventBus\Kwetter.Services.Common.EventBus.csproj" />
+    <ProjectReference Include="..\EventBus\Kwetter.Services.Common.EventBus.csproj" />
   </ItemGroup>
 
 </Project>

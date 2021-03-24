@@ -14,9 +14,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Kwetter.Services.UserService.API\Kwetter.Services.UserService.API.csproj" />
-    <ProjectReference Include="..\Kwetter.Services.UserService.Domain\Kwetter.Services.UserService.Domain.csproj" />
-    <ProjectReference Include="..\Kwetter.Services.UserService.Infrastructure\Kwetter.Services.UserService.Infrastructure.csproj" />
+    <ProjectReference Include="..\API\Kwetter.Services.UserService.API.csproj" />
+    <ProjectReference Include="..\Domain\Kwetter.Services.UserService.Domain.csproj" />
+    <ProjectReference Include="..\Infrastructure\Kwetter.Services.UserService.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

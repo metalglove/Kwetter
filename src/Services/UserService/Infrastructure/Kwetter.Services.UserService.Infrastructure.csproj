@@ -19,8 +19,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Kwetter.Services.Common\Kwetter.Services.Common.Infrastructure\Kwetter.Services.Common.Infrastructure.csproj" />
-    <ProjectReference Include="..\Kwetter.Services.UserService.Domain\Kwetter.Services.UserService.Domain.csproj" />
+    <ProjectReference Include="..\..\Common\Infrastructure\Kwetter.Services.Common.Infrastructure.csproj" />
+    <ProjectReference Include="..\Domain\Kwetter.Services.UserService.Domain.csproj" />
   </ItemGroup>
 
   <ItemGroup>
