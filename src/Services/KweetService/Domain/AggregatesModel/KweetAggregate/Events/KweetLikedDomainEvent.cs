@@ -1,0 +1,40 @@
+﻿using Kwetter.Services.Common.Domain.Events;
+using System;
+
+namespace Kwetter.Services.KweetService.Domain.AggregatesModel.KweetAggregate.Events
+{
+    /// <summary>
+    /// Represents the <see cref="KweetLikedDomainEvent"/> record.
+    /// </summary>
+    public record KweetLikedDomainEvent : DomainEvent
+    {
+        /// <summary>
+        /// Gets and sets the kweet id.
+        /// </summary>
+        public Guid KweetId { get; }
+
+        /// <summary>
+        /// Gets and sets the user id.
+        /// </summary>
+        public Guid UserId { get; }
+
+        /// <summary>
+        /// Gets and sets the date time when the kweet was liked.
+        /// </summary>
+        public DateTime LikedDateTime { get; }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="KweetLikedDomainEvent"/> record.
+        /// </summary>
+        /// <param name="kweetId">The kweet id.</param>
+        /// <param name="userId">The user id.</param>
+        /// <param name="likedDateTime">The liked date time.</param>
+        public KweetLikedDomainEvent(Guid kweetId, Guid userId, DateTime likedDateTime)
+        {
+            KweetId = kweetId;
+            UserId = userId;
+            LikedDateTime = likedDateTime;
+            Version = 1;
+        }
+    }
+}
