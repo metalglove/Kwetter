@@ -50,7 +50,7 @@ namespace Kwetter.Services.UserService.Domain.AggregatesModel.UserAggregate
             if (string.IsNullOrWhiteSpace(username))
                 throw new UserDomainException("The username is null, empty or contains only whitespaces.");
             if (username?.Length > 64)
-                throw new UserDomainException("The length of the username exceeded 64.");
+                throw new UserDomainException("The length of the username exceeded 64 characters.");
             Username = username;
             AddDomainEvent(new UserUsernameUpdatedDomainEvent(Id, Username));
         }

@@ -16,7 +16,7 @@ namespace Kwetter.Services.UserService.Domain.AggregatesModel.UserAggregate.Even
         /// <summary>
         /// Initializes a new instance of the <see cref="UserCreatedDomainEvent"/> record.
         /// </summary>
-        /// <param name="id"></param>
+        /// <param name="id">The user id.</param>
         public UserCreatedDomainEvent(Guid id)
         {
             UserId = id;
