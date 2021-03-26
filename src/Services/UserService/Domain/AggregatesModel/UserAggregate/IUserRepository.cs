@@ -28,8 +28,9 @@ namespace Kwetter.Services.UserService.Domain.AggregatesModel.UserAggregate
         /// Finds the user aggregate by id asynchronously.
         /// </summary>
         /// <param name="id">The id.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>Returns the user aggregate.</returns>
-        Task<UserAggregate> FindByIdAsync(Guid id);
+        Task<UserAggregate> FindByIdAsync(Guid id, CancellationToken cancellationToken);
 
         /// <summary>
         /// Finds the user aggregate by username asynchronously.

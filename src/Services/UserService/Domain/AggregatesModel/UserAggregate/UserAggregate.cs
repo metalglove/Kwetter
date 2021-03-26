@@ -34,17 +34,17 @@ namespace Kwetter.Services.UserService.Domain.AggregatesModel.UserAggregate
         /// <param name="description">The profile description.</param>
         public UserAggregate(Guid userId, string username, string description)
         {
-            Id = userId == Guid.Empty ? throw new ArgumentNullException(nameof(userId)) : userId;
+            SetId(userId);
             AddDomainEvent(new UserCreatedDomainEvent(Id));
-            SetUsername(username ?? throw new ArgumentNullException(nameof(username)));
-            Profile = new UserProfile(Id, description ?? throw new ArgumentNullException(nameof(description)));
+            SetUsername(username);
+            Profile = new UserProfile(Id, description);
         }
 
         /// <summary>
         /// Sets the username.
         /// </summary>
-        /// <exception cref="UserDomainException">Thrown when the provided username exceeds 64 characters or is empty.</exception>
         /// <param name="username">The username.</param>
+        /// <exception cref="UserDomainException">Thrown when the provided username exceeds 64 characters or is empty.</exception>
         public void SetUsername(string username)
         {
             if (string.IsNullOrWhiteSpace(username))
@@ -53,6 +53,18 @@ namespace Kwetter.Services.UserService.Domain.AggregatesModel.UserAggregate
                 throw new UserDomainException("The length of the username exceeded 64 characters.");
             Username = username;
             AddDomainEvent(new UserUsernameUpdatedDomainEvent(Id, Username));
+        }
+        
+        /// <summary>
+        /// Sets the id of the user.
+        /// </summary>
+        /// <param name="userId">The user id.</param>
+        /// <exception cref="UserDomainException">Thrown when the provided user id is empty or malformed.</exception>
+        private void SetId(Guid userId)
+        {
+            if (userId == Guid.Empty)
+                throw new UserDomainException("The user id is empty.");
+            Id = userId;
         }
     }
 }

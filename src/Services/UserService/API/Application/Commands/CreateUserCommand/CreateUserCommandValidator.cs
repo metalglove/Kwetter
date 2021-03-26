@@ -59,7 +59,7 @@ namespace Kwetter.Services.UserService.API.Application.Commands.CreateUserComman
         private async Task CheckUserIdUniqueness(Guid proposedUserId, CustomContext context, CancellationToken cancellationToken)
         {
             // Checks whether the user id already exists.
-            UserAggregate userAggregate = await _userRepository.FindByIdAsync(proposedUserId);
+            UserAggregate userAggregate = await _userRepository.FindByIdAsync(proposedUserId, cancellationToken);
             if (userAggregate != default)
             {
                 context.AddFailure("A user with the proposed user id already exists.");

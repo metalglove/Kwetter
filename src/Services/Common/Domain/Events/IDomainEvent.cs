@@ -12,27 +12,27 @@ namespace Kwetter.Services.Common.Domain.Events
         /// <summary>
         /// Gets and sets the domain event id.
         /// </summary>
-        public Guid Id { get; init; }
+        public Guid Id { get; }
 
         /// <summary>
         /// Gets and sets the domain event name.
         /// </summary>
-        public string Name { get; init; }
+        public string Name { get; }
 
         /// <summary>
         /// Gets and sets the domain event version.
         /// </summary>
-        public int Version { get; init; }
+        public int Version { get; protected init; }
 
         /// <summary>
         /// Gets and sets the domain event creation date time.
         /// </summary>
-        public DateTime CreationDateTime { get; init; }
+        public DateTime CreationDateTime { get; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DomainEvent"/> record.
         /// </summary>
-        public DomainEvent()
+        protected DomainEvent()
         {
             Id = Guid.NewGuid();
             Name = GetType().FullName;

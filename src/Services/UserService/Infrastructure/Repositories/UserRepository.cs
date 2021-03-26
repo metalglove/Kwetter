@@ -42,11 +42,11 @@ namespace Kwetter.Services.UserService.Infrastructure.Repositories
             return _userDbContext.Update(user).Entity;
         }
 
-        /// <inheritdoc cref="IUserRepository.FindByIdAsync(Guid)" />
-        public async Task<UserAggregate> FindByIdAsync(Guid id)
+        /// <inheritdoc cref="IUserRepository.FindByIdAsync(Guid, CancellationToken)" />
+        public async Task<UserAggregate> FindByIdAsync(Guid id, CancellationToken cancellationToken)
         {
             return await _userDbContext.Users
-                .FindAsync(id);
+                .FindAsync(new object[] {id}, cancellationToken);
         }
 
         /// <inheritdoc cref="IUserRepository.FindByUsernameAsync(string, CancellationToken)" />

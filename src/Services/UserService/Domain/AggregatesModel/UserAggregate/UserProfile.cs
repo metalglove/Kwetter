@@ -36,9 +36,9 @@ namespace Kwetter.Services.UserService.Domain.AggregatesModel.UserAggregate
         /// <summary>
         /// Sets the profile description.
         /// </summary>
-        /// <exception cref="UserDomainException">Thrown when the provided description exceeds 512 characters.</exception>
         /// <param name="userId">The user id.</param>
         /// <param name="description">The description.</param>
+        /// <exception cref="UserDomainException">Thrown when the provided description exceeds 512 characters.</exception>
         public void SetDescription(Guid userId, string description)
         {
             if (description?.Length > 512)

@@ -4,7 +4,7 @@
     /// Represents the <see cref="IRepository{TAggregate}"/> interface.
     /// </summary>
     /// <typeparam name="TAggregate">The aggregate root.</typeparam>
-    public interface IRepository<TAggregate> where TAggregate : IAggregateRoot
+    public interface IRepository<TAggregate> where TAggregate : Entity, IAggregateRoot
     {
         /// <summary>
         /// Gets the unit of work for the repository.
