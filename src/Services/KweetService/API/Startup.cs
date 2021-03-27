@@ -1,12 +1,10 @@
+using System.Reflection;
 using Kwetter.Services.Common.API;
-// using Kwetter.Services.Common.EventBus.Abstractions;
 using Kwetter.Services.Common.Infrastructure;
-using Kwetter.Services.UserService.API.Application.Commands.CreateUserCommand;
-// using Kwetter.Services.UserService.API.Application.DomainEventHandlers;
-using Kwetter.Services.UserService.Domain.AggregatesModel.UserAggregate;
-// using Kwetter.Services.UserService.Domain.AggregatesModel.UserAggregate.Events;
-using Kwetter.Services.UserService.Infrastructure;
-using Kwetter.Services.UserService.Infrastructure.Repositories;
+using Kwetter.Services.KweetService.API.Application.Commands.CreateKweetCommand;
+using Kwetter.Services.KweetService.Domain.AggregatesModel.KweetAggregate;
+using Kwetter.Services.KweetService.Infrastructure;
+using Kwetter.Services.KweetService.Infrastructure.Repositories;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -15,9 +13,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using System.Reflection;
 
-namespace Kwetter.Services.UserService.API
+namespace Kwetter.Services.KweetService.API
 {
     /// <summary>
     /// Represents the <see cref="Startup"/> class.
@@ -43,23 +40,22 @@ namespace Kwetter.Services.UserService.API
         {
             services.AddConfigurations(_configuration);
             services.AddLogging(p => p.AddConsole());
-            services.AddDefaultApplicationServices(Assembly.GetAssembly(typeof(Startup)), Assembly.GetAssembly(typeof(CreateUserCommand)));
+            services.AddDefaultApplicationServices(Assembly.GetAssembly(typeof(Startup)), Assembly.GetAssembly(typeof(CreateKweetCommand)));
             services.AddDefaultInfrastructureServices();
-            services.AddSingleton<IFactory<UserDbContext>>(serviceProvider =>
+            services.AddSingleton<IFactory<KweetDbContext>>(serviceProvider =>
             {
                 IOptions<DbConfiguration> options = serviceProvider.GetRequiredService<IOptions<DbConfiguration>>();
                 ILoggerFactory loggerFactory = serviceProvider.GetRequiredService<ILoggerFactory>();
                 IMediator mediator = serviceProvider.GetRequiredService<IMediator>();
-                return new UserDatabaseFactory(options, loggerFactory, mediator);
+                return new KweetDatabaseFactory(options, loggerFactory, mediator);
             });
-            services.AddTransient<UserDbContext>(p => p.GetRequiredService<IFactory<UserDbContext>>().Create());
-            services.AddTransient<IAggregateUnitOfWork>(p => p.GetRequiredService<IFactory<UserDbContext>>().Create());
-            services.AddTransient<IUserRepository, UserRepository>();
-            services.AddIntegrationServices<UserDbContext>(Assembly.GetAssembly(typeof(Startup)));
+            services.AddTransient<KweetDbContext>(p => p.GetRequiredService<IFactory<KweetDbContext>>().Create());
+            services.AddTransient<IAggregateUnitOfWork>(p => p.GetRequiredService<IFactory<KweetDbContext>>().Create());
+            services.AddTransient<IKweetRepository, KweetRepository>();
+            services.AddIntegrationServices<KweetDbContext>(Assembly.GetAssembly(typeof(Startup)));
             services.AddControllers();
             services.AddSwagger(_configuration);
-            services.VerifyDatabaseConnection<UserDbContext>();
-            // TODO: Add health checks?
+            services.VerifyDatabaseConnection<KweetDbContext>();
         }
 
         /// <summary>
@@ -76,13 +72,8 @@ namespace Kwetter.Services.UserService.API
                 string version = _configuration["Service:Version"];
                 string title = _configuration["Service:Title"];
                 app.UseSwaggerUI(c => c.SwaggerEndpoint($"/swagger/{version}/swagger.json", $"{title} {version}"));
-
-                // IEventBus eventBus = app.ApplicationServices.GetRequiredService<IEventBus>();
-                // IMessageSerializer messageSerializer = app.ApplicationServices.GetRequiredService<IMessageSerializer>();
-                // ILogger<UserCreatedDomainEventListener> logger = app.ApplicationServices.GetRequiredService<ILogger<UserCreatedDomainEventListener>>();
-                // UserCreatedDomainEventListener listener = new UserCreatedDomainEventListener(logger, messageSerializer);
-                // eventBus.Subscribe<UserCreatedDomainEvent, UserCreatedDomainEventListener>("DomainEvents", listener);
             }
+
             app.UseRouting();
             app.UseAuthorization();
             app.UseEndpoints(endpoints =>

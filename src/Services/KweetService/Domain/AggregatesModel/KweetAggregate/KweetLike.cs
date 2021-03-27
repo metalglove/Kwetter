@@ -23,7 +23,7 @@ namespace Kwetter.Services.KweetService.Domain.AggregatesModel.KweetAggregate
         /// <summary>
         /// Gets and sets the date time when the like was created.
         /// </summary>
-        public DateTime CreatedDateTime { get; private set; }
+        public DateTime LikedDateTime { get; private set; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="KweetLike"/> class.
@@ -34,8 +34,8 @@ namespace Kwetter.Services.KweetService.Domain.AggregatesModel.KweetAggregate
         {
             SetKweetId(kweetId);
             SetUserId(userId);
-            CreatedDateTime = DateTime.UtcNow;
-            AddDomainEvent(new KweetLikedDomainEvent(kweetId, userId, CreatedDateTime));
+            LikedDateTime = DateTime.UtcNow;
+            AddDomainEvent(new KweetLikedDomainEvent(kweetId, userId, LikedDateTime));
         }
 
         /// <summary>

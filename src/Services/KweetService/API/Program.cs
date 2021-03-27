@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 
-namespace Kwetter.Services.UserService.API
+namespace Kwetter.Services.KweetService.API
 {
     /// <summary>
     /// Represents the <see cref="Program"/> class.

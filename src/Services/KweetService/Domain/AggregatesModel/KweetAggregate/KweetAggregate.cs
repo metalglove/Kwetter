@@ -13,7 +13,7 @@ namespace Kwetter.Services.KweetService.Domain.AggregatesModel.KweetAggregate
     /// </summary>
     public class KweetAggregate : Entity, IAggregateRoot
     {
-        private readonly HashSet<KweetLike> _likes;
+        private HashSet<KweetLike> _likes;
 
         /// <summary>
         /// Gets and sets the user id of the kweet.
@@ -46,11 +46,12 @@ namespace Kwetter.Services.KweetService.Domain.AggregatesModel.KweetAggregate
         /// <summary>
         /// Initializes a new instance of the <see cref="KweetAggregate"/> class.
         /// </summary>
-        /// <param name="message">The message.</param>
+        /// <param name="id">The kweet id.</param>
         /// <param name="userId">The user id.</param>
-        public KweetAggregate(Guid userId, string message)
+        /// <param name="message">The message.</param>
+        public KweetAggregate(Guid id, Guid userId, string message)
         {
-            Id = Guid.NewGuid();
+            SetId(id);
             SetUserId(userId);
             SetMessage(message);
             CreatedDateTime = DateTime.UtcNow;
@@ -84,6 +85,18 @@ namespace Kwetter.Services.KweetService.Domain.AggregatesModel.KweetAggregate
             if (removed)
                 AddDomainEvent(new KweetUnlikedDomainEvent(userId, Id));
             return removed;
+        }
+
+        /// <summary>
+        /// Sets the id of the kweet.
+        /// </summary>
+        /// <param name="id">The kweet id.</param>
+        /// <exception cref="KweetDomainException">Thrown when the provided kweet id is empty or malformed.</exception>
+        private void SetId(Guid id)
+        {
+            if (id == Guid.Empty)
+                throw new KweetDomainException("The kweet id is empty.");
+            Id = id;
         }
 
         /// <summary>

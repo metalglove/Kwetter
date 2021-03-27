@@ -9,29 +9,45 @@ namespace Kwetter.Services.KweetService.Tests.Aggregates
     public class KweetAggregateTests
     {
         [TestMethod]
+        public void Should_Throw_Exception_While_Constructing_Kweet_Due_To_Empty_Id()
+        {
+            // Arrange
+            Guid userId = Guid.NewGuid();
+            Guid kweetId = Guid.Empty;
+            const string message = "dfdfdfdffdfdf";
+            
+            // Act
+            KweetDomainException kweetDomainException = Assert.ThrowsException<KweetDomainException>(() =>  new KweetAggregate(kweetId, userId, message));
+            
+            // Assert
+            Assert.IsTrue(kweetDomainException.Message.Equals("The kweet id is empty."));
+        }
+        
+        [TestMethod]
         public void Should_Throw_Exception_While_Constructing_Kweet_Due_To_Empty_Message()
         {
             // Arrange
             Guid userId = Guid.NewGuid();
+            Guid kweetId = Guid.NewGuid();
             const string message = "";
             
             // Act
-            KweetDomainException kweetDomainException = Assert.ThrowsException<KweetDomainException>(() =>  new KweetAggregate(userId, message));
+            KweetDomainException kweetDomainException = Assert.ThrowsException<KweetDomainException>(() =>  new KweetAggregate(kweetId, userId, message));
             
             // Assert
             Assert.IsTrue(kweetDomainException.Message.Equals("The message is null, empty or contains only whitespaces."));
         }
-        
         
         [TestMethod]
         public void Should_Throw_Exception_While_Constructing_Kweet_Due_To_Message_Length_Exceeding_140_Characters()
         {
             // Arrange
             Guid userId = Guid.NewGuid();
+            Guid kweetId = Guid.NewGuid();
             const string message = "asdfsdfsadfasdfdasdfsdfsadfasdfdasdfsdfsadfasdfdasdfsdfsadfasdfdasdfsdfsadfasdfdasdfsdfsadfasdfdasdfsdfsadfasdfdasdfsdfsadfasdfdasdfsd3434433";
             
             // Act
-            KweetDomainException kweetDomainException = Assert.ThrowsException<KweetDomainException>(() =>  new KweetAggregate(userId, message));
+            KweetDomainException kweetDomainException = Assert.ThrowsException<KweetDomainException>(() =>  new KweetAggregate(kweetId, userId, message));
             
             // Assert
             Assert.IsTrue(kweetDomainException.Message.Equals("The length of the message exceeded 140 characters."));
@@ -42,10 +58,11 @@ namespace Kwetter.Services.KweetService.Tests.Aggregates
         {
             // Arrange
             Guid userId = Guid.Empty;
+            Guid kweetId = Guid.NewGuid();
             const string message = "ssdsds";
             
             // Act
-            KweetDomainException kweetDomainException = Assert.ThrowsException<KweetDomainException>(() =>  new KweetAggregate(userId, message));
+            KweetDomainException kweetDomainException = Assert.ThrowsException<KweetDomainException>(() =>  new KweetAggregate(kweetId, userId, message));
             
             // Assert
             Assert.IsTrue(kweetDomainException.Message.Equals("The user id is empty."));
@@ -56,7 +73,8 @@ namespace Kwetter.Services.KweetService.Tests.Aggregates
         {
             // Arrange
             Guid userId = Guid.Empty;
-            KweetAggregate kweetAggregate = new(Guid.NewGuid(), "My kweet!");
+            Guid kweetId = Guid.NewGuid();
+            KweetAggregate kweetAggregate = new(kweetId, Guid.NewGuid(), "My kweet!");
             
             // Act
             KweetDomainException kweetDomainException = Assert.ThrowsException<KweetDomainException>(() => kweetAggregate.AddLike(userId));
@@ -70,7 +88,8 @@ namespace Kwetter.Services.KweetService.Tests.Aggregates
         {
             // Arrange
             Guid userId = Guid.NewGuid();
-            KweetAggregate kweetAggregate = new(Guid.NewGuid(), "My kweet!");
+            Guid kweetId = Guid.NewGuid();
+            KweetAggregate kweetAggregate = new(kweetId, Guid.NewGuid(), "My kweet!");
             
             // Act
             bool liked = kweetAggregate.AddLike(userId);
@@ -84,7 +103,8 @@ namespace Kwetter.Services.KweetService.Tests.Aggregates
         {
             // Arrange
             Guid userId = Guid.NewGuid();
-            KweetAggregate kweetAggregate = new(Guid.NewGuid(), "My kweet!");
+            Guid kweetId = Guid.NewGuid();
+            KweetAggregate kweetAggregate = new(kweetId, Guid.NewGuid(), "My kweet!");
             
             // Act
             kweetAggregate.AddLike(userId);
@@ -98,7 +118,8 @@ namespace Kwetter.Services.KweetService.Tests.Aggregates
         {
             // Arrange
             Guid userId = Guid.Empty;
-            KweetAggregate kweetAggregate = new(Guid.NewGuid(), "My kweet!");
+            Guid kweetId = Guid.NewGuid();
+            KweetAggregate kweetAggregate = new(kweetId, Guid.NewGuid(), "My kweet!");
             
             // Act
             KweetDomainException kweetDomainException = Assert.ThrowsException<KweetDomainException>(() => kweetAggregate.RemoveLike(userId));
@@ -112,7 +133,8 @@ namespace Kwetter.Services.KweetService.Tests.Aggregates
         {
             // Arrange
             Guid userId = Guid.NewGuid();
-            KweetAggregate kweetAggregate = new(Guid.NewGuid(), "My kweet!");
+            Guid kweetId = Guid.NewGuid();
+            KweetAggregate kweetAggregate = new(kweetId, Guid.NewGuid(), "My kweet!");
             kweetAggregate.AddLike(userId);
             
             // Act
@@ -127,7 +149,8 @@ namespace Kwetter.Services.KweetService.Tests.Aggregates
         {
             // Arrange
             Guid userId = Guid.NewGuid();
-            KweetAggregate kweetAggregate = new(Guid.NewGuid(), "My kweet!");
+            Guid kweetId = Guid.NewGuid();
+            KweetAggregate kweetAggregate = new(kweetId, Guid.NewGuid(), "My kweet!");
             kweetAggregate.AddLike(userId);
             
             // Act
@@ -143,7 +166,8 @@ namespace Kwetter.Services.KweetService.Tests.Aggregates
         {
             // Arrange
             Guid userId = Guid.NewGuid();
-            KweetAggregate kweetAggregate = new(Guid.NewGuid(), "My kweet!");
+            Guid kweetId = Guid.NewGuid();
+            KweetAggregate kweetAggregate = new(kweetId, Guid.NewGuid(), "My kweet!");
             
             // Act
             bool removed = kweetAggregate.RemoveLike(userId);

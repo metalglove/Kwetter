@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading;
+using System.Threading.Tasks;
 using Kwetter.Services.Common.Domain.Persistence;
 
 namespace Kwetter.Services.KweetService.Domain.AggregatesModel.KweetAggregate
@@ -23,6 +24,6 @@ namespace Kwetter.Services.KweetService.Domain.AggregatesModel.KweetAggregate
         /// <param name="userId">The user id.</param>
         /// <param name="cancellationToken">The cancellation token/</param>
         /// <returns>Returns a collection of kweets from the provided user id.</returns>
-        IEnumerable<KweetAggregate> FindKweetsByUserIdAsync(Guid userId, CancellationToken cancellationToken);
+        Task<IEnumerable<KweetAggregate>> FindKweetsByUserIdAsync(Guid userId, CancellationToken cancellationToken);
     }
 }
