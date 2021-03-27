@@ -14,6 +14,14 @@ namespace Kwetter.Services.Common.EventBus.Abstractions
         /// <param name="message">The message.</param>
         /// <returns>Returns a read only memory byte array.</returns>
         public ReadOnlyMemory<byte> Serialize<TMessage>(TMessage message) where TMessage : class;
+        
+        /// <summary>
+        /// Serializes a message to a string.
+        /// </summary>
+        /// <typeparam name="TMessage">The type of message.</typeparam>
+        /// <param name="message">The message.</param>
+        /// <returns>Returns the message serialized as string.</returns>
+        public string SerializeToString<TMessage>(TMessage message) where TMessage : class;
 
         /// <summary>
         /// Deserializes a readonly memory byte to a message.

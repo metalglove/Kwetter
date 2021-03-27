@@ -10,6 +10,6 @@ spec:
   accessModes:
     - ReadWriteMany
   capacity:
-    storage: 16Gi
+    storage: 24Gi
   hostPath:
     path: "/mnt/data"

@@ -87,8 +87,14 @@ namespace Kwetter.Services.Common.Infrastructure
                 case "mssql":
                     optionsBuilder.UseSqlServer(connectionString);
                     break;
-                default:
+                case "mssql-in-memory":
                     optionsBuilder.UseInMemoryDatabase(Guid.NewGuid().ToString());
+                    break;
+                case "sqlite":
+                    optionsBuilder.UseSqlite(connectionString);
+                    break;
+                default:
+                    optionsBuilder.UseSqlite("DataSource=:memory:");
                     break;
             }
 

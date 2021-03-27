@@ -22,6 +22,12 @@ namespace Kwetter.Services.Common.Infrastructure.MessageSerializers
             return JsonSerializer.SerializeToUtf8Bytes(message, _jsonSerializerOptions);
         }
 
+        /// <inheritdoc cref="IMessageSerializer.SerializeToString{TMessage}"/>
+        public string SerializeToString<TMessage>(TMessage message) where TMessage : class
+        {
+            return JsonSerializer.Serialize(message, _jsonSerializerOptions);
+        }
+
         /// <inheritdoc cref="IMessageSerializer.Deserialize{TMessage}(ReadOnlyMemory{byte})"/>
         public TMessage Deserialize<TMessage>(ReadOnlyMemory<byte> message) where TMessage : class
         {
