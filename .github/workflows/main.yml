@@ -127,6 +127,14 @@ jobs:
         docker build -t ${{ secrets.NEURALM_REGISTRY }}/kwetter-user-service:latest -f ./kwetter-user-service.Dockerfile .
         echo "Publishing UserService docker image"
         docker push ${{ secrets.NEURALM_REGISTRY }}/kwetter-user-service:latest
+
+    # Builds and publishes the KweetService
+    - name: Build and push KweetService Docker image 
+      run: |
+        echo "Building KweetService docker image"
+        docker build -t ${{ secrets.NEURALM_REGISTRY }}/kwetter-kweet-service:latest -f ./kwetter-kweet-service.Dockerfile .
+        echo "Publishing KweetService docker image"
+        docker push ${{ secrets.NEURALM_REGISTRY }}/kwetter-kweet-service:latest
     
     # Builds and publishes the FollowService
     - name: Build and push FollowService Docker image 
@@ -135,35 +143,7 @@ jobs:
         docker build -t ${{ secrets.NEURALM_REGISTRY }}/kwetter-follow-service:latest -f ./kwetter-follow-service.Dockerfile .
         echo "Publishing FollowService docker image"
         docker push ${{ secrets.NEURALM_REGISTRY }}/kwetter-follow-service:latest
-    # Builds and publishes the UserService
-    # - name: Build and push UserService Docker image 
-    #   uses: docker/build-push-action@v2.3.0
-    #   with:
-    #     context: ./src
-    #     file: ./src/kwetter-user-service.Dockerfile
-    #     push: true
-    #     tags: ${{ secrets.NEURALM_REGISTRY }}/kwetter-user-service:latest
-    #     cache-from: type=local,src=/tmp/.buildx-cache
-    #     cache-to: type=local,dest=/tmp/.buildx-cache-new
-    
-    # # Builds and publishes the FollowService
-    # - name: Build and push FollowService Docker image 
-    #   uses: docker/build-push-action@v2.3.0
-    #   with:
-    #     context: ./src
-    #     file: ./src/kwetter-follow-service.Dockerfile
-    #     push: true
-    #     tags: ${{ secrets.NEURALM_REGISTRY }}/kwetter-follow-service:latest
-    #     cache-from: type=local,src=/tmp/.buildx-cache
-    #     cache-to: type=local,dest=/tmp/.buildx-cache-new
 
-    # Temporary fix for fast growing cache
-    # https://github.com/docker/build-push-action/issues/252
-    # https://github.com/moby/buildkit/issues/1896
-    # - name: Move cache
-    #   run: |
-    #     rm -rf /tmp/.buildx-cache
-    #     mv /tmp/.buildx-cache-new /tmp/.buildx-cache
 
   # Deploy to production
   production:
