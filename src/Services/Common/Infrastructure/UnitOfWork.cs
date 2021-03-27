@@ -38,7 +38,7 @@ namespace Kwetter.Services.Common.Infrastructure
         /// <param name="mediator">The mediator.</param>
         protected UnitOfWork(DbContextOptions<TContext> options, IMediator mediator) : base(options)
         {
-            _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
+            _mediator = mediator;
         }
 
         /// <inheritdoc cref="IUnitOfWork.SaveEntitiesAsync(CancellationToken)"/>

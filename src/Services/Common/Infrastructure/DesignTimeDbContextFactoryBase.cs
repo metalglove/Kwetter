@@ -25,7 +25,7 @@ namespace Kwetter.Services.Common.Infrastructure
         /// <param name="loggerFactory">The logger factory.</param>
         protected DesignTimeDbContextFactoryBase(string databaseType, IOptions<DbConfiguration> dbConfigurationOptions, ILoggerFactory loggerFactory)
         {
-            _dbConfiguration = dbConfigurationOptions == null
+            _dbConfiguration = dbConfigurationOptions == default
                 ? GetDbConfiguration(databaseType)
                 : dbConfigurationOptions.Value;
             _loggerFactory = loggerFactory;

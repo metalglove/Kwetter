@@ -14,7 +14,7 @@ namespace Kwetter.Services.Common.Infrastructure
         /// <summary>
         /// Initializes in instance of the <see cref="DatabaseFactory{TDbContext}"/> class.
         /// </summary>
-        protected DatabaseFactory() : base("Service", (IOptions<DbConfiguration>) null, null)
+        protected DatabaseFactory() : base("Service", (IOptions<DbConfiguration>) default, default)
         {
 
         }
