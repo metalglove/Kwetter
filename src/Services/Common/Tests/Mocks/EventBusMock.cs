@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Kwetter.Services.Common.EventBus.Abstractions;
 using Microsoft.Extensions.Logging;
 
-namespace Kwetter.Services.FollowService.Tests.Mocks
+namespace Kwetter.Services.Common.Tests.Mocks
 {
     public class EventBusMock : IEventBus
     {

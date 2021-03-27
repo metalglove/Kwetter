@@ -1,8 +1,13 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Kwetter.Services.Common.API.CQRS;
+using Kwetter.Services.Common.Tests;
+using Kwetter.Services.FollowService.API;
 using Kwetter.Services.FollowService.API.Application.Commands.CreateFollowCommand;
 using Kwetter.Services.FollowService.API.Application.Commands.DeleteFollowCommand;
+using Kwetter.Services.FollowService.Domain.AggregatesModel.FollowAggregate;
+using Kwetter.Services.FollowService.Infrastructure;
+using Kwetter.Services.FollowService.Infrastructure.Repositories;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -20,7 +25,9 @@ namespace Kwetter.Services.FollowService.Tests.Commands
         [TestInitialize]
         public async Task Initialize()
         {
-            ServiceProvider = InitializeServices();
+            ServiceProvider = InitializeServices<FollowDbContext, FollowDatabaseFactory, FollowRepository, FollowAggregate>(
+                typeof(Startup), typeof(CreateFollowCommand), "FollowService",
+                (options, loggerFactory, mediator) => new FollowDatabaseFactory(options, loggerFactory, mediator));
             Mediator = ServiceProvider.GetRequiredService<IMediator>();
             
             FollowerId = Guid.NewGuid();

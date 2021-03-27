@@ -2,29 +2,47 @@
 using System.IO;
 using System.Reflection;
 using Kwetter.Services.Common.API;
+using Kwetter.Services.Common.Domain;
+using Kwetter.Services.Common.Domain.Persistence;
 using Kwetter.Services.Common.EventBus;
 using Kwetter.Services.Common.EventBus.Abstractions;
 using Kwetter.Services.Common.Infrastructure;
 using Kwetter.Services.Common.Infrastructure.Integration;
 using Kwetter.Services.Common.Infrastructure.MessageSerializers;
-using Kwetter.Services.FollowService.API;
-using Kwetter.Services.FollowService.API.Application.Commands.CreateFollowCommand;
-using Kwetter.Services.FollowService.Domain.AggregatesModel.FollowAggregate;
-using Kwetter.Services.FollowService.Infrastructure;
-using Kwetter.Services.FollowService.Infrastructure.Repositories;
-using Kwetter.Services.FollowService.Tests.Mocks;
+using Kwetter.Services.Common.Tests.Mocks;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
-namespace Kwetter.Services.FollowService.Tests
+namespace Kwetter.Services.Common.Tests
 {
+    /// <summary>
+    /// Represents the <see cref="TestBase"/> class.
+    /// Holds functionality for proper integration tests.
+    /// </summary>
     public abstract class TestBase
     {
-        protected static ServiceProvider InitializeServices()
+        /// <summary>
+        /// Initializes the services for the test.
+        /// </summary>
+        /// <param name="startUpType">The start up class type.</param>
+        /// <param name="applicationType">The application type.</param>
+        /// <param name="serviceName">The service name.</param>
+        /// <param name="databaseFactory">The database factory.</param>
+        /// <typeparam name="TDbContext">The database context/</typeparam>
+        /// <typeparam name="TDatabaseFactory">The database factory type.</typeparam>
+        /// <typeparam name="TRepository">The repository type.</typeparam>
+        /// <typeparam name="TAggregateRoot">The aggregate root type.</typeparam>
+        /// <returns>Returns a service provider.</returns>
+        protected static ServiceProvider InitializeServices<TDbContext, TDatabaseFactory, TRepository, TAggregateRoot>(
+            Type startUpType, Type applicationType, string serviceName, Func<IOptions<DbConfiguration>, ILoggerFactory, IMediator, TDatabaseFactory> databaseFactory) 
+            where TDbContext : UnitOfWork<TDbContext>, IAggregateUnitOfWork
+            where TDatabaseFactory : DatabaseFactory<TDbContext>, new()
+            where TAggregateRoot : Entity, IAggregateRoot
+            where TRepository : class, IRepository<TAggregateRoot>
         {
-            // required to initialise native SQLite libraries on some platforms.
+            // Required to initialise native SQLite libraries on some platforms.
             SQLitePCL.Batteries_V2.Init();
 
             // https://github.com/aspnet/EntityFrameworkCore/issues/9994#issuecomment-508588678
@@ -50,7 +68,7 @@ namespace Kwetter.Services.FollowService.Tests
             });
             serviceCollection.Configure<IntegrationEventMessagingConfiguration>(integrationEventMessagingConfiguration =>
             {
-                integrationEventMessagingConfiguration.ServiceName = "Kwetter.Services.FollowService.API";
+                integrationEventMessagingConfiguration.ServiceName = $"Kwetter.Services.{serviceName}.API";
                 integrationEventMessagingConfiguration.MessageQueueName = "IntegrationEventLog";
             });
             
@@ -63,31 +81,36 @@ namespace Kwetter.Services.FollowService.Tests
             });
             
             serviceCollection.AddLogging(p => p.AddConsole());
-            serviceCollection.AddDefaultApplicationServices(Assembly.GetAssembly(typeof(Startup)), Assembly.GetAssembly(typeof(CreateFollowCommand)));
+            serviceCollection.AddDefaultApplicationServices(Assembly.GetAssembly(startUpType), Assembly.GetAssembly(applicationType));
             
             // Mock infrastructure
             serviceCollection.AddTransient<IMessageSerializer, JsonMessageSerializer>();
             serviceCollection.AddSingleton<IEventBus, EventBusMock>();
             
-            serviceCollection.AddSingleton<IFactory<FollowDbContext>>(serviceProvider =>
+            serviceCollection.AddSingleton<IFactory<TDbContext>>(serviceProvider =>
             {
                 IOptions<DbConfiguration> options = serviceProvider.GetRequiredService<IOptions<DbConfiguration>>();
                 ILoggerFactory loggerFactory = serviceProvider.GetRequiredService<ILoggerFactory>();
                 IMediator mediator = serviceProvider.GetRequiredService<IMediator>();
-                return new FollowDatabaseFactory(options, loggerFactory, mediator);
+                return databaseFactory(options, loggerFactory, mediator);
             });
-            serviceCollection.AddSingleton<FollowDbContext>(p =>
+            serviceCollection.AddSingleton<TDbContext>(p =>
             {
-                FollowDbContext followDbContext = p.GetRequiredService<IFactory<FollowDbContext>>().Create();
+                TDbContext followDbContext = p.GetRequiredService<IFactory<TDbContext>>().Create();
                 followDbContext.Database.EnsureCreated();
                 return followDbContext;
             });
-            serviceCollection.AddTransient<IAggregateUnitOfWork>(p => p.GetRequiredService<FollowDbContext>());
-            serviceCollection.AddTransient<IFollowRepository, FollowRepository>();
-            serviceCollection.AddIntegrationServices<FollowDbContext>(Assembly.GetAssembly(typeof(Startup)));
+            serviceCollection.AddTransient<IAggregateUnitOfWork>(p => p.GetRequiredService<TDbContext>());
+            Type repositoryImplementationType = typeof(TRepository);
+            serviceCollection.AddTransient(repositoryImplementationType.GetInterfaces()[0], repositoryImplementationType);
+            serviceCollection.AddIntegrationServices<TDbContext>(Assembly.GetAssembly(startUpType));
             return serviceCollection.BuildServiceProvider();
         }
 
+        /// <summary>
+        /// Cleans up the created sqlite database file
+        /// </summary>
+        /// <param name="serviceProvider">The serviceName provider.</param>
         protected void Cleanup(ServiceProvider serviceProvider)
         {
             IOptions<DbConfiguration> options = serviceProvider.GetRequiredService<IOptions<DbConfiguration>>();
