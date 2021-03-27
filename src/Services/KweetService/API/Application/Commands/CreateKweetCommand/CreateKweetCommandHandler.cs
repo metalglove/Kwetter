@@ -43,7 +43,7 @@ namespace Kwetter.Services.KweetService.API.Application.Commands.CreateKweetComm
         /// <returns>Returns the command response.</returns>
         public Task<CommandResponse> Handle(CreateKweetCommand request, CancellationToken cancellationToken)
         {
-            KweetAggregate kweetAggregate = new(request.Id, request.UserId, request.Message);
+            KweetAggregate kweetAggregate = new(request.KweetId, request.UserId, request.Message);
             KweetAggregate trackedKweetAggregate = _kweetRepository.Create(kweetAggregate);
             CommandResponse commandResponse = new()
             {

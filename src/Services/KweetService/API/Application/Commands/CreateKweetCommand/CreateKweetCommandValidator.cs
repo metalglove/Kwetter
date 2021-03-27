@@ -18,7 +18,7 @@ namespace Kwetter.Services.KweetService.API.Application.Commands.CreateKweetComm
             //  has to be authorized to post a request for creating a kweet.
             // command.UserId
             
-            RuleFor(command => command.Id)
+            RuleFor(command => command.KweetId)
                 .NotEmpty()
                 .WithMessage("The kweet id can not be empty.");
             

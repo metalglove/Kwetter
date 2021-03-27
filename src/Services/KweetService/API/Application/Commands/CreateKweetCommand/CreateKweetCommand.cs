@@ -10,9 +10,9 @@ namespace Kwetter.Services.KweetService.API.Application.Commands.CreateKweetComm
     public record CreateKweetCommand : IRequest<CommandResponse>
     {
         /// <summary>
-        /// Gets and sets the id.
+        /// Gets and sets the kweet id.
         /// </summary>
-        public Guid Id { get; init; }
+        public Guid KweetId { get; init; }
         
         /// <summary>
         /// Gets and sets the user id.
