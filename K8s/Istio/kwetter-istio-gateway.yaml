@@ -38,6 +38,15 @@ spec:
         port:
           number: 80
         host: kwetter-user-service
+  - name: kwetter-kweet-service-v1-routes
+    match:
+    - uri:
+        prefix: /api/Kweet
+    route:
+    - destination:
+        port:
+          number: 80
+        host: kwetter-kweet-service
   - name: kwetter-follow-service-v1-routes
     match:
     - uri:
