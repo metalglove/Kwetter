@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ExportableFileTemplateSettings">
+    <default_templates>
+      <template name="Command (CQRS).cs" file-name="${NAME}" reformat="true" live-template-enabled="false">
+        <template name="Command (CQRS).cs.child.1.cs" file-name="${NAME}Handler" reformat="true" live-template-enabled="false" />
+        <template name="Command (CQRS).cs.child.0.cs" file-name="${NAME}Validator" reformat="true" live-template-enabled="false" />
+      </template>
+      <template name="Command (CQRS).cs.child.0.cs" file-name="${NAME}Validator" reformat="true" live-template-enabled="false" />
+      <template name="Command (CQRS).cs.child.1.cs" file-name="${NAME}Handler" reformat="true" live-template-enabled="false" />
+    </default_templates>
+  </component>
+</project>
