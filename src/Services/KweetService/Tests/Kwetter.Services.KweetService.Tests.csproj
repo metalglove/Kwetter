@@ -14,7 +14,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Common\Tests\Kwetter.Services.Common.Tests.csproj" />
+    <ProjectReference Include="..\API\Kwetter.Services.KweetService.API.csproj" />
     <ProjectReference Include="..\Domain\Kwetter.Services.KweetService.Domain.csproj" />
+    <ProjectReference Include="..\Infrastructure\Kwetter.Services.KweetService.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

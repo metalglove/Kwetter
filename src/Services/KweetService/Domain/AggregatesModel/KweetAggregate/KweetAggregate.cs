@@ -38,10 +38,7 @@ namespace Kwetter.Services.KweetService.Domain.AggregatesModel.KweetAggregate
         /// <summary>
         /// EF constructor...
         /// </summary>
-        protected KweetAggregate() 
-        {
-            _likes = new HashSet<KweetLike>(new KweetLikeEqualityComparer());
-        }
+        protected KweetAggregate() => _likes = new HashSet<KweetLike>(new KweetLikeEqualityComparer());
 
         /// <summary>
         /// Initializes a new instance of the <see cref="KweetAggregate"/> class.
@@ -79,7 +76,7 @@ namespace Kwetter.Services.KweetService.Domain.AggregatesModel.KweetAggregate
         /// <exception cref="KweetDomainException">Thrown when the user id is empty.</exception>
         public bool RemoveLike(Guid userId)
         {
-            if (userId == Guid.Empty) 
+            if (userId == Guid.Empty)
                 throw new KweetDomainException("The user id is empty.");
             bool removed = _likes.RemoveWhere(kweet => kweet.UserId == userId) == 1;
             if (removed)

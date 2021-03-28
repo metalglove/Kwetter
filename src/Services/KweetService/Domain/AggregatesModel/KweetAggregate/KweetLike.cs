@@ -26,6 +26,11 @@ namespace Kwetter.Services.KweetService.Domain.AggregatesModel.KweetAggregate
         public DateTime LikedDateTime { get; private set; }
 
         /// <summary>
+        /// EF constructor...
+        /// </summary>
+        protected KweetLike() { }
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="KweetLike"/> class.
         /// </summary>
         /// <param name="kweetId">The kweet id.</param>

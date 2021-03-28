@@ -35,6 +35,12 @@ namespace Kwetter.Services.KweetService.Infrastructure.Repositories
                 .Add(kweet).Entity;
         }
 
+        /// <inheritdoc cref="IKweetRepository.FindAsync(Guid, CancellationToken)" />
+        public async ValueTask<KweetAggregate> FindAsync(Guid kweetId, CancellationToken cancellationToken)
+        {
+            return await _kweetDbContext.Kweets.FindAsync(new object[] {kweetId}, cancellationToken);
+        }
+
         /// <inheritdoc cref="IKweetRepository.FindKweetsByUserIdAsync(Guid, CancellationToken)" />
         public async Task<IEnumerable<KweetAggregate>> FindKweetsByUserIdAsync(Guid userId, CancellationToken cancellationToken)
         {
