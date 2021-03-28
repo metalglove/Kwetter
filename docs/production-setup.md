@@ -88,6 +88,11 @@ Add credentials to store
 kubectl create secret docker-registry mydockercredentials --docker-server neuralm.net:7676 --docker-username <USERNAME> --docker-password <PASSWORD>
 ```
 
+Apply more secrets.
+```
+kubectl apply -f ./K8s/secrets/
+```
+
 Download Istio from the Istio https://istio.io/latest/docs/setup/getting-started/#download
 and add the `/bin` folder to the environment variables.
 ```
@@ -117,6 +122,36 @@ Then apply the MetalLB config
 kubectl apply -f ./K8s/MetalLB/kwetter-metal-loadbalancer-layer-2-config.yaml
 ```
 
+Installing rabbitmq operator
+First we need `krew` a kubectl plugin tool.
+https://krew.sigs.k8s.io/docs/user-guide/setup/install/
+```
+(
+  set -x; cd "$(mktemp -d)" &&
+  OS="$(uname | tr '[:upper:]' '[:lower:]')" &&
+  ARCH="$(uname -m | sed -e 's/x86_64/amd64/' -e 's/\(arm\)\(64\)\?.*/\1\2/' -e 's/aarch64$/arm64/')" &&
+  curl -fsSLO "https://github.com/kubernetes-sigs/krew/releases/latest/download/krew.tar.gz" &&
+  tar zxvf krew.tar.gz &&
+  KREW=./krew-"${OS}_${ARCH}" &&
+  "$KREW" install krew
+)
+```
+And add this line to the PATH
+```
+export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"
+```
+Install rabbitmq
+```
+kubectl krew install rabbitmq
+kubectl rabbitmq install-cluster-operator
+```
+
+Deploy rabbitmq cluster
+```
+kubectl apply -f ./K8s/rabbitmq/simple-rabbitmq.yaml
+```
+
+
 Deploy the services
 Let's start deploying those services!
 Starting with the gateway, storage class and volume:
@@ -124,11 +159,6 @@ Starting with the gateway, storage class and volume:
 <!-- kubectl apply -f ./K8s --recursive -->
 kubectl apply -f ./K8s/kwetter-storage-class.yaml
 kubectl apply -f ./K8s/Istio/kwetter-istio-gateway.yaml
-```
-
-Apply the secrets.
-```
-kubectl apply -f ./K8s/secrets/
 ```
 
 Spin up user service!
