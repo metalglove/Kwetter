@@ -38,7 +38,7 @@ spec:
     spec:
       containers:
       - name: kwetter-messaging-container
-        image: rabbitmq:3-management
+        image: registry.hub.docker.com/library/rabbitmq:3-management
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 5672
