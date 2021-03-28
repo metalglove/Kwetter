@@ -41,16 +41,9 @@ spec:
             cpu: 1000m
         ports:
         - containerPort: 1433
-        env:
-        - name: MSSQL_SA_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: mssql
-              key: SA_PASSWORD
-        - name: ACCEPT_EULA
-          value: "Y"
-        - name: MSSQL_PID
-          value: "Developer"
+        envFrom:
+        - secretRef:
+            name: kwetter-follow-db-secret
         volumeMounts:
         - name: kwetter-follow-db-volume
           mountPath: /var/opt/mssql

@@ -36,6 +36,9 @@ spec:
       - name: kwetter-kweet-container
         image: neuralm.net:7676/kwetter-kweet-service:latest
         imagePullPolicy: Always
+        envFrom:
+        - secretRef:
+            name: kwetter-kweet-service-secret
         resources:
           limits:
             memory: 600Mi

@@ -36,6 +36,9 @@ spec:
       - name: kwetter-follow-container
         image: neuralm.net:7676/kwetter-follow-service:latest
         imagePullPolicy: Always
+        envFrom:
+        - secretRef:
+            name: kwetter-follow-service-secret
         resources:
           limits:
             memory: 600Mi
