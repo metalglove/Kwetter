@@ -86,7 +86,6 @@ kubectl config use-context kwetter
 Add credentials to store
 ```
 kubectl create secret docker-registry mydockercredentials --docker-server neuralm.net:7676 --docker-username <USERNAME> --docker-password <PASSWORD>
-kubectl create secret generic mssql --from-literal=SA_PASSWORD="MyC0m9l&xP@ssw0rd"
 ```
 
 Download Istio from the Istio https://istio.io/latest/docs/setup/getting-started/#download
