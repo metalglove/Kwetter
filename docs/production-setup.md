@@ -122,35 +122,28 @@ Then apply the MetalLB config
 kubectl apply -f ./K8s/MetalLB/kwetter-metal-loadbalancer-layer-2-config.yaml
 ```
 
-Installing rabbitmq operator
-First we need `krew` a kubectl plugin tool.
-https://krew.sigs.k8s.io/docs/user-guide/setup/install/
+Create all local volume directories
 ```
-(
-  set -x; cd "$(mktemp -d)" &&
-  OS="$(uname | tr '[:upper:]' '[:lower:]')" &&
-  ARCH="$(uname -m | sed -e 's/x86_64/amd64/' -e 's/\(arm\)\(64\)\?.*/\1\2/' -e 's/aarch64$/arm64/')" &&
-  curl -fsSLO "https://github.com/kubernetes-sigs/krew/releases/latest/download/krew.tar.gz" &&
-  tar zxvf krew.tar.gz &&
-  KREW=./krew-"${OS}_${ARCH}" &&
-  "$KREW" install krew
-)
+mkdir /mnt/data/kwetter-follow-db
+mkdir /mnt/data/kwetter-user-db
+mkdir /mnt/data/kwetter-kweet-db
+mkdir /mnt/data/rabbit-store
+mkdir /mnt/data/rabbit-store-1
+mkdir /mnt/data/rabbit-store-2
+mkdir /mnt/data/rabbit-store-3
+chown -R 10001:0 /mnt/data
 ```
-And add this line to the PATH
-```
-export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"
-```
+
 Install rabbitmq
 ```
-kubectl krew install rabbitmq
-kubectl rabbitmq install-cluster-operator
+kubectl apply -f ./K8s/rabbitmq/rabbit-rbac.yaml
+kubectl apply -f ./K8s/rabbitmq/rabbit-configmap.yaml
+kubectl apply -f ./K8s/rabbitmq/rabbit-statefulset.yaml
+kubectl apply -f ./K8s/rabbitmq/rabbit-pv.yaml
+kubectl apply -f ./K8s/rabbitmq/rabbit-pv-1.yaml
+kubectl apply -f ./K8s/rabbitmq/rabbit-pv-2.yaml
+kubectl apply -f ./K8s/rabbitmq/rabbit-pv-3.yaml
 ```
-
-Deploy rabbitmq cluster
-```
-kubectl apply -f ./K8s/rabbitmq/simple-rabbitmq.yaml
-```
-
 
 Deploy the services
 Let's start deploying those services!
