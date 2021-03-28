@@ -92,7 +92,6 @@ metadata:
   name: rabbitmq
   namespace: kwetter
 spec:
-  clusterIP: None
   ports:
   - port: 4369
     targetPort: 4369
@@ -102,3 +101,4 @@ spec:
     name: amqp
   selector:
     app: rabbitmq
+  type: LoadBalancer
