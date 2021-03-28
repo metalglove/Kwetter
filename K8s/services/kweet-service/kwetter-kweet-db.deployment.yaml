@@ -11,7 +11,7 @@ spec:
     app: kwetter-kweet-db-pod
   ports:
   - protocol: TCP
-    name: mssql
+    name: TCP-mssql
     port: 1433
     targetPort: 1433
   type: LoadBalancer
