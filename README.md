@@ -79,19 +79,7 @@ kubectl apply -f ./K8s/MetalLB/kwetter-metal-loadbalancer-layer-2-config.yaml
 Let's start deploying those services!
 Starting with the gateway, storage class and volume:
 ```
-kubectl apply -f ./K8s/Istio/kwetter-istio-gateway.yaml
-kubectl apply -f ./K8s/kwetter-storage-class.yaml
-kubectl apply -f ./K8s/kwetter-storage-persistent-volume.yaml
-```
-The follow service:
-```
-kubectl apply -f ./K8s/services/follow-service/kwetter-follow-service.deployment.yaml
-```
-The user service:
-``` 
-kubectl apply -f ./K8s/services/user-service/kwetter-user-db-persistent-volume-claim.yaml
-kubectl apply -f ./K8s/services/user-service/kwetter-user-db.deployment.yaml
-kubectl apply -f ./K8s/services/user-service/kwetter-user-service.deployment.yaml
+kubectl apply -f ./K8s --recursive
 ```
 
 ### Validate deployment

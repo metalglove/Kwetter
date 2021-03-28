@@ -47,6 +47,7 @@ spec:
         volumeMounts:
         - name: kwetter-user-db-volume
           mountPath: /var/opt/mssql
+          subPath: kwetter-user-db
       volumes:
       - name: kwetter-user-db-volume
         persistentVolumeClaim:
