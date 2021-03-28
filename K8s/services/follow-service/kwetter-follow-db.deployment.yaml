@@ -22,9 +22,6 @@ metadata:
   name: kwetter-follow-db
   namespace: kwetter
 spec:
-  terminationGracePeriodSeconds: 30
-  securityContext:
-    fsGroup: 10001
   selector:
     matchLabels:
       app: kwetter-follow-db-pod
