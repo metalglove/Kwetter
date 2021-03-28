@@ -37,7 +37,7 @@ spec:
         image: mcr.microsoft.com/mssql/server:2019-latest
         resources:
           limits:
-            memory: 3Gi
+            memory: 2Gi
             cpu: 1000m
         ports:
         - containerPort: 1433
@@ -47,7 +47,6 @@ spec:
         volumeMounts:
         - name: kwetter-follow-db-volume
           mountPath: /var/opt/mssql
-          subPath: kwetter-follow-db
       volumes:
       - name: kwetter-follow-db-volume
         persistentVolumeClaim:

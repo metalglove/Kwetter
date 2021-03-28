@@ -122,7 +122,38 @@ Deploy the services
 Let's start deploying those services!
 Starting with the gateway, storage class and volume:
 ```
-kubectl apply -f ./K8s --recursive
+<!-- kubectl apply -f ./K8s --recursive -->
+kubectl apply -f ./K8s/kwetter-storage-class.yaml
+kubectl apply -f ./K8s/Istio/kwetter-istio-gateway.yaml
+```
+
+Apply the secrets.
+```
+kubectl apply -f ./K8s/secrets/
+```
+
+Spin up user service!
+```
+kubectl apply -f ./K8s/services/user-service/kwetter-user-db-persistent-volume-claim.yaml
+kubectl apply -f ./K8s/services/user-service/kwetter-user-storage-persistent-volume.yaml
+kubectl apply -f ./K8s/services/user-service/kwetter-user-db.deployment.yaml
+kubectl apply -f ./K8s/services/user-service/kwetter-user-service.deployment.yaml
+```
+
+Spin up follow service!
+```
+kubectl apply -f ./K8s/services/follow-service/kwetter-follow-db-persistent-volume-claim.yaml
+kubectl apply -f ./K8s/services/follow-service/kwetter-follow-storage-persistent-volume.yaml
+kubectl apply -f ./K8s/services/follow-service/kwetter-follow-db.deployment.yaml
+kubectl apply -f ./K8s/services/follow-service/kwetter-follow-service.deployment.yaml
+```
+
+Spin up kweet service!
+```
+kubectl apply -f ./K8s/services/kweet-service/kwetter-kweet-db-persistent-volume-claim.yaml
+kubectl apply -f ./K8s/services/kweet-service/kwetter-kweet-storage-persistent-volume.yaml
+kubectl apply -f ./K8s/services/kweet-service/kwetter-kweet-db.deployment.yaml
+kubectl apply -f ./K8s/services/kweet-service/kwetter-kweet-service.deployment.yaml
 ```
 
 Validate deployment
@@ -134,3 +165,8 @@ if there are any warnings or errors, restart the deployment
 ```
 kubectl rollout restart deployment
 ```
+
+Validate rights for volumes
+https://blog.dbi-services.com/using-non-root-sql-server-containers-on-docker-and-k8s/
+Should be properly setup.
+Quick and dirty fix is to chmod 777. (DON'T DO THIS IN PRODUCTION!)
