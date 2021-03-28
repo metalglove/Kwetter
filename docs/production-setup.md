@@ -189,3 +189,13 @@ Validate rights for volumes
 https://blog.dbi-services.com/using-non-root-sql-server-containers-on-docker-and-k8s/
 Should be properly setup.
 Quick and dirty fix is to chmod 777. (DON'T DO THIS IN PRODUCTION!)
+
+Useful commands
+Port forwards the rabbitmq management ui.
+```
+kubectl -n kwetter port-forward rabbitmq-0 8080:15672 --address 192.168.1.136
+```
+Port forwards the kiali ui.
+```
+istioctl dashboard kiali --address 192.168.1.136
+```
