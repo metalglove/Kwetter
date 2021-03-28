@@ -2,6 +2,7 @@ apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: rabbitmq
+  namespace: kwetter
 spec:
   serviceName: rabbitmq
   replicas: 4
@@ -77,17 +78,19 @@ spec:
   volumeClaimTemplates:
   - metadata:
       name: data
+      namespace: kwetter
     spec:
       accessModes: [ "ReadWriteOnce" ]
       storageClassName: "standard"
       resources:
         requests:
-          storage: 50Mi
+          storage: 200Mi
 ---
 apiVersion: v1
 kind: Service
 metadata:
   name: rabbitmq
+  namespace: kwetter
 spec:
   clusterIP: None
   ports:
