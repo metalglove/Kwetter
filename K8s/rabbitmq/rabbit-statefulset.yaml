@@ -81,7 +81,7 @@ spec:
       namespace: kwetter
     spec:
       accessModes: [ "ReadWriteOnce" ]
-      storageClassName: "standard"
+      storageClassName: "local-storage"
       resources:
         requests:
           storage: 200Mi
