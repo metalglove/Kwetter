@@ -35,6 +35,7 @@ spec:
       containers:
       - name: kwetter-follow-db-container
         image: mcr.microsoft.com/mssql/server:2019-latest
+        imagePullPolicy: IfNotPresent
         resources:
           limits:
             memory: 2Gi
@@ -45,9 +46,9 @@ spec:
         - secretRef:
             name: kwetter-follow-db-secret
         volumeMounts:
-        - name: kwetter-follow-db-volume
+        - name: kwetter-follow-db-volume-mount
           mountPath: /var/opt/mssql
       volumes:
-      - name: kwetter-follow-db-volume
+      - name: kwetter-follow-db-volume-mount
         persistentVolumeClaim:
           claimName: kwetter-follow-db-volume-claim

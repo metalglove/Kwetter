@@ -134,24 +134,21 @@ kubectl apply -f ./K8s/secrets/
 
 Spin up user service!
 ```
-kubectl apply -f ./K8s/services/user-service/kwetter-user-db-persistent-volume-claim.yaml
-kubectl apply -f ./K8s/services/user-service/kwetter-user-storage-persistent-volume.yaml
+kubectl apply -f ./K8s/services/user-service/kwetter-user-storage-persistent-volume-and-claim.yaml
 kubectl apply -f ./K8s/services/user-service/kwetter-user-db.deployment.yaml
 kubectl apply -f ./K8s/services/user-service/kwetter-user-service.deployment.yaml
 ```
 
 Spin up follow service!
 ```
-kubectl apply -f ./K8s/services/follow-service/kwetter-follow-db-persistent-volume-claim.yaml
-kubectl apply -f ./K8s/services/follow-service/kwetter-follow-storage-persistent-volume.yaml
+kubectl apply -f ./K8s/services/follow-service/kwetter-follow-storage-persistent-volume-and-claim.yaml
 kubectl apply -f ./K8s/services/follow-service/kwetter-follow-db.deployment.yaml
 kubectl apply -f ./K8s/services/follow-service/kwetter-follow-service.deployment.yaml
 ```
 
 Spin up kweet service!
 ```
-kubectl apply -f ./K8s/services/kweet-service/kwetter-kweet-db-persistent-volume-claim.yaml
-kubectl apply -f ./K8s/services/kweet-service/kwetter-kweet-storage-persistent-volume.yaml
+kubectl apply -f ./K8s/services/kweet-service/kwetter-kweet-storage-persistent-volume-and-claim.yaml
 kubectl apply -f ./K8s/services/kweet-service/kwetter-kweet-db.deployment.yaml
 kubectl apply -f ./K8s/services/kweet-service/kwetter-kweet-service.deployment.yaml
 ```

@@ -4,5 +4,4 @@ metadata:
   name: local-storage
   namespace: kwetter
 provisioner: kubernetes.io/no-provisioner
-volumeBindingMode: Immediate
-reclaimPolicy: Retain
+volumeBindingMode: WaitForFirstConsumer

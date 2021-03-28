@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: kwetter-user-db-volume-claim
+  name: kwetter-follow-db-volume-claim
   namespace: kwetter
 spec:
   volumeMode: Filesystem
@@ -15,7 +15,7 @@ spec:
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: kwetter-user-db-volume
+  name: kwetter-follow-db-volume
   namespace: kwetter
   labels:
     type: local
@@ -28,11 +28,11 @@ spec:
   persistentVolumeReclaimPolicy: Retain
   storageClassName: local-storage
   local:
-    path: /mnt/data/kwetter-user-db/
+    path: /mnt/data/kwetter-follow-db/
   claimRef:
     apiVersion: v1
     kind: PersistentVolumeClaim
-    name: kwetter-user-db-volume-claim
+    name: kwetter-follow-db-volume-claim
     namespace: kwetter
   nodeAffinity:
     required:
