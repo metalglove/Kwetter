@@ -1,10 +1,10 @@
 build
 ```
-docker build -t 192.168.1.99:7676/kwetter-user-service:v1 -f ./kwetter-user-service.Dockerfile .
+docker build -t neuralm.net:7676/kwetter-user-service:latest -f ./kwetter-user-service.Dockerfile .
 ```
 publish
 ```
-docker push 192.168.1.99:7676/kwetter-user-service:v1
+docker push neuralm.net:7676/kwetter-user-service:latest
 ```
 kiali
 ```

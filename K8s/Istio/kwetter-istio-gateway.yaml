@@ -29,7 +29,7 @@ spec:
   gateways:
   - kwetter-ingress-gateway
   http:
-  - name: kwetter-user-service-v1-routes
+  - name: kwetter-user-service-latest-routes
     match:
     - uri:
         prefix: /api/User
@@ -38,7 +38,7 @@ spec:
         port:
           number: 80
         host: kwetter-user-service
-  - name: kwetter-kweet-service-v1-routes
+  - name: kwetter-kweet-service-latest-routes
     match:
     - uri:
         prefix: /api/Kweet
@@ -47,7 +47,7 @@ spec:
         port:
           number: 80
         host: kwetter-kweet-service
-  - name: kwetter-follow-service-v1-routes
+  - name: kwetter-follow-service-latest-routes
     match:
     - uri:
         prefix: /api/Follow

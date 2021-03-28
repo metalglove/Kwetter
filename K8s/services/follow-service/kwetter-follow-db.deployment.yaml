@@ -25,12 +25,12 @@ spec:
   selector:
     matchLabels:
       app: kwetter-follow-db-pod
-      version: v1
+      version: latest
   template:
     metadata:
       labels:
         app: kwetter-follow-db-pod
-        version: v1
+        version: latest
     spec:
       containers:
       - name: kwetter-follow-db-container

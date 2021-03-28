@@ -19,7 +19,7 @@ namespace Kwetter.Services.UserService.API.Controllers
         /// <summary>
         /// Initializes a new instance of the <see cref="UserController"/> class.
         /// </summary>
-        /// <param name="mediator"></param>
+        /// <param name="mediator">The mediator.</param>
         public UserController(IMediator mediator)
         {
             _mediator = mediator;

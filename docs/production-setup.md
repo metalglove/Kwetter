@@ -127,7 +127,9 @@ kubectl apply -f ./K8s/kwetter-storage-class.yaml
 kubectl apply -f ./K8s/kwetter-storage-persistent-volume.yaml
 ```
 The follow service:
-```
+``` 
+kubectl apply -f ./K8s/services/follow-service/kwetter-follow-db-persistent-volume-claim.yaml
+kubectl apply -f ./K8s/services/follow-service/kwetter-follow-db.deployment.yaml
 kubectl apply -f ./K8s/services/follow-service/kwetter-follow-service.deployment.yaml
 ```
 The user service:
@@ -136,7 +138,12 @@ kubectl apply -f ./K8s/services/user-service/kwetter-user-db-persistent-volume-c
 kubectl apply -f ./K8s/services/user-service/kwetter-user-db.deployment.yaml
 kubectl apply -f ./K8s/services/user-service/kwetter-user-service.deployment.yaml
 ```
-
+The kweet service:
+``` 
+kubectl apply -f ./K8s/services/kweet-service/kwetter-kweet-db-persistent-volume-claim.yaml
+kubectl apply -f ./K8s/services/kweet-service/kwetter-kweet-db.deployment.yaml
+kubectl apply -f ./K8s/services/kweet-service/kwetter-kweet-service.deployment.yaml
+```
 Validate deployment
 Let Istio validate the deployment
 ```

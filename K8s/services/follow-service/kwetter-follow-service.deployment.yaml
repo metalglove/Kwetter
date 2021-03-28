@@ -25,16 +25,16 @@ spec:
   selector:
     matchLabels:
       app: kwetter-follow-service-pod
-      version: v1
+      version: latest
   template:
     metadata:
       labels:
         app: kwetter-follow-service-pod
-        version: v1
+        version: latest
     spec:
       containers:
       - name: kwetter-follow-container
-        image: neuralm.net:7676/kwetter-follow-service:v1
+        image: neuralm.net:7676/kwetter-follow-service:latest
         imagePullPolicy: Always
         resources:
           limits:

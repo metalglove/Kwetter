@@ -25,16 +25,16 @@ spec:
   selector:
     matchLabels:
       app: kwetter-user-service-pod
-      version: v1
+      version: latest
   template:
     metadata:
       labels:
         app: kwetter-user-service-pod
-        version: v1
+        version: latest
     spec:
       containers:
       - name: kwetter-user-container
-        image: neuralm.net:7676/kwetter-user-service:v1
+        image: neuralm.net:7676/kwetter-user-service:latest
         imagePullPolicy: Always
         resources:
           limits:
