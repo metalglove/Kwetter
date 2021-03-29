@@ -52,6 +52,20 @@ namespace Kwetter.Services.FollowService.Tests.Aggregates
         }
         
         [TestMethod]
+        public void Should_Throw_Exception_While_Constructing_Due_To_Same_Follower_And_Following_Ids()
+        {
+            // Arrange
+            Guid followingId = Guid.NewGuid();
+            Guid followerId = followingId;
+            
+            // Act
+            FollowDomainException exception = Assert.ThrowsException<FollowDomainException>(() => new FollowAggregate(followingId, followerId));
+            
+            // Assert
+            Assert.AreEqual(exception.Message, "The follow and following id are the same. One can not follow themself.");
+        }
+        
+        [TestMethod]
         public void Should_Unfollow_User()
         {
             // Arrange

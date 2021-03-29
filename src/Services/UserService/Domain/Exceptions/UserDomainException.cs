@@ -17,14 +17,5 @@ namespace Kwetter.Services.UserService.Domain.Exceptions
         internal UserDomainException(string message) : base(message)
         {
         }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="UserDomainException"/> class.
-        /// </summary>
-        /// <param name="message">The exception message.</param>
-        /// <param name="innerException">The inner exception.</param>
-        internal UserDomainException(string message, Exception innerException) : base(message, innerException)
-        {
-        }
     }
 }

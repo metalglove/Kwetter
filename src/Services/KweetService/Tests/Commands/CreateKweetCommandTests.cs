@@ -4,12 +4,15 @@ using Kwetter.Services.Common.API.CQRS;
 using Kwetter.Services.Common.Tests;
 using Kwetter.Services.KweetService.API;
 using Kwetter.Services.KweetService.API.Application.Commands.CreateKweetCommand;
+using Kwetter.Services.KweetService.API.Controllers;
 using Kwetter.Services.KweetService.Domain.AggregatesModel.KweetAggregate;
 using Kwetter.Services.KweetService.Infrastructure;
 using Kwetter.Services.KweetService.Infrastructure.Repositories;
 using MediatR;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using XAssert = Xunit.Assert;
 
 namespace Kwetter.Services.KweetService.Tests.Commands
 {
@@ -18,6 +21,7 @@ namespace Kwetter.Services.KweetService.Tests.Commands
     {
         public ServiceProvider ServiceProvider { get; set; }
         public IMediator Mediator { get; set; }
+        public KweetController KweetController { get; set; }
         
         [TestInitialize]
         public void Initialize()
@@ -26,6 +30,7 @@ namespace Kwetter.Services.KweetService.Tests.Commands
                 typeof(Startup), typeof(CreateKweetCommand), "KweetService",
                 (options, loggerFactory, mediator) => new KweetDatabaseFactory(options, loggerFactory, mediator));
             Mediator = ServiceProvider.GetRequiredService<IMediator>();
+            KweetController = new KweetController(Mediator);
         }
         
         [TestCleanup]
@@ -50,10 +55,13 @@ namespace Kwetter.Services.KweetService.Tests.Commands
             };
             
             // Act
-            CommandResponse response = await Mediator.Send(createKweetCommand);
-                
+            IActionResult actionResult = await KweetController.CreateAsync(createKweetCommand);
+            
             // Assert
-            Assert.IsTrue(response.Success);
+            CreatedAtRouteResult createdAtRouteResult = XAssert.IsType<CreatedAtRouteResult>(actionResult);
+            CommandResponse commandResponse = XAssert.IsType<CommandResponse>(createdAtRouteResult.Value);
+            XAssert.True(commandResponse.Success);
+            XAssert.True(commandResponse.Errors.Count == 0);
         }
         
         [TestMethod]
@@ -69,13 +77,15 @@ namespace Kwetter.Services.KweetService.Tests.Commands
                 KweetId = kweetId,
                 Message = message
             };
-            
+
             // Act
-            CommandResponse response = await Mediator.Send(createKweetCommand);
-                
+            IActionResult actionResult = await KweetController.CreateAsync(createKweetCommand);
+            
             // Assert
-            Assert.IsFalse(response.Success);
-            Assert.IsTrue(response.Errors.Contains("The user id can not be empty."));
+            BadRequestObjectResult badRequestObjectResult = XAssert.IsType<BadRequestObjectResult>(actionResult);
+            CommandResponse commandResponse = XAssert.IsType<CommandResponse>(badRequestObjectResult.Value);
+            XAssert.False(commandResponse.Success);
+            XAssert.Contains("The user id can not be empty.", commandResponse.Errors);
         }
         
         [TestMethod]
@@ -93,11 +103,13 @@ namespace Kwetter.Services.KweetService.Tests.Commands
             };
             
             // Act
-            CommandResponse response = await Mediator.Send(createKweetCommand);
-                
+            IActionResult actionResult = await KweetController.CreateAsync(createKweetCommand);
+            
             // Assert
-            Assert.IsFalse(response.Success);
-            Assert.IsTrue(response.Errors.Contains("The kweet id can not be empty."));
+            BadRequestObjectResult badRequestObjectResult = XAssert.IsType<BadRequestObjectResult>(actionResult);
+            CommandResponse commandResponse = XAssert.IsType<CommandResponse>(badRequestObjectResult.Value);
+            XAssert.False(commandResponse.Success);
+            XAssert.Contains("The kweet id can not be empty.", commandResponse.Errors);
         }
         
         [TestMethod]
@@ -115,11 +127,13 @@ namespace Kwetter.Services.KweetService.Tests.Commands
             };
             
             // Act
-            CommandResponse response = await Mediator.Send(createKweetCommand);
-                
+            IActionResult actionResult = await KweetController.CreateAsync(createKweetCommand);
+            
             // Assert
-            Assert.IsFalse(response.Success);
-            Assert.IsTrue(response.Errors.Contains("The message is null, empty or contains only whitespaces."));
+            BadRequestObjectResult badRequestObjectResult = XAssert.IsType<BadRequestObjectResult>(actionResult);
+            CommandResponse commandResponse = XAssert.IsType<CommandResponse>(badRequestObjectResult.Value);
+            XAssert.False(commandResponse.Success);
+            XAssert.Contains("The message is null, empty or contains only whitespaces.", commandResponse.Errors);
         }
         
         [TestMethod]
@@ -137,11 +151,13 @@ namespace Kwetter.Services.KweetService.Tests.Commands
             };
             
             // Act
-            CommandResponse response = await Mediator.Send(createKweetCommand);
-                
+            IActionResult actionResult = await KweetController.CreateAsync(createKweetCommand);
+            
             // Assert
-            Assert.IsFalse(response.Success);
-            Assert.IsTrue(response.Errors.Contains("The length of the message exceeded 140 characters."));
+            BadRequestObjectResult badRequestObjectResult = XAssert.IsType<BadRequestObjectResult>(actionResult);
+            CommandResponse commandResponse = XAssert.IsType<CommandResponse>(badRequestObjectResult.Value);
+            XAssert.False(commandResponse.Success);
+            XAssert.Contains("The length of the message exceeded 140 characters.", commandResponse.Errors);
         }
         
         [TestMethod]
@@ -161,11 +177,13 @@ namespace Kwetter.Services.KweetService.Tests.Commands
             CommandResponse _ = await Mediator.Send(createKweetCommand);
             
             // Act
-            CommandResponse response = await Mediator.Send(createKweetCommand);
-                
+            IActionResult actionResult = await KweetController.CreateAsync(createKweetCommand);
+            
             // Assert
-            Assert.IsFalse(response.Success);
-            Assert.IsTrue(response.Errors.Contains("The kweet id already exists."));
+            BadRequestObjectResult badRequestObjectResult = XAssert.IsType<BadRequestObjectResult>(actionResult);
+            CommandResponse commandResponse = XAssert.IsType<CommandResponse>(badRequestObjectResult.Value);
+            XAssert.False(commandResponse.Success);
+            XAssert.Contains("The kweet id already exists.", commandResponse.Errors);
         }
     }
 }

@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -19,6 +20,7 @@ namespace Kwetter.Services.FollowService.API
     /// <summary>
     /// Represents the <see cref="Startup"/> class.
     /// </summary>
+    [ExcludeFromCodeCoverage]
     public class Startup
     {
         private readonly IConfiguration _configuration;
@@ -73,7 +75,6 @@ namespace Kwetter.Services.FollowService.API
                 string title = _configuration["Service:Title"];
                 app.UseSwaggerUI(c => c.SwaggerEndpoint($"/swagger/{version}/swagger.json", $"{title} {version}"));
             }
-
             app.UseRouting();
             app.UseAuthorization();
             app.UseEndpoints(endpoints =>

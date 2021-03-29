@@ -38,6 +38,11 @@ namespace Kwetter.Services.FollowService.API.Application.Commands.CreateFollowCo
                 context.AddFailure("The following id can not be empty.");
                 return;
             }
+            if (createFollowCommand.FollowingId == createFollowCommand.FollowerId)
+            {
+                context.AddFailure("The follow and following id are the same. One can not follow themself.");
+                return;
+            }
             FollowAggregate follow = await _followRepository.FindAsync(createFollowCommand.FollowingId, createFollowCommand.FollowerId, cancellationToken);
             if (follow != null) 
                 context.AddFailure("The follow already exists.");

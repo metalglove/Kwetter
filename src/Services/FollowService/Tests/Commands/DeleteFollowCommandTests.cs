@@ -5,12 +5,15 @@ using Kwetter.Services.Common.Tests;
 using Kwetter.Services.FollowService.API;
 using Kwetter.Services.FollowService.API.Application.Commands.CreateFollowCommand;
 using Kwetter.Services.FollowService.API.Application.Commands.DeleteFollowCommand;
+using Kwetter.Services.FollowService.API.Controllers;
 using Kwetter.Services.FollowService.Domain.AggregatesModel.FollowAggregate;
 using Kwetter.Services.FollowService.Infrastructure;
 using Kwetter.Services.FollowService.Infrastructure.Repositories;
 using MediatR;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using XAssert = Xunit.Assert;
 
 namespace Kwetter.Services.FollowService.Tests.Commands
 {
@@ -21,6 +24,7 @@ namespace Kwetter.Services.FollowService.Tests.Commands
         public IMediator Mediator { get; set; }
         public Guid FollowerId { get; set; }
         public Guid FollowingId { get; set; }
+        public FollowController FollowController { get; set; }
         
         [TestInitialize]
         public async Task Initialize()
@@ -29,6 +33,7 @@ namespace Kwetter.Services.FollowService.Tests.Commands
                 typeof(Startup), typeof(CreateFollowCommand), "FollowService",
                 (options, loggerFactory, mediator) => new FollowDatabaseFactory(options, loggerFactory, mediator));
             Mediator = ServiceProvider.GetRequiredService<IMediator>();
+            FollowController = new FollowController(Mediator);
             
             FollowerId = Guid.NewGuid();
             FollowingId = Guid.NewGuid();
@@ -38,7 +43,6 @@ namespace Kwetter.Services.FollowService.Tests.Commands
                 FollowerId = FollowerId
             };
             
-            // Act
             await Mediator.Send(createFollowCommand);
         }
         
@@ -60,10 +64,10 @@ namespace Kwetter.Services.FollowService.Tests.Commands
             };
             
             // Act
-            CommandResponse response = await Mediator.Send(deleteFollowCommand);
-                
+            IActionResult actionResult = await FollowController.DeleteAsync(deleteFollowCommand);
+            
             // Assert
-            Assert.IsTrue(response.Success);
+            XAssert.IsType<OkResult>(actionResult);
         }
         
         [TestMethod]
@@ -77,12 +81,12 @@ namespace Kwetter.Services.FollowService.Tests.Commands
             };
             
             // Act
-            CommandResponse response1 = await Mediator.Send(deleteFollowCommand);
-            CommandResponse response2 = await Mediator.Send(deleteFollowCommand);
+            IActionResult actionResult1 = await FollowController.DeleteAsync(deleteFollowCommand);
+            IActionResult actionResult2 = await FollowController.DeleteAsync(deleteFollowCommand);
             
             // Assert
-            Assert.IsTrue(response1.Success);
-            Assert.IsFalse(response2.Success);
+            XAssert.IsType<OkResult>(actionResult1);
+            XAssert.IsType<BadRequestObjectResult>(actionResult2);
         }
         
         [TestMethod]
@@ -98,11 +102,13 @@ namespace Kwetter.Services.FollowService.Tests.Commands
             };
             
             // Act
-            CommandResponse response = await Mediator.Send(deleteFollowCommand);
-                
+            IActionResult actionResult = await FollowController.DeleteAsync(deleteFollowCommand);
+            
             // Assert
-            Assert.IsFalse(response.Success);
-            Assert.IsTrue(response.Errors.Contains("The follower id can not be empty."));
+            BadRequestObjectResult badRequestObjectResult = XAssert.IsType<BadRequestObjectResult>(actionResult);
+            CommandResponse commandResponse = XAssert.IsType<CommandResponse>(badRequestObjectResult.Value);
+            XAssert.False(commandResponse.Success);
+            XAssert.Contains("The follower id can not be empty.", commandResponse.Errors);
         }
         
         [TestMethod]
@@ -118,11 +124,13 @@ namespace Kwetter.Services.FollowService.Tests.Commands
             };
             
             // Act
-            CommandResponse response = await Mediator.Send(deleteFollowCommand);
-                
+            IActionResult actionResult = await FollowController.DeleteAsync(deleteFollowCommand);
+            
             // Assert
-            Assert.IsFalse(response.Success);
-            Assert.IsTrue(response.Errors.Contains("The following id can not be empty."));
+            BadRequestObjectResult badRequestObjectResult = XAssert.IsType<BadRequestObjectResult>(actionResult);
+            CommandResponse commandResponse = XAssert.IsType<CommandResponse>(badRequestObjectResult.Value);
+            XAssert.False(commandResponse.Success);
+            XAssert.Contains("The following id can not be empty.", commandResponse.Errors);
         }
         
         [TestMethod]
@@ -138,11 +146,13 @@ namespace Kwetter.Services.FollowService.Tests.Commands
             };
             
             // Act
-            CommandResponse response = await Mediator.Send(deleteFollowCommand);    
+            IActionResult actionResult = await FollowController.DeleteAsync(deleteFollowCommand);
             
             // Assert
-            Assert.IsFalse(response.Success);
-            Assert.IsTrue(response.Errors.Contains("The follow does not exist."));
+            BadRequestObjectResult badRequestObjectResult = XAssert.IsType<BadRequestObjectResult>(actionResult);
+            CommandResponse commandResponse = XAssert.IsType<CommandResponse>(badRequestObjectResult.Value);
+            XAssert.False(commandResponse.Success);
+            XAssert.Contains("The follow does not exist.", commandResponse.Errors);
         }
     }
 }

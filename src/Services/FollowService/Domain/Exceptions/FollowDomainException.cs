@@ -17,14 +17,5 @@ namespace Kwetter.Services.FollowService.Domain.Exceptions
         internal FollowDomainException(string message) : base(message)
         {
         }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="FollowDomainException"/> class.
-        /// </summary>
-        /// <param name="message">The exception message.</param>
-        /// <param name="innerException">The inner exception.</param>
-        internal FollowDomainException(string message, Exception innerException) : base(message, innerException)
-        {
-        }
     }
 }

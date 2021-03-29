@@ -17,14 +17,5 @@ namespace Kwetter.Services.KweetService.Domain.Exceptions
         internal KweetDomainException(string message) : base(message)
         {
         }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="KweetDomainException"/> class.
-        /// </summary>
-        /// <param name="message">The exception message.</param>
-        /// <param name="innerException">The inner exception.</param>
-        internal KweetDomainException(string message, Exception innerException) : base(message, innerException)
-        {
-        }
     }
 }

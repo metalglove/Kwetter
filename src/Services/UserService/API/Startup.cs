@@ -1,10 +1,8 @@
+using System.Diagnostics.CodeAnalysis;
 using Kwetter.Services.Common.API;
-// using Kwetter.Services.Common.EventBus.Abstractions;
 using Kwetter.Services.Common.Infrastructure;
 using Kwetter.Services.UserService.API.Application.Commands.CreateUserCommand;
-// using Kwetter.Services.UserService.API.Application.DomainEventHandlers;
 using Kwetter.Services.UserService.Domain.AggregatesModel.UserAggregate;
-// using Kwetter.Services.UserService.Domain.AggregatesModel.UserAggregate.Events;
 using Kwetter.Services.UserService.Infrastructure;
 using Kwetter.Services.UserService.Infrastructure.Repositories;
 using MediatR;
@@ -22,6 +20,7 @@ namespace Kwetter.Services.UserService.API
     /// <summary>
     /// Represents the <see cref="Startup"/> class.
     /// </summary>
+    [ExcludeFromCodeCoverage]
     public class Startup
     {
         private readonly IConfiguration _configuration;
@@ -59,7 +58,6 @@ namespace Kwetter.Services.UserService.API
             services.AddControllers();
             services.AddSwagger(_configuration);
             services.VerifyDatabaseConnection<UserDbContext>();
-            // TODO: Add health checks?
         }
 
         /// <summary>
@@ -76,12 +74,6 @@ namespace Kwetter.Services.UserService.API
                 string version = _configuration["Service:Version"];
                 string title = _configuration["Service:Title"];
                 app.UseSwaggerUI(c => c.SwaggerEndpoint($"/swagger/{version}/swagger.json", $"{title} {version}"));
-
-                // IEventBus eventBus = app.ApplicationServices.GetRequiredService<IEventBus>();
-                // IMessageSerializer messageSerializer = app.ApplicationServices.GetRequiredService<IMessageSerializer>();
-                // ILogger<UserCreatedDomainEventListener> logger = app.ApplicationServices.GetRequiredService<ILogger<UserCreatedDomainEventListener>>();
-                // UserCreatedDomainEventListener listener = new UserCreatedDomainEventListener(logger, messageSerializer);
-                // eventBus.Subscribe<UserCreatedDomainEvent, UserCreatedDomainEventListener>("DomainEvents", listener);
             }
             app.UseRouting();
             app.UseAuthorization();

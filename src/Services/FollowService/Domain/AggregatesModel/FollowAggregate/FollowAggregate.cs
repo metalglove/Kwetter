@@ -42,6 +42,8 @@ namespace Kwetter.Services.FollowService.Domain.AggregatesModel.FollowAggregate
         {
             SetFollowingId(followingId);
             SetFollowerId(followerId);
+            if (followerId == followingId)
+                throw new FollowDomainException("The follow and following id are the same. One can not follow themself.");
             FollowDateTime = DateTime.UtcNow;
             AddDomainEvent(new FollowDomainEvent(followingId, followerId, FollowDateTime));
         }
