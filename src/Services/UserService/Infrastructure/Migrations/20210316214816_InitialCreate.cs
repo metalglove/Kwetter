@@ -12,7 +12,7 @@ namespace Kwetter.Services.UserService.Infrastructure.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Username = table.Column<string>(type: "nvarchar(64)", maxLength: 64, nullable: false),
+                    DisplayName = table.Column<string>(type: "nvarchar(64)", maxLength: 64, nullable: false),
                     Profile_Description = table.Column<string>(type: "nvarchar(512)", maxLength: 512, nullable: true)
                 },
                 constraints: table =>
@@ -23,7 +23,7 @@ namespace Kwetter.Services.UserService.Infrastructure.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_Users_Username",
                 table: "Users",
-                column: "Username",
+                column: "DisplayName",
                 unique: true);
         }
 

@@ -34,7 +34,6 @@ namespace Kwetter.Services.KweetService.Tests.Commands
         }
         
         [TestCleanup]
-
         public void Cleanup()
         {
             Cleanup(ServiceProvider);    

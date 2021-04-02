@@ -20,8 +20,7 @@ namespace Kwetter.Services.UserService.API.Application.DomainEventHandlers
         }
         public override ValueTask HandleAsync(UserCreatedDomainEvent @event, CancellationToken cancellationToken)
         {
-            ReadOnlyMemory<byte> x = _messageSerializer.Serialize(@event);
-            _logger.LogInformation(Encoding.UTF8.GetString(x.Span));
+            _logger.LogInformation(_messageSerializer.SerializeToString(@event));
             return ValueTask.CompletedTask;
         }
     }

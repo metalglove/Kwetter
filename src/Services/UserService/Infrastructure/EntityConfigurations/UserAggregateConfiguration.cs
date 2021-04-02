@@ -20,16 +20,16 @@ namespace Kwetter.Services.UserService.Infrastructure.EntityConfigurations
             // The primary key is Id.
             builder.HasKey(p => p.Id);
             
-            // The username is unique.
-            builder.HasIndex(p => p.Username)
+            // The display name is unique.
+            builder.HasIndex(p => p.DisplayName)
                 .IsUnique(true);
 
             // The username is required.
-            builder.Property(p => p.Username)
+            builder.Property(p => p.DisplayName)
                 .IsRequired(true);
 
             // The username has a maximum length of 64.
-            builder.Property(p => p.Username)
+            builder.Property(p => p.DisplayName)
                 .HasMaxLength(64);
 
             // Configures the navigation property for the UserAggregate.

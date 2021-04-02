@@ -1,5 +1,4 @@
 ﻿using Kwetter.Services.Common.Domain.Exceptions;
-using System;
 using System.Runtime.CompilerServices;
 
 [assembly: InternalsVisibleToAttribute("Kwetter.Services.UserService.Tests")]

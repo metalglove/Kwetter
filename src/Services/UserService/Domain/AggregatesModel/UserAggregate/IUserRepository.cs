@@ -33,11 +33,11 @@ namespace Kwetter.Services.UserService.Domain.AggregatesModel.UserAggregate
         Task<UserAggregate> FindByIdAsync(Guid id, CancellationToken cancellationToken);
 
         /// <summary>
-        /// Finds the user aggregate by username asynchronously.
+        /// Finds the user aggregate by display name asynchronously.
         /// </summary>
-        /// <param name="username">The username.</param>
+        /// <param name="displayName">The display name.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>Returns the user aggregate.</returns>
-        Task<UserAggregate> FindByUsernameAsync(string username, CancellationToken cancellationToken);
+        Task<UserAggregate> FindByUserDisplayNameAsync(string displayName, CancellationToken cancellationToken);
     }
 }

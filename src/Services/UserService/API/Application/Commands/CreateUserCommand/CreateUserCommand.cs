@@ -16,9 +16,9 @@ namespace Kwetter.Services.UserService.API.Application.Commands.CreateUserComman
         public Guid UserId { get; init; }
 
         /// <summary>
-        /// Gets or initializes the username.
+        /// Gets or initializes the user display name.
         /// </summary>
-        public string Username { get; init; }
+        public string UserDisplayName { get; init; }
 
         /// <summary>
         /// Gets or initializes the user profile description.

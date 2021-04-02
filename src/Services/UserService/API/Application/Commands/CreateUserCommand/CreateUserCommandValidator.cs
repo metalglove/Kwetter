@@ -22,36 +22,34 @@ namespace Kwetter.Services.UserService.API.Application.Commands.CreateUserComman
         {
             _userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
             
-            // Applies one custom username validation rule.
-            RuleFor(createUserCommand => createUserCommand.Username)
-                .CustomAsync(ValidateUsernameAsync);
+            RuleFor(createUserCommand => createUserCommand.UserDisplayName)
+                .CustomAsync(ValidateUserDisplayNameAsync);
 
-            // Applies one custom username validation rule.
             RuleFor(createUserCommand => createUserCommand.UserId)
                 .CustomAsync(CheckUserIdUniqueness);
         }
 
-        private async Task ValidateUsernameAsync(string username, CustomContext context, CancellationToken cancellationToken)
+        private async Task ValidateUserDisplayNameAsync(string displayName, CustomContext context, CancellationToken cancellationToken)
         {
-            // Checks whether the username is not null, empty or contains only white spaces.
-            if (string.IsNullOrWhiteSpace(username))
+            // Checks whether the display name is not null, empty or contains only white spaces.
+            if (string.IsNullOrWhiteSpace(displayName))
             {
-                context.AddFailure("The username must not be null or empty.");
+                context.AddFailure("The display name must not be null or empty.");
                 return;
             }
 
-            // Checks whether the username does not exceed 64 characters.
-            if (username.Length > 64)
+            // Checks whether the display name does not exceed 64 characters.
+            if (displayName.Length > 64)
             {
-                context.AddFailure("The username must not exceed 64 characters.");
+                context.AddFailure("The display name must not exceed 64 characters.");
                 return;
             }
 
-            // Checks whether the username already exists.
-            UserAggregate userAggregate = await _userRepository.FindByUsernameAsync(username, cancellationToken);
+            // Checks whether the display name already exists.
+            UserAggregate userAggregate = await _userRepository.FindByUserDisplayNameAsync(displayName, cancellationToken);
             if (userAggregate != default)
             {
-                context.AddFailure("The username already exists.");
+                context.AddFailure("The display name already exists.");
                 return;
             }
         }

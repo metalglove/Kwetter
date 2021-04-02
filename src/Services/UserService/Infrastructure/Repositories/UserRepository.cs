@@ -30,10 +30,8 @@ namespace Kwetter.Services.UserService.Infrastructure.Repositories
         /// <inheritdoc cref="IUserRepository.Create(UserAggregate)" />
         public UserAggregate Create(UserAggregate user)
         {
-            //if (user.IsTransient())
-                return _userDbContext.Users
-                    .Add(user).Entity;
-            //return user;
+            return _userDbContext.Users
+                .Add(user).Entity;
         }
 
         /// <inheritdoc cref="IUserRepository.Update(UserAggregate)" />
@@ -49,11 +47,11 @@ namespace Kwetter.Services.UserService.Infrastructure.Repositories
                 .FindAsync(new object[] {id}, cancellationToken);
         }
 
-        /// <inheritdoc cref="IUserRepository.FindByUsernameAsync(string, CancellationToken)" />
-        public async Task<UserAggregate> FindByUsernameAsync(string username, CancellationToken cancellationToken)
+        /// <inheritdoc cref="IUserRepository.FindByUserDisplayNameAsync" />
+        public async Task<UserAggregate> FindByUserDisplayNameAsync(string displayName, CancellationToken cancellationToken)
         {
             return await _userDbContext.Users
-                .Where(user => user.Username.ToLower() == username.ToLower())
+                .Where(user => user.DisplayName.ToLower() == displayName.ToLower())
                 .SingleOrDefaultAsync(cancellationToken);
         }
     }

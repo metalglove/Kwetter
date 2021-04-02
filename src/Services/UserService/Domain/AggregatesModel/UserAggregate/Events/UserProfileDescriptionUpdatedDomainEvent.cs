@@ -11,12 +11,12 @@ namespace Kwetter.Services.UserService.Domain.AggregatesModel.UserAggregate.Even
         /// <summary>
         /// Gets and sets the user id.
         /// </summary>
-        public Guid UserId { get; init; }
+        public Guid UserId { get; }
 
         /// <summary>
         /// Gets and sets the user profile profileDescription.
         /// </summary>
-        public string ProfileDescription { get; init; }
+        public string ProfileDescription { get; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="UserProfileDescriptionUpdatedDomainEvent"/> record.

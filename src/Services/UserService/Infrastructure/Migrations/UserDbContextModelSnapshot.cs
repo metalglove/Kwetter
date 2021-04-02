@@ -25,14 +25,14 @@ namespace Kwetter.Services.UserService.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("Username")
+                    b.Property<string>("DisplayName")
                         .IsRequired()
                         .HasMaxLength(64)
                         .HasColumnType("nvarchar(64)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Username")
+                    b.HasIndex("DisplayName")
                         .IsUnique();
 
                     b.ToTable("Users");

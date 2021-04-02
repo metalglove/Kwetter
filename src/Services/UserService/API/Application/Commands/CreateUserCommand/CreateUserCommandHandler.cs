@@ -2,7 +2,6 @@
 using Kwetter.Services.Common.Infrastructure.Integration;
 using Kwetter.Services.UserService.Domain.AggregatesModel.UserAggregate;
 using MediatR;
-using Microsoft.Extensions.Logging;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -15,23 +14,19 @@ namespace Kwetter.Services.UserService.API.Application.Commands.CreateUserComman
     public sealed class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, CommandResponse>
     {
         private readonly IIntegrationEventService _integrationEventService;
-        private readonly ILogger<CreateUserCommandHandler> _logger;
         private readonly IUserRepository _userRepository;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CreateUserCommandHandler"/> class.
         /// </summary>
         /// <param name="integrationEventService">The integration event service.</param>
-        /// <param name="logger">The logger.</param>
         /// <param name="userRepository">The user repository.</param>
         public CreateUserCommandHandler(
             IIntegrationEventService integrationEventService,
-            ILogger<CreateUserCommandHandler> logger,
             IUserRepository userRepository
             )
         {
             _integrationEventService = integrationEventService ?? throw new ArgumentNullException(nameof(integrationEventService));
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
         }
 
@@ -54,7 +49,7 @@ namespace Kwetter.Services.UserService.API.Application.Commands.CreateUserComman
 
             // Only the aggregate root can be created.
             // The user profile will be created by the aggregate root.
-            UserAggregate userAggregate = new(request.UserId, request.Username, request.UserProfileDescription);
+            UserAggregate userAggregate = new(request.UserId, request.UserDisplayName, request.UserProfileDescription);
 
             // Creates the user aggregate.
             _userRepository.Create(userAggregate);
