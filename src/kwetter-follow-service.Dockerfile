@@ -14,10 +14,10 @@ COPY ["Services/FollowService/Infrastructure/Kwetter.Services.FollowService.Infr
 RUN dotnet restore "Services/FollowService/API/Kwetter.Services.FollowService.API.csproj"
 COPY . .
 WORKDIR "/src/Services/FollowService/API"
-RUN dotnet build "Kwetter.Services.FollowService.API.csproj" -c Release -o /app/build
+RUN dotnet build "Kwetter.Services.FollowService.API.csproj" -c "Services Release" -o /app/build
 
 FROM build AS publish
-RUN dotnet publish "Kwetter.Services.FollowService.API.csproj" -c Release -o /app/publish
+RUN dotnet publish "Kwetter.Services.FollowService.API.csproj" -c "Services Release" -o /app/publish
 
 FROM base AS final
 WORKDIR /app

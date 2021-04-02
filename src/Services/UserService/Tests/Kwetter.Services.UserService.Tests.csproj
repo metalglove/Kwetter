@@ -5,7 +5,7 @@
 
     <IsPackable>false</IsPackable>
 
-    <Configurations>Debug;Release;Services Build</Configurations>
+    <Configurations>Debug;Release;Services Build;Services Release</Configurations>
   </PropertyGroup>
 
   <ItemGroup>
