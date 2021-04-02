@@ -1,15 +1,15 @@
-name: Main
+name: Services
 
 on:
   push:
     branches:
       - main
     paths:
-      - src/**
+      - src/Services/**
   pull_request:
     types: [opened, synchronize, reopened]
     paths:
-      - src/**
+      - src/Services/**
 
 defaults:
   run:
@@ -34,11 +34,11 @@ jobs:
     
     # Installs the dependencies
     - name: Install dependencies
-      run: dotnet restore
+      run: dotnet restore --configuration "Services Build"
 
     # Builds the code
     - name: Build
-      run: dotnet build --no-restore
+      run: dotnet build --no-restore --configuration "Services Build"
   
   # Runs the tests with sonarscan
   test:
@@ -60,8 +60,8 @@ jobs:
         sonarProjectKey: metalglove_Kwetter
         sonarProjectName: Kwetter
         sonarOrganization: metalglove-github
-        dotnetBuildArguments: ./src/Kwetter.sln
-        dotnetTestArguments: ./src/Kwetter.sln --logger trx --collect:"XPlat Code Coverage" -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=opencover
+        dotnetBuildArguments: ./src/Kwetter.sln --configuration "Services Build"
+        dotnetTestArguments: ./src/Kwetter.sln --configuration "Services Build" --logger trx --collect:"XPlat Code Coverage" -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=opencover
         sonarBeginArguments: /d:sonar.cs.opencover.reportsPaths="**/TestResults/**/coverage.opencover.xml" -d:sonar.cs.vstest.reportsPaths="**/TestResults/*.trx"
 
   # Builds and publishes the docker images
