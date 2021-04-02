@@ -34,7 +34,7 @@ jobs:
     
     # Installs the dependencies
     - name: Install dependencies
-      run: dotnet restore --configuration "Services Build"
+      run: dotnet restore
 
     # Builds the code
     - name: Build
