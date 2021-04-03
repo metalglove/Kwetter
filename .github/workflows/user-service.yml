@@ -57,18 +57,23 @@ jobs:
     name: Calculate SemVer version
     runs-on: ubuntu-latest
     outputs:
-      SEMVER: ${{ steps.gitversion.outputs.VERSION }}
+      SEMVER: ${{ steps.fixsemver.outputs.SEMVER }}
     steps:
     - name: Checkout
       uses: actions/checkout@v2
       with:
         fetch-depth: 0
 
-    - name: Git Version
+    - name: Git version
       id: gitversion
       uses: codacy/git-version@2.4.0
       with:
         prefix: kwetter-user-service-
+
+    - name: Fix semver
+      id: fixsemver
+      run: |
+        SEMVER=${VERSION##*kwetter-user-service-}
 
   docker:
     needs: 
