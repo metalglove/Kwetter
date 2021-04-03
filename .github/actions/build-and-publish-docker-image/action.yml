@@ -15,7 +15,7 @@ runs:
       shell: bash
       run: |
         echo "Building docker image"
-        docker build -t ${{ secrets.NEURALM_REGISTRY }}/${{ inputs.image }}:${{ inputs.tag }} -f ./${{ inputs.image }}.Dockerfile .
+        docker build -t ${{ env.NEURALM_REGISTRY }}/${{ inputs.image }}:${{ inputs.tag }} -f ./${{ inputs.image }}.Dockerfile .
         echo "Publishing docker image"
-        docker push ${{ secrets.NEURALM_REGISTRY }}/${{ inputs.image }}:${{ inputs.tag }}
+        docker push ${{ env.NEURALM_REGISTRY }}/${{ inputs.image }}:${{ inputs.tag }}
     

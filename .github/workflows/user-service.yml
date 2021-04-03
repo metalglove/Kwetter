@@ -78,6 +78,8 @@ jobs:
     # Adds the Neuralm certificate for the registry
     - name: Add Neuralm certificate
       uses: ./.github/actions/add-docker-registry-certificate
+      env:
+        NEURALM_REGISTRY: ${{ secrets.NEURALM_REGISTRY }}
 
     # Prepares the docker build
     - name: Set up Docker Buildx
@@ -106,3 +108,6 @@ jobs:
       with:
         image: kwetter-user-service
         tag: latest
+      env:
+        NEURALM_REGISTRY: ${{ secrets.NEURALM_REGISTRY }}
+        
