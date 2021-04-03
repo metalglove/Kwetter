@@ -66,6 +66,15 @@ jobs:
     # Checks out the code
     - name: Checkout
       uses: actions/checkout@v2
+      with:
+          ref: ${{ github.head_ref }}
+          fetch-depth: 0
+
+    - name: Git Version
+      uses: codacy/git-version@2.4.0
+      with:
+        prefix: kwetter-user-service-
+        log-path: src/Services/UserService/
     
     # Adds the Neuralm certificate for the registry
     - name: Add Neuralm certificate
@@ -129,6 +138,16 @@ jobs:
     # Checks out the code
       - name: Checkout
         uses: actions/checkout@v2
+        with:
+          ref: ${{ github.head_ref }}
+          fetch-depth: 0
+
+      - name: Git Version
+        uses: codacy/git-version@2.4.0
+        with:
+          prefix: kwetter-user-service-
+          log-path: src/Services/UserService/
+
       - name: Set kubernetes context
         uses: azure/k8s-set-context@v1
         with:
