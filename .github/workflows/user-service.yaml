@@ -1,0 +1,83 @@
+name: UserService
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - src/Services/UserService/**
+  pull_request:
+    types: [opened, synchronize, reopened]
+    paths:
+      - src/Services/UserService/**
+
+defaults:
+  run:
+    working-directory: src
+
+jobs:
+  # Builds the code 
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+    # Checks out the code
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    # Sets up the .NET SDK
+    - name: Setup .NET SDK
+      uses: actions/setup-dotnet@v1.7.2
+      with:
+        dotnet-version: '5.0.x'
+    
+    # Installs the dependencies
+    - name: Install dependencies
+      run: dotnet restore ./Services/UserService/API/Kwetter.Services.UserService.API.csproj
+
+    # Builds the code
+    - name: Build
+      run: dotnet build ./Services/UserService/API/Kwetter.Services.UserService.API.csproj --no-restore --configuration "Release"
+  
+  # Runs the tests with sonarscan
+  test:
+    needs: build
+    name: Test
+    runs-on: ubuntu-latest
+    steps:
+    # Checks out the code
+    - name: Checkout
+      uses: actions/checkout@v2
+    
+    # Tests the code and performs a sonarscan
+    - name: Test
+      uses: highbyte/sonarscan-dotnet@v2.1.1-beta
+      env:
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        sonarProjectKey: metalglove_Kwetter
+        sonarProjectName: Kwetter
+        sonarOrganization: metalglove-github
+        dotnetBuildArguments: ./Services/UserService/API/Kwetter.Services.UserService.API.csproj
+        dotnetTestArguments: ./Services/UserService/API/Kwetter.Services.UserService.API.csproj --logger trx --collect:"XPlat Code Coverage" -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=opencover
+        sonarBeginArguments: /d:sonar.cs.opencover.reportsPaths="**/TestResults/**/coverage.opencover.xml" -d:sonar.cs.vstest.reportsPaths="**/TestResults/*.trx"
+
+  docker:
+    needs: test
+    name: Build and push Docker images
+    environment:
+      name: docker
+    runs-on: ubuntu-latest
+    steps:
+    # Checks out the code
+    - name: Checkout
+      uses: actions/checkout@v2
+    
+    # Adds the Neuralm certificate for the registry
+    - name: Add Neuralm certificate
+      uses: ../.github/actions/build-and-publish-docker-image.yaml
+      with:
+        image: kwetter-user-service
+        tag: latest
