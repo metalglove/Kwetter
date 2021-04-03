@@ -1,0 +1,46 @@
+name: Services
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - src/Services/**
+  pull_request:
+    types: [opened, synchronize, reopened]
+    paths:
+      - src/Services/**
+
+defaults:
+  run:
+    working-directory: src
+
+jobs:
+
+  # Deploy to production
+  production:
+    needs: docker
+    name: Deploy to Kubernetes
+    environment:
+      name: production
+    runs-on: ubuntu-latest
+    steps:
+    # Checks out the code
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Set kubernetes context
+        uses: azure/k8s-set-context@v1
+        with:
+          method: kubeconfig
+          kubeconfig: ${{ secrets.KUBE_CONFIG }}
+          context: kwetter
+      - name: Deploy services
+        uses: jtalk/k8s-deploy@v2
+        with:
+          namespace: kwetter
+          manifests: |
+            ./K8s/services/follow-service/kwetter-follow-service.deployment.yaml
+            ./K8s/services/user-service/kwetter-user-service.deployment.yaml
+            ./K8s/services/kweet-service/kwetter-kweet-service.deployment.yaml
+      

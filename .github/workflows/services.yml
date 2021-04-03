@@ -153,6 +153,9 @@ jobs:
       name: production
     runs-on: ubuntu-latest
     steps:
+    # Checks out the code
+      - name: Checkout
+        uses: actions/checkout@v2
       - name: Set kubernetes context
         uses: azure/k8s-set-context@v1
         with:
