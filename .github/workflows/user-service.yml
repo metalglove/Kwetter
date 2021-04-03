@@ -1,0 +1,144 @@
+name: UserService
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - src/Services/UserService/**
+  pull_request:
+    types: [opened, synchronize, reopened]
+    paths:
+      - src/Services/UserService/**
+
+defaults:
+  run:
+    working-directory: src
+
+jobs:
+
+  # Builds the code 
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+    # Checks out the code
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    # Sets up the .NET SDK
+    - name: Setup .NET SDK
+      uses: actions/setup-dotnet@v1.7.2
+      with:
+        dotnet-version: '5.0.x'
+    
+    # Installs the dependencies
+    - name: Install dependencies
+      run: dotnet restore ./Services/UserService/API
+
+    # Builds the code
+    - name: Build
+      run: dotnet build --no-restore ./Services/UserService/API
+  
+  # Runs the tests with sonarscan
+  test:
+    needs: build
+    name: Test
+    runs-on: ubuntu-latest
+    steps:
+    # Checks out the code
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    # Tests the code
+    - name: Build
+      run: dotnet test ./Services/UserService/Tests
+
+  # Builds and publishes the docker images
+  docker:
+    needs: test
+    name: Build and push Docker images
+    environment:
+      name: docker
+    runs-on: ubuntu-latest
+    steps:
+    # Checks out the code
+    - name: Checkout
+      uses: actions/checkout@v2
+    
+    # Adds the Neuralm certificate for the registry
+    - name: Add Neuralm certificate
+      run: |
+        echo "Create root certificate directory"
+        sudo mkdir -p /usr/local/share/ca-certificates/${{ secrets.NEURALM_REGISTRY }}/
+        echo "Create certificate"
+        sudo printf "${{ secrets.NEURALM_CERTIFICATE }}" >> neuralm.crt
+        echo "Create docker directory"
+        sudo mkdir -p /etc/docker/
+        echo "Create docker daemon json"
+        sudo touch /etc/docker/daemon.json
+        echo "Copy certificate to the ca-certificates directory"
+        sudo cp neuralm.crt /usr/local/share/ca-certificates/${{ secrets.NEURALM_REGISTRY }}/ca.crt
+        echo "Create neuralm certificate directory in docker"
+        sudo mkdir -p /etc/docker/certs.d/${{ secrets.NEURALM_REGISTRY }}/
+        echo "Copy certificate to the docker directory"
+        sudo cp neuralm.crt /etc/docker/certs.d/${{ secrets.NEURALM_REGISTRY }}/ca.crt
+        echo "Update CA certificates"
+        sudo update-ca-certificates
+        echo "Restart docker"
+        sudo systemctl daemon-reload
+        sudo systemctl restart docker
+
+    # Prepares the docker build
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v1
+    
+    # Caches the docker layers
+    - name: Cache Docker layers
+      uses: actions/cache@v2
+      with:
+        path: /tmp/.buildx-cache
+        key: ${{ runner.os }}-buildx-${{ github.sha }}
+        restore-keys: |
+          ${{ runner.os }}-buildx-
+
+    # Logs in to the neuralm registry
+    - name: Login to Neuralm Docker registry
+      uses: docker/login-action@v1 
+      with:
+        registry: ${{ secrets.NEURALM_REGISTRY }}
+        username: ${{ secrets.NEURALM_DOCKER_USERNAME }}
+        password: ${{ secrets.NEURALM_DOCKER_PASSWORD }}
+    
+    # Builds and publishes the UserService
+    - name: Build and push UserService Docker image 
+      run: |
+        echo "Building UserService docker image"
+        docker build -t ${{ secrets.NEURALM_REGISTRY }}/kwetter-user-service:${{ github.sha }} -f ./kwetter-user-service.Dockerfile .
+        echo "Publishing UserService docker image"
+        docker push ${{ secrets.NEURALM_REGISTRY }}/kwetter-user-service:${{ github.sha }}
+
+  # Deploy to production
+  production:
+    name: Deploy to Kubernetes
+    environment:
+      name: production
+    runs-on: ubuntu-latest
+    steps:
+    # Checks out the code
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Set kubernetes context
+        uses: azure/k8s-set-context@v1
+        with:
+          method: kubeconfig
+          kubeconfig: ${{ secrets.KUBE_CONFIG }}
+          context: kwetter
+      - name: Deploy services
+        uses: jtalk/k8s-deploy@v2
+        with:
+          namespace: kwetter
+          manifests: |
+            ./K8s/services/user-service/kwetter-user-service.deployment.yaml
+      
