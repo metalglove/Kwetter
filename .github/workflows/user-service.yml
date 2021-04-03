@@ -73,7 +73,8 @@ jobs:
     - name: Fix semver
       id: fixsemver
       run: |
-        SEMVER=${VERSION##*kwetter-user-service-}
+        VERSION=${{ steps.gitversion.outputs.VERSION }}
+        echo '::set-output name=SEMVER::${VERSION##*kwetter-user-service-}'
 
   docker:
     needs: 
