@@ -60,8 +60,8 @@ jobs:
         sonarProjectKey: metalglove_Kwetter
         sonarProjectName: Kwetter
         sonarOrganization: metalglove-github
-        dotnetBuildArguments: Services/UserService/API/Kwetter.Services.UserService.API.csproj
-        dotnetTestArguments: Services/UserService/API/Kwetter.Services.UserService.API.csproj --logger trx --collect:"XPlat Code Coverage" -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=opencover
+        dotnetBuildArguments: ./src/Services/UserService/API/Kwetter.Services.UserService.API.csproj
+        dotnetTestArguments: ./src/Services/UserService/API/Kwetter.Services.UserService.API.csproj --logger trx --collect:"XPlat Code Coverage" -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=opencover
         sonarBeginArguments: /d:sonar.cs.opencover.reportsPaths="**/TestResults/**/coverage.opencover.xml" -d:sonar.cs.vstest.reportsPaths="**/TestResults/*.trx"
 
   docker:
