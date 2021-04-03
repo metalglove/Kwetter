@@ -55,10 +55,31 @@ jobs:
     - name: Build
       run: dotnet test ./Services/UserService/Tests
 
+  semver:
+    name: Calculate SemVer version
+    runs-on: ubuntu-latest
+    outputs:
+      SEMVER: ${{ steps.gitversion.outputs.VERSION }}
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+
+    - name: Git Version
+      id: gitversion
+      uses: codacy/git-version@2.4.0
+      with:
+        prefix: kwetter-user-service-
+
   # Builds and publishes the docker images
   docker:
-    needs: test
+    needs: 
+     - test
+     - semver
     name: Build and push Docker images
+    env:
+      SEMVER: ${{ needs.semver.outputs.SEMVER }}
     environment:
       name: docker
     runs-on: ubuntu-latest
@@ -66,15 +87,6 @@ jobs:
     # Checks out the code
     - name: Checkout
       uses: actions/checkout@v2
-      with:
-          ref: ${{ github.head_ref }}
-          fetch-depth: 0
-
-    - name: Git Version
-      uses: codacy/git-version@2.4.0
-      with:
-        prefix: kwetter-user-service-
-        log-path: src/Services/UserService/
     
     # Adds the Neuralm certificate for the registry
     - name: Add Neuralm certificate
@@ -124,12 +136,15 @@ jobs:
     - name: Build and push UserService Docker image 
       run: |
         echo "Building UserService docker image"
-        docker build -t ${{ secrets.NEURALM_REGISTRY }}/kwetter-user-service:${{ github.sha }} -f ./kwetter-user-service.Dockerfile .
+        docker build -t ${{ secrets.NEURALM_REGISTRY }}/kwetter-user-service:${{ env.SEMVER }} -f ./kwetter-user-service.Dockerfile .
         echo "Publishing UserService docker image"
-        docker push ${{ secrets.NEURALM_REGISTRY }}/kwetter-user-service:${{ github.sha }}
+        docker push ${{ secrets.NEURALM_REGISTRY }}/kwetter-user-service:${{ env.SEMVER }}
 
   # Deploy to production
   production:
+    needs: 
+    - docker
+    - semver
     name: Deploy to Kubernetes
     environment:
       name: production
@@ -138,15 +153,6 @@ jobs:
     # Checks out the code
       - name: Checkout
         uses: actions/checkout@v2
-        with:
-          ref: ${{ github.head_ref }}
-          fetch-depth: 0
-
-      - name: Git Version
-        uses: codacy/git-version@2.4.0
-        with:
-          prefix: kwetter-user-service-
-          log-path: src/Services/UserService/
 
       - name: Set kubernetes context
         uses: azure/k8s-set-context@v1
