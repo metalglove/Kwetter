@@ -1,6 +1,7 @@
 name: Services
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - main
@@ -144,7 +145,6 @@ jobs:
         echo "Publishing FollowService docker image"
         docker push ${{ secrets.NEURALM_REGISTRY }}/kwetter-follow-service:latest
 
-
   # Deploy to production
   production:
     needs: docker
@@ -153,6 +153,18 @@ jobs:
       name: production
     runs-on: ubuntu-latest
     steps:
-      - name: Deploy to Kubernetes
-        run: echo "Hello deploy! SoonTM"
+      - name: Set kubernetes context
+        uses: azure/k8s-set-context@v1
+        with:
+          method: kubeconfig
+          kubeconfig: ${{ secrets.KUBE_CONFIG }}
+          context: kwetter
+      - name: Deploy services
+        uses: jtalk/k8s-deploy@v2
+        with:
+          namespace: kwetter
+          manifests: |
+            ./K8s/services/follow-service/kwetter-follow-service.deployment.yaml
+            ./K8s/services/user-service/kwetter-user-service.deployment.yaml
+            ./K8s/services/kweet-service/kwetter-kweet-service.deployment.yaml
       
