@@ -1,4 +1,4 @@
-name: Services
+name: Temp deployment
 
 on:
   workflow_dispatch:
@@ -20,7 +20,6 @@ jobs:
 
   # Deploy to production
   production:
-    needs: docker
     name: Deploy to Kubernetes
     environment:
       name: production
