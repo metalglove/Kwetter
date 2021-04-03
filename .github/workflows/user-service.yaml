@@ -77,7 +77,32 @@ jobs:
     
     # Adds the Neuralm certificate for the registry
     - name: Add Neuralm certificate
-      uses: ../.github/actions/build-and-publish-docker-image.yaml
+      uses: ../.github/actions/add-docker-registry-certificate
+
+    # Prepares the docker build
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v1
+    
+    # Caches the docker layers
+    - name: Cache Docker layers
+      uses: actions/cache@v2
+      with:
+        path: /tmp/.buildx-cache
+        key: ${{ runner.os }}-buildx-${{ github.sha }}
+        restore-keys: |
+          ${{ runner.os }}-buildx-
+
+    # Logs in to the neuralm registry
+    - name: Login to Neuralm Docker registry
+      uses: docker/login-action@v1 
+      with:
+        registry: ${{ secrets.NEURALM_REGISTRY }}
+        username: ${{ secrets.NEURALM_DOCKER_USERNAME }}
+        password: ${{ secrets.NEURALM_DOCKER_PASSWORD }}
+    
+    # Builds and publishes the image
+    - name: Build and push Docker image 
+      uses: ../.github/actions/build-and-publish-docker-image
       with:
         image: kwetter-user-service
         tag: latest

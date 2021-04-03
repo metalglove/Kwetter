@@ -1,0 +1,27 @@
+name: "Add Neuralm certificate"
+description: "Adds the Neuralm certificate for the registry"
+runs:
+  using: "composite"
+  steps:
+    - name: Add Neuralm certificate
+      shell: bash
+      run: |
+        echo "Create root certificate directory"
+        sudo mkdir -p /usr/local/share/ca-certificates/${{ secrets.NEURALM_REGISTRY }}/
+        echo "Create certificate"
+        sudo printf "${{ secrets.NEURALM_CERTIFICATE }}" >> neuralm.crt
+        echo "Create docker directory"
+        sudo mkdir -p /etc/docker/
+        echo "Create docker daemon json"
+        sudo touch /etc/docker/daemon.json
+        echo "Copy certificate to the ca-certificates directory"
+        sudo cp neuralm.crt /usr/local/share/ca-certificates/${{ secrets.NEURALM_REGISTRY }}/ca.crt
+        echo "Create neuralm certificate directory in docker"
+        sudo mkdir -p /etc/docker/certs.d/${{ secrets.NEURALM_REGISTRY }}/
+        echo "Copy certificate to the docker directory"
+        sudo cp neuralm.crt /etc/docker/certs.d/${{ secrets.NEURALM_REGISTRY }}/ca.crt
+        echo "Update CA certificates"
+        sudo update-ca-certificates
+        echo "Restart docker"
+        sudo systemctl daemon-reload
+        sudo systemctl restart docker
