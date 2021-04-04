@@ -1,4 +1,4 @@
-name: Services
+name: FollowService
 
 on:
   workflow_dispatch:
@@ -6,11 +6,11 @@ on:
     branches:
       - main
     paths:
-      - src/Services/**
+      - src/Services/FollowService/**
   pull_request:
     types: [opened, synchronize, reopened]
     paths:
-      - src/Services/**
+      - src/Services/FollowService/**
 
 defaults:
   run:
@@ -18,7 +18,6 @@ defaults:
 
 jobs:
 
-  # Builds the code 
   build:
     name: Build
     runs-on: ubuntu-latest
@@ -35,13 +34,12 @@ jobs:
     
     # Installs the dependencies
     - name: Install dependencies
-      run: dotnet restore
+      run: dotnet restore ./Services/FollowService/API
 
     # Builds the code
     - name: Build
-      run: dotnet build --no-restore --configuration "Services Build"
+      run: dotnet build --no-restore ./Services/FollowService/API
   
-  # Runs the tests with sonarscan
   test:
     needs: build
     name: Test
@@ -50,34 +48,50 @@ jobs:
     # Checks out the code
     - name: Checkout
       uses: actions/checkout@v2
-    
-    # Tests the code and performs a sonarscan
-    - name: Test
-      uses: highbyte/sonarscan-dotnet@v2.1.1-beta
-      env:
-        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        sonarProjectKey: metalglove_Kwetter
-        sonarProjectName: Kwetter
-        sonarOrganization: metalglove-github
-        dotnetBuildArguments: ./src/Kwetter.sln --configuration "Services Build"
-        dotnetTestArguments: ./src/Kwetter.sln --configuration "Services Build" --logger trx --collect:"XPlat Code Coverage" -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=opencover
-        sonarBeginArguments: /d:sonar.cs.opencover.reportsPaths="**/TestResults/**/coverage.opencover.xml" -d:sonar.cs.vstest.reportsPaths="**/TestResults/*.trx"
 
-  # Builds and publishes the docker images
+    # Tests the code
+    - name: Build
+      run: dotnet test ./Services/FollowService/Tests
+
+  semver:
+    name: Calculate SemVer version
+    runs-on: ubuntu-latest
+    outputs:
+      SEMVER: ${{ steps.fixsemver.outputs.SEMVER }}
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+
+    - name: Git version
+      id: gitversion
+      uses: codacy/git-version@2.4.0
+      with:
+        prefix: kwetter-follow-service-
+
+    - name: Fix semver
+      id: fixsemver
+      run: |
+        VERSION=${{ steps.gitversion.outputs.VERSION }}
+        FIXED_SEMVER=${VERSION##*kwetter-follow-service-}
+        echo "::set-output name=SEMVER::${FIXED_SEMVER}"
+        echo "${FIXED_SEMVER}"
+
   docker:
-    needs: test
+    needs: 
+     - test
+     - semver
     name: Build and push Docker images
+    env:
+      SEMVER: ${{ needs.semver.outputs.SEMVER }}
     environment:
       name: docker
     runs-on: ubuntu-latest
     steps:
-    # Checks out the code
     - name: Checkout
       uses: actions/checkout@v2
     
-    # Adds the Neuralm certificate for the registry
     - name: Add Neuralm certificate
       run: |
         echo "Create root certificate directory"
@@ -100,11 +114,9 @@ jobs:
         sudo systemctl daemon-reload
         sudo systemctl restart docker
 
-    # Prepares the docker build
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v1
     
-    # Caches the docker layers
     - name: Cache Docker layers
       uses: actions/cache@v2
       with:
@@ -113,7 +125,6 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-buildx-
 
-    # Logs in to the neuralm registry
     - name: Login to Neuralm Docker registry
       uses: docker/login-action@v1 
       with:
@@ -121,53 +132,42 @@ jobs:
         username: ${{ secrets.NEURALM_DOCKER_USERNAME }}
         password: ${{ secrets.NEURALM_DOCKER_PASSWORD }}
     
-    # Builds and publishes the UserService
-    - name: Build and push UserService Docker image 
-      run: |
-        echo "Building UserService docker image"
-        docker build -t ${{ secrets.NEURALM_REGISTRY }}/kwetter-user-service:latest -f ./kwetter-user-service.Dockerfile .
-        echo "Publishing UserService docker image"
-        docker push ${{ secrets.NEURALM_REGISTRY }}/kwetter-user-service:latest
-
-    # Builds and publishes the KweetService
-    - name: Build and push KweetService Docker image 
-      run: |
-        echo "Building KweetService docker image"
-        docker build -t ${{ secrets.NEURALM_REGISTRY }}/kwetter-kweet-service:latest -f ./kwetter-kweet-service.Dockerfile .
-        echo "Publishing KweetService docker image"
-        docker push ${{ secrets.NEURALM_REGISTRY }}/kwetter-kweet-service:latest
-    
-    # Builds and publishes the FollowService
     - name: Build and push FollowService Docker image 
       run: |
         echo "Building FollowService docker image"
-        docker build -t ${{ secrets.NEURALM_REGISTRY }}/kwetter-follow-service:latest -f ./kwetter-follow-service.Dockerfile .
+        docker build -t ${{ secrets.NEURALM_REGISTRY }}/kwetter-follow-service:${{ env.SEMVER }} -f ./kwetter-follow-service.Dockerfile .
         echo "Publishing FollowService docker image"
-        docker push ${{ secrets.NEURALM_REGISTRY }}/kwetter-follow-service:latest
+        docker push ${{ secrets.NEURALM_REGISTRY }}/kwetter-follow-service:${{ env.SEMVER }}
 
-  # Deploy to production
   production:
-    needs: docker
+    needs: 
+    - docker
+    - semver
     name: Deploy to Kubernetes
+    env:
+      SEMVER: ${{ needs.semver.outputs.SEMVER }}
     environment:
       name: production
     runs-on: ubuntu-latest
     steps:
-    # Checks out the code
       - name: Checkout
         uses: actions/checkout@v2
+
+      - name: Update manifest tags
+        run: |
+          sed -i'' -e 's/:latest/:${{ env.SEMVER }}/g' ./../K8s/services/follow-service/kwetter-follow-service.deployment.yaml
+      
       - name: Set kubernetes context
         uses: azure/k8s-set-context@v1
         with:
           method: kubeconfig
           kubeconfig: ${{ secrets.KUBE_CONFIG }}
           context: kwetter
+
       - name: Deploy services
         uses: jtalk/k8s-deploy@v2
         with:
           namespace: kwetter
           manifests: |
             ./K8s/services/follow-service/kwetter-follow-service.deployment.yaml
-            ./K8s/services/user-service/kwetter-user-service.deployment.yaml
-            ./K8s/services/kweet-service/kwetter-kweet-service.deployment.yaml
       
