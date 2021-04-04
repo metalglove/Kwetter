@@ -76,6 +76,7 @@ jobs:
         VERSION=${{ steps.gitversion.outputs.VERSION }}
         FIXED_SEMVER=${VERSION##*kwetter-user-service-}
         echo "::set-output name=SEMVER::${FIXED_SEMVER}"
+        echo "${FIXED_SEMVER}"
 
   docker:
     needs: 
@@ -155,7 +156,7 @@ jobs:
 
       - name: Update manifest tags
         run: |
-          sed -i'' -e 's/latest/${{ env.SEMVER }}/g' ./../K8s/services/user-service/kwetter-user-service.deployment.yaml
+          sed -i'' -e 's/:latest/:${{ env.SEMVER }}/g' ./../K8s/services/user-service/kwetter-user-service.deployment.yaml
       
       - name: Set kubernetes context
         uses: azure/k8s-set-context@v1
