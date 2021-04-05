@@ -5,13 +5,14 @@
     "not ie <= 8"
   ],
   "dependencies": {
-    "vue": "3.0.11",
-    "vuex": "4.0.0",
-    "vue-router": "4.0.5",
     "element-plus": "1.0.2-beta.36",
+    "typeface-nunito": "1.1.13",
+    "vue": "3.0.11",
     "vue-class-component": "8.0.0-rc.1",
+    "vue-gapi": "^2.0.0-beta.1",
     "vue-property-decorator": "10.0.0-rc.3",
-    "typeface-nunito": "1.1.13"
+    "vue-router": "4.0.5",
+    "vuex": "4.0.0"
   },
   "description": "Frontend.WebUI",
   "devDependencies": {

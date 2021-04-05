@@ -1,11 +1,13 @@
 import { createApp } from 'vue';
-import App from './App.vue';
+import App from '@/App.vue';
 
 // Config
+import { authConfig } from '@/config';
 
 // Plugins
 import { createKwetterRouter, KwetterRoute } from './plugins/vuerouter';
-import { rootStore } from './modules';
+import VueGapi from 'vue-gapi';
+import { rootStore } from '@/modules';
 import ElementPlus from 'element-plus';
 
 // Services
@@ -22,5 +24,6 @@ const routes: KwetterRoute[] = [
 createApp(App)
     .use(ElementPlus)
     .use(rootStore)
+    .use(VueGapi, authConfig)
     .use(createKwetterRouter(routes))
     .mount('#app');

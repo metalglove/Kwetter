@@ -1,5 +1,5 @@
 import { ActionTree, ActionContext } from 'vuex';
-import { AppState } from './App.state';
+import { IAppState } from './App.state';
 import { AppMutations, AppMutationTypes } from './App.mutations';
 import { RootState } from '@/modules';
 
@@ -13,7 +13,7 @@ type AugmentedAppActionContext = {
         key: K,
         payload: Parameters<AppMutations[K]>[1]
     ): ReturnType<AppMutations[K]>
-} & Omit<ActionContext<AppState, RootState>, 'commit'>
+} & Omit<ActionContext<IAppState, RootState>, 'commit'>;
 
 export interface AppActions {
     [AppActionTypes.SET_DRAWER](
@@ -26,7 +26,7 @@ export interface AppActions {
     ): void;
 }
 
-export const appActions: ActionTree<AppState, RootState> & AppActions = {
+export const appActions: ActionTree<IAppState, RootState> & AppActions = {
     [AppActionTypes.SET_DRAWER](
         { commit }: AugmentedAppActionContext,
         payload: boolean
@@ -39,4 +39,4 @@ export const appActions: ActionTree<AppState, RootState> & AppActions = {
     ): void {
         commit(AppMutationTypes.TOGGLE_DRAWER, payload);
     }
-}
+};

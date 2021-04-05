@@ -3,19 +3,19 @@ import { RootState } from '@/modules';
 import { AppActions, appActions } from './App.actions';
 import { AppGetters, appGetters } from './App.getters';
 import { AppMutations, appMutations } from './App.mutations';
-import { AppState as State, appState } from './App.state';
+import { IAppState as State, appState } from './App.state';
 
-export type AppState = State;
+export type IAppState = State;
 
 export type AppModule = {
     namespaced?: boolean;
-    state?: AppState;
+    state?: IAppState;
     mutations?: AppMutations;
     actions?: AppActions;
     getters?: AppGetters;
-}
+};
 
-export type AppStore<S = AppState> = Omit<Store<S>, 'getters' | 'commit' | 'dispatch'>
+export type AppStore<S = IAppState> = Omit<Store<S>, 'getters' | 'commit' | 'dispatch'>
     & {
         commit<K extends keyof AppMutations, P extends Parameters<AppMutations[K]>[1]>(
             key: K,
@@ -34,10 +34,10 @@ export type AppStore<S = AppState> = Omit<Store<S>, 'getters' | 'commit' | 'disp
         };
     };
 
-export const appStore: Module<AppState, RootState> & AppModule = {
+export const appStore: Module<IAppState, RootState> & AppModule = {
     namespaced: true,
     state: appState,
     mutations: appMutations,
     actions: appActions,
     getters: appGetters
-}
+};
