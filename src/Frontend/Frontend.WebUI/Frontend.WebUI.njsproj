@@ -51,9 +51,13 @@
     <Folder Include="public\" />
     <Folder Include="src\" />
     <Folder Include="src\components\" />
+    <Folder Include="src\models\cqrs\" />
+    <Folder Include="src\models\dtos\" />
     <Folder Include="src\modules\" />
     <Folder Include="src\interfaces\" />
     <Folder Include="src\modules\User\" />
+    <Folder Include="src\models\" />
+    <Folder Include="src\services\" />
     <Folder Include="src\utils\" />
     <Folder Include="src\plugins\" />
     <Folder Include="src\modules\App\" />
@@ -71,6 +75,21 @@
       <SubType>Code</SubType>
     </TypeScriptCompile>
     <TypeScriptCompile Include="src\config.ts" />
+    <TypeScriptCompile Include="src\interfaces\IAuthorizationService.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="src\interfaces\IHttpCommunicator.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="src\models\cqrs\QueryResponse.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="src\models\cqrs\Response.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="src\models\dtos\AuthorizationDto.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
     <TypeScriptCompile Include="src\modules\App\App.getters.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
@@ -107,13 +126,19 @@
     <TypeScriptCompile Include="src\plugins\vuerouter.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
+    <TypeScriptCompile Include="src\services\AuthorizationService.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
     <TypeScriptCompile Include="src\shims-tsx.d.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="src\utils\HttpCommunicator.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
     <TypeScriptCompile Include="src\utils\LocalStorageUtilities.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
-    <TypeScriptCompile Include="src\vuex-shim.d.ts">
+    <TypeScriptCompile Include="src\shims.d.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
   </ItemGroup>

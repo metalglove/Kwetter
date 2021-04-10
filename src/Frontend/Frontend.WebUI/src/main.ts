@@ -2,7 +2,7 @@ import { createApp } from 'vue';
 import App from '@/App.vue';
 
 // Config
-import { authConfig } from '@/config';
+import { authConfig, GATEWAY_API_URL } from '@/config';
 
 // Plugins
 import { createKwetterRouter, KwetterRoute } from './plugins/vuerouter';
@@ -11,6 +11,8 @@ import { rootStore } from '@/modules';
 import ElementPlus from 'element-plus';
 
 // Services
+import IAuthorizationService from "@/interfaces/IAuthorizationService";
+import AuthorizationService from "@/services/AuthorizationService";
 
 // Styling
 import 'typeface-nunito';
@@ -21,9 +23,19 @@ const routes: KwetterRoute[] = [
     { name: 'Alias', props: { msg: 'Welcome to ALIAS!' }}
 ];
 
-createApp(App)
-    .use(ElementPlus)
-    .use(rootStore)
-    .use(VueGapi, authConfig)
-    .use(createKwetterRouter(routes))
-    .mount('#app');
+
+const authorizationService: IAuthorizationService = new AuthorizationService(`${GATEWAY_API_URL}/Authorization`);
+
+const app = createApp(App);
+
+// Adds the plugins
+app.use(ElementPlus);
+app.use(rootStore);
+app.use(VueGapi, authConfig);
+app.use(createKwetterRouter(routes));
+
+// Provides the services to the components by definining them globally
+app.config.globalProperties.$authorizationService = authorizationService;
+
+// Mounts the app
+app.mount('#app');

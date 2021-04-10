@@ -18,3 +18,5 @@ export const authConfig = {
     discoveryDocs: ['https://people.googleapis.com/$discovery/rest?version=v1'],
     scope: 'openid profile email'
 };
+
+export const GATEWAY_API_URL: string = process.env.VUE_APP_GATEWAY_API_URL!;
