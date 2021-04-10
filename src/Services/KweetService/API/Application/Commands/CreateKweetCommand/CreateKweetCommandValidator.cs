@@ -1,9 +1,8 @@
-﻿using System;
+﻿using FluentValidation;
+using Kwetter.Services.KweetService.Domain.AggregatesModel.KweetAggregate;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
-using FluentValidation;
-using FluentValidation.Validators;
-using Kwetter.Services.KweetService.Domain.AggregatesModel.KweetAggregate;
 
 namespace Kwetter.Services.KweetService.API.Application.Commands.CreateKweetCommand
 {
@@ -26,7 +25,7 @@ namespace Kwetter.Services.KweetService.API.Application.Commands.CreateKweetComm
                 .CustomAsync(KweetValidationAsync);
         }
 
-        private async Task KweetValidationAsync(CreateKweetCommand createKweetCommand, CustomContext context, CancellationToken cancellationToken)
+        private async Task KweetValidationAsync(CreateKweetCommand createKweetCommand, ValidationContext<CreateKweetCommand> context, CancellationToken cancellationToken)
         {
             if (string.IsNullOrWhiteSpace(createKweetCommand.Message))
             {

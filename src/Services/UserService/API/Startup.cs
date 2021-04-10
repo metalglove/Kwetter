@@ -14,6 +14,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System.Reflection;
+using Kwetter.Services.Common.Infrastructure.Configurations;
 
 namespace Kwetter.Services.UserService.API
 {
@@ -44,6 +45,7 @@ namespace Kwetter.Services.UserService.API
             services.AddLogging(p => p.AddConsole());
             services.AddDefaultApplicationServices(Assembly.GetAssembly(typeof(Startup)), Assembly.GetAssembly(typeof(CreateUserCommand)));
             services.AddDefaultInfrastructureServices();
+            services.AddDefaultAuthentication(_configuration);
             services.AddSingleton<IFactory<UserDbContext>>(serviceProvider =>
             {
                 IOptions<DbConfiguration> options = serviceProvider.GetRequiredService<IOptions<DbConfiguration>>();
@@ -76,6 +78,8 @@ namespace Kwetter.Services.UserService.API
                 app.UseSwaggerUI(c => c.SwaggerEndpoint($"/swagger/{version}/swagger.json", $"{title} {version}"));
             }
             app.UseRouting();
+            app.UseCors(x => x.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+            app.UseAuthentication();
             app.UseAuthorization();
             app.UseEndpoints(endpoints =>
             {

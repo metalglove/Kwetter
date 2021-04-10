@@ -1,9 +1,8 @@
-﻿using System;
+﻿using FluentValidation;
+using Kwetter.Services.FollowService.Domain.AggregatesModel.FollowAggregate;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
-using FluentValidation;
-using FluentValidation.Validators;
-using Kwetter.Services.FollowService.Domain.AggregatesModel.FollowAggregate;
 
 namespace Kwetter.Services.FollowService.API.Application.Commands.CreateFollowCommand
 {
@@ -26,7 +25,7 @@ namespace Kwetter.Services.FollowService.API.Application.Commands.CreateFollowCo
                 .CustomAsync(ValidateFollowAsync);
         }
 
-        private async Task ValidateFollowAsync(CreateFollowCommand createFollowCommand, CustomContext context, CancellationToken cancellationToken)
+        private async Task ValidateFollowAsync(CreateFollowCommand createFollowCommand, ValidationContext<CreateFollowCommand> context, CancellationToken cancellationToken)
         {
             if (createFollowCommand.FollowerId == Guid.Empty)
             {

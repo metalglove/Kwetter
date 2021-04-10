@@ -2,6 +2,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using Kwetter.Services.Common.API;
 using Kwetter.Services.Common.Infrastructure;
+using Kwetter.Services.Common.Infrastructure.Configurations;
 using Kwetter.Services.KweetService.API.Application.Commands.CreateKweetCommand;
 using Kwetter.Services.KweetService.Domain.AggregatesModel.KweetAggregate;
 using Kwetter.Services.KweetService.Infrastructure;
@@ -44,6 +45,7 @@ namespace Kwetter.Services.KweetService.API
             services.AddLogging(p => p.AddConsole());
             services.AddDefaultApplicationServices(Assembly.GetAssembly(typeof(Startup)), Assembly.GetAssembly(typeof(CreateKweetCommand)));
             services.AddDefaultInfrastructureServices();
+            services.AddDefaultAuthentication(_configuration);
             services.AddSingleton<IFactory<KweetDbContext>>(serviceProvider =>
             {
                 IOptions<DbConfiguration> options = serviceProvider.GetRequiredService<IOptions<DbConfiguration>>();
@@ -76,6 +78,8 @@ namespace Kwetter.Services.KweetService.API
                 app.UseSwaggerUI(c => c.SwaggerEndpoint($"/swagger/{version}/swagger.json", $"{title} {version}"));
             }
             app.UseRouting();
+            app.UseCors(x => x.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+            app.UseAuthentication();
             app.UseAuthorization();
             app.UseEndpoints(endpoints =>
             {

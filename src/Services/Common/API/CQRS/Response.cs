@@ -10,11 +10,11 @@ namespace Kwetter.Services.Common.API.CQRS
         /// <summary>
         /// Gets or sets the execution result success.
         /// </summary>
-        public bool Success { get; init; }
+        public bool Success { get; set; }
 
         /// <summary>
         /// Gets or sets the error messages in case of an execution failure.
         /// </summary>
-        public List<string> Errors { get; init; } = new();
+        public List<string> Errors { get; set; } = new();
     }
 }

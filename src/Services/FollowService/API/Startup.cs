@@ -14,6 +14,7 @@ using Kwetter.Services.FollowService.Infrastructure.Repositories;
 using MediatR;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Kwetter.Services.Common.Infrastructure.Configurations;
 
 namespace Kwetter.Services.FollowService.API
 {
@@ -44,6 +45,7 @@ namespace Kwetter.Services.FollowService.API
             services.AddLogging(p => p.AddConsole());
             services.AddDefaultApplicationServices(Assembly.GetAssembly(typeof(Startup)), Assembly.GetAssembly(typeof(CreateFollowCommand)));
             services.AddDefaultInfrastructureServices();
+            services.AddDefaultAuthentication(_configuration);
             services.AddSingleton<IFactory<FollowDbContext>>(serviceProvider =>
             {
                 IOptions<DbConfiguration> options = serviceProvider.GetRequiredService<IOptions<DbConfiguration>>();
@@ -76,6 +78,8 @@ namespace Kwetter.Services.FollowService.API
                 app.UseSwaggerUI(c => c.SwaggerEndpoint($"/swagger/{version}/swagger.json", $"{title} {version}"));
             }
             app.UseRouting();
+            app.UseCors(x => x.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+            app.UseAuthentication();
             app.UseAuthorization();
             app.UseEndpoints(endpoints =>
             {

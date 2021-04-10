@@ -1,46 +1,90 @@
+using Kwetter.Services.AuthorizationService.API.Application.Queries.AuthorizationQuery;
+using Kwetter.Services.AuthorizationService.Domain.AggregatesModel.IdentityAggregate;
+using Kwetter.Services.AuthorizationService.Infrastructure;
+using Kwetter.Services.AuthorizationService.Infrastructure.Interfaces;
+using Kwetter.Services.AuthorizationService.Infrastructure.Repositories;
+using Kwetter.Services.Common.API;
+using Kwetter.Services.Common.Infrastructure;
+using Kwetter.Services.Common.Infrastructure.Configurations;
+using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.OpenApi.Models;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+using System.Diagnostics.CodeAnalysis;
+using System.Reflection;
 
 namespace Kwetter.Services.AuthorizationService.API
 {
+    /// <summary>
+    /// Represents the <see cref="Startup"/> class.
+    /// </summary>
+    [ExcludeFromCodeCoverage]
     public class Startup
     {
-        public IConfiguration Configuration { get; }
+        private readonly IConfiguration _configuration;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Startup"/> class.
+        /// </summary>
+        /// <param name="configuration">The configuration.</param>
         public Startup(IConfiguration configuration)
         {
-            Configuration = configuration;
+            _configuration = configuration;
         }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
+        /// <summary>
+        /// Configures the services in the service collection container.
+        /// </summary>
+        /// <param name="services">The service collection.</param>
         public void ConfigureServices(IServiceCollection services)
         {
-
-            services.AddControllers();
-            services.AddSwaggerGen(c =>
+            services.AddConfigurations(_configuration);
+            services.AddDefaultApplicationServices(Assembly.GetAssembly(typeof(Startup)), Assembly.GetAssembly(typeof(AuthorizationQuery)));
+            services.AddLogging(p => p.AddConsole());
+            services.AddDefaultInfrastructureServices();
+            services.AddDefaultAuthentication(_configuration);
+            services.AddHttpClient<IAuthorizationService, Infrastructure.Services.AuthorizationService>();
+            services.AddSingleton<IFactory<IdentityDbContext>>(serviceProvider =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Kwetter.Services.AuthorizationService.API", Version = "v1" });
+                IOptions<DbConfiguration> options = serviceProvider.GetRequiredService<IOptions<DbConfiguration>>();
+                ILoggerFactory loggerFactory = serviceProvider.GetRequiredService<ILoggerFactory>();
+                IMediator mediator = serviceProvider.GetRequiredService<IMediator>();
+                return new IdentityDatabaseFactory(options, loggerFactory, mediator);
             });
+            services.AddTransient<IdentityDbContext>(p => p.GetRequiredService<IFactory<IdentityDbContext>>().Create());
+            services.AddTransient<IAggregateUnitOfWork>(p => p.GetRequiredService<IFactory<IdentityDbContext>>().Create());
+            services.AddTransient<IIdentityRepository, IdentityRepository>();
+            services.AddIntegrationServices<IdentityDbContext>(Assembly.GetAssembly(typeof(Startup)));
+            services.AddControllers();
+            services.AddSwagger(_configuration);
+            services.VerifyDatabaseConnection<IdentityDbContext>();
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+        /// <summary>
+        /// Configures the application request response flow (middleware).
+        /// </summary>
+        /// <param name="app">The application builder.</param>
+        /// <param name="env">The web host environment.</param>
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Kwetter.Services.AuthorizationService.API v1"));
+                string version = _configuration["Service:Version"];
+                string title = _configuration["Service:Title"];
+                app.UseSwaggerUI(c => c.SwaggerEndpoint($"/swagger/{version}/swagger.json", $"{title} {version}"));
             }
 
             app.UseRouting();
-
+            // TODO: fix the CORS stuff
+            app.UseCors(x => x.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+            app.UseAuthentication();
             app.UseAuthorization();
-
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();

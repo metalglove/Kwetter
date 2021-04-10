@@ -1,22 +1,30 @@
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Kwetter.Services.AuthorizationService.API
 {
+    /// <summary>
+    /// Represents the <see cref="Program"/> class.
+    /// </summary>
+    [ExcludeFromCodeCoverage]
     public class Program
     {
+        /// <summary>
+        /// The start up method.
+        /// </summary>
+        /// <param name="args">The command line arguments.</param>
         public static void Main(string[] args)
         {
             CreateHostBuilder(args).Build().Run();
         }
 
-        public static IHostBuilder CreateHostBuilder(string[] args) =>
+        /// <summary>
+        /// Creates the host builder.
+        /// </summary>
+        /// <param name="args">The command line arguments</param>
+        /// <returns>Returns the host builder.</returns>
+        private static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {

@@ -7,6 +7,7 @@ using Kwetter.Services.Common.Domain.Persistence;
 using Kwetter.Services.Common.EventBus;
 using Kwetter.Services.Common.EventBus.Abstractions;
 using Kwetter.Services.Common.Infrastructure;
+using Kwetter.Services.Common.Infrastructure.Configurations;
 using Kwetter.Services.Common.Infrastructure.Integration;
 using Kwetter.Services.Common.Infrastructure.MessageSerializers;
 using Kwetter.Services.Common.Tests.Mocks;

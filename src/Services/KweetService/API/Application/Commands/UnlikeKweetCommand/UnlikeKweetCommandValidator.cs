@@ -1,9 +1,8 @@
 ﻿using FluentValidation;
-using FluentValidation.Validators;
+using Kwetter.Services.KweetService.Domain.AggregatesModel.KweetAggregate;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Kwetter.Services.KweetService.Domain.AggregatesModel.KweetAggregate;
 
 namespace Kwetter.Services.KweetService.API.Application.Commands.UnlikeKweetCommand
 {
@@ -25,7 +24,7 @@ namespace Kwetter.Services.KweetService.API.Application.Commands.UnlikeKweetComm
                 .CustomAsync(UnlikeKweetValidationAsync);
         }
 
-        private async Task UnlikeKweetValidationAsync(UnlikeKweetCommand unlikeKweetCommand, CustomContext context, CancellationToken cancellationToken)
+        private async Task UnlikeKweetValidationAsync(UnlikeKweetCommand unlikeKweetCommand, ValidationContext<UnlikeKweetCommand> context, CancellationToken cancellationToken)
         {
             if (unlikeKweetCommand.KweetId == Guid.Empty)
             {

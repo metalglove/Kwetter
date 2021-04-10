@@ -1,4 +1,5 @@
 ﻿using Kwetter.Services.Common.Infrastructure;
+using Kwetter.Services.Common.Infrastructure.Configurations;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;

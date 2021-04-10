@@ -3,18 +3,24 @@ using Kwetter.Services.Common.API.Behaviours;
 using Kwetter.Services.Common.EventBus;
 using Kwetter.Services.Common.EventBus.Abstractions;
 using Kwetter.Services.Common.Infrastructure;
+using Kwetter.Services.Common.Infrastructure.Authorization;
 using Kwetter.Services.Common.Infrastructure.Behaviours;
+using Kwetter.Services.Common.Infrastructure.Configurations;
 using Kwetter.Services.Common.Infrastructure.Integration;
 using Kwetter.Services.Common.Infrastructure.MessageSerializers;
 using Kwetter.Services.Common.Infrastructure.RabbitMq;
 using MediatR;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.ObjectPool;
 using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Protocols;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using RabbitMQ.Client;
+using System;
 using System.Reflection;
 
 namespace Kwetter.Services.Common.API
@@ -42,6 +48,30 @@ namespace Kwetter.Services.Common.API
                     Title = title,
                     Version = version
                 });
+
+                swaggerOptions.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                {
+                    Description = "JWT Authorization header using the Bearer scheme (Example: 'Bearer ...')",
+                    Name = "Authorization",
+                    In = ParameterLocation.Header,
+                    Type = SecuritySchemeType.ApiKey,
+                    Scheme = "Bearer"
+                });
+
+                swaggerOptions.AddSecurityRequirement(new OpenApiSecurityRequirement
+                {
+                    {
+                        new OpenApiSecurityScheme
+                        {
+                            Reference = new OpenApiReference
+                            {
+                                Type = ReferenceType.SecurityScheme,
+                                Id = "Bearer"
+                            }
+                        },
+                        Array.Empty<string>()
+                    }
+                });
             });
             return serviceCollection;
         }
@@ -56,7 +86,7 @@ namespace Kwetter.Services.Common.API
         {
             serviceCollection.AddOptions();
             serviceCollection.Configure<DbConfiguration>(configuration.GetSection("Database").Bind);
-            //serviceCollection.Configure<AuthorizationConfiguration>(configuration.GetSection("Authorization").Bind);
+            serviceCollection.Configure<AuthorizationConfiguration>(configuration.GetSection("Authorization").Bind);
             serviceCollection.Configure<DbConfiguration>("IntegrationDatabase", configuration.GetSection("Integration:Database").Bind);
             serviceCollection.Configure<IntegrationEventMessagingConfiguration>(configuration.GetSection("Integration").Bind);
             serviceCollection.Configure<MessagingConfiguration>(configuration.GetSection("Messaging").Bind);
@@ -120,6 +150,28 @@ namespace Kwetter.Services.Common.API
                 IntegrationEventLogDbContext integrationEventLogDbContext = serviceProvider.GetRequiredService<IntegrationEventLogDbContext>();
                 return new IntegrationEventLogService(messageSerializer, integrationEventLogDbContext, integrationEventAssembly);
             });
+            return serviceCollection;
+        }
+
+        /// <summary>
+        /// Adds the defaults authentication implementation.
+        /// </summary>
+        /// <param name="serviceCollection">The service collection.</param>
+        /// <param name="configuration">The configuration containing the Authorization configuration.</param>
+        /// <returns>Returns the service collection to chain further upon.</returns>
+        public static IServiceCollection AddDefaultAuthentication(this IServiceCollection serviceCollection, IConfiguration configuration)
+        {
+            serviceCollection.AddTransient<IConfigurationRetriever<JsonWebKeySet>, JsonWebKeySetRetriever>();
+            serviceCollection.AddSingleton<IConfigurationManager<JsonWebKeySet>>((a) =>
+            {
+                IConfigurationRetriever<JsonWebKeySet> retriever = a.GetRequiredService<IConfigurationRetriever<JsonWebKeySet>>();
+                return new ConfigurationManager<JsonWebKeySet>($"{configuration["Authorization:JwksUri"]}", retriever); ;
+            });
+
+            serviceCollection
+                .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddScheme<JwtBearerOptions, JwtTokenAuthenticationHandler>(JwtBearerDefaults.AuthenticationScheme, o => { });
+
             return serviceCollection;
         }
     }

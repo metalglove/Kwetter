@@ -1,4 +1,4 @@
-﻿namespace Kwetter.Services.Common.Infrastructure
+﻿namespace Kwetter.Services.Common.Infrastructure.Configurations
 {
     /// <summary>
     /// Represents the <see cref="DbConfiguration"/> class.

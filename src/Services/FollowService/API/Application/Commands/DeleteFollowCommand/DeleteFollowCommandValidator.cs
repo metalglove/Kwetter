@@ -1,9 +1,8 @@
 ﻿using FluentValidation;
-using FluentValidation.Validators;
+using Kwetter.Services.FollowService.Domain.AggregatesModel.FollowAggregate;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Kwetter.Services.FollowService.Domain.AggregatesModel.FollowAggregate;
 
 namespace Kwetter.Services.FollowService.API.Application.Commands.DeleteFollowCommand
 {
@@ -26,7 +25,7 @@ namespace Kwetter.Services.FollowService.API.Application.Commands.DeleteFollowCo
                 .CustomAsync(ValidateUnfollowAsync);
         }
 
-        private async Task ValidateUnfollowAsync(DeleteFollowCommand deleteFollowCommand, CustomContext context, CancellationToken cancellationToken)
+        private async Task ValidateUnfollowAsync(DeleteFollowCommand deleteFollowCommand, ValidationContext<DeleteFollowCommand> context, CancellationToken cancellationToken)
         {
             if (deleteFollowCommand.FollowerId == Guid.Empty)
             {

@@ -1,5 +1,4 @@
 ﻿using FluentValidation;
-using FluentValidation.Validators;
 using Kwetter.Services.UserService.Domain.AggregatesModel.UserAggregate;
 using System;
 using System.Threading;
@@ -29,7 +28,7 @@ namespace Kwetter.Services.UserService.API.Application.Commands.CreateUserComman
                 .CustomAsync(CheckUserIdUniqueness);
         }
 
-        private async Task ValidateUserDisplayNameAsync(string displayName, CustomContext context, CancellationToken cancellationToken)
+        private async Task ValidateUserDisplayNameAsync(string displayName, ValidationContext<CreateUserCommand> context, CancellationToken cancellationToken)
         {
             // Checks whether the display name is not null, empty or contains only white spaces.
             if (string.IsNullOrWhiteSpace(displayName))
@@ -54,7 +53,7 @@ namespace Kwetter.Services.UserService.API.Application.Commands.CreateUserComman
             }
         }
 
-        private async Task CheckUserIdUniqueness(Guid proposedUserId, CustomContext context, CancellationToken cancellationToken)
+        private async Task CheckUserIdUniqueness(Guid proposedUserId, ValidationContext<CreateUserCommand> context, CancellationToken cancellationToken)
         {
             // Checks whether the user id already exists.
             UserAggregate userAggregate = await _userRepository.FindByIdAsync(proposedUserId, cancellationToken);
