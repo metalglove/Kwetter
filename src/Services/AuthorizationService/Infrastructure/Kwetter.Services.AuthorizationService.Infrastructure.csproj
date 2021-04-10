@@ -5,16 +5,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="appsettings.json" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Include="appsettings.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\..\Common\Infrastructure\Kwetter.Services.Common.Infrastructure.csproj" />
     <ProjectReference Include="..\Domain\Kwetter.Services.AuthorizationService.Domain.csproj" />
   </ItemGroup>
