@@ -1,6 +1,5 @@
-﻿using System;
+﻿using Kwetter.Services.Common.Domain.Exceptions;
 using System.Runtime.CompilerServices;
-using Kwetter.Services.Common.Domain.Exceptions;
 
 [assembly: InternalsVisibleTo("Kwetter.Services.FollowService.Tests")]
 namespace Kwetter.Services.FollowService.Domain.Exceptions
