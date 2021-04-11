@@ -48,3 +48,6 @@ For transfering the secrets
 ```
 scp -r secrets glovali@kmaster:secrets
 ```
+
+For checking the available resources in the nodes
+```
