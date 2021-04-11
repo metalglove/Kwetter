@@ -1,6 +1,6 @@
 <template>
     <div>
-        <h1>{{ msg }}</h1>
+        <h1>ALIAS {{ msg }}</h1>
     </div>
 </template>
 
@@ -8,6 +8,7 @@
     import { defineComponent } from 'vue';
 
     export default defineComponent({
+        name: 'Alias',
         props: {
             msg: String
         }

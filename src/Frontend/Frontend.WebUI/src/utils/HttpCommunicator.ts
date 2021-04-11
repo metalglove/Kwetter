@@ -16,32 +16,35 @@ export default class HttpCommunicator implements IHttpCommunicator {
         this._gatewayUrl = gatewayUrl;
     }
 
-    async get(path: string): Promise<any> {
-        return await this.fetchAsync('GET', path);
+    get<TResponse>(path: string): Promise<TResponse> {
+        return this.fetchAsync('GET', path);
     }
 
-    async post(path: string, body: any): Promise<any> {
-        return await this.fetchAsync('POST', path, body);
+    getWithBody<TRequest, TResponse>(path: string, body: TRequest): Promise<TResponse> {
+        return this.fetchAsync('GET', path, body);
     }
 
-    async put(path: string, body: any): Promise<any> {
-        return await this.fetchAsync('PUT', path, body);
+    post<TRequest, TResponse>(path: string, body: TRequest): Promise<TResponse> {
+        return this.fetchAsync('POST', path, body);
     }
 
-    async delete(path: string, body: any): Promise<any> {
-        return await this.fetchAsync('DELETE', path, body);
+    put<TRequest, TResponse>(path: string, body: TRequest): Promise<TResponse> {
+        return this.fetchAsync('PUT', path, body);
     }
 
-    private async fetchAsync(method: string, path: string, body?: any): Promise<any> {
+    delete<TRequest, TResponse>(path: string, body: TRequest): Promise<TResponse> {
+        return this.fetchAsync('DELETE', path, body);
+    }
+
+    private async fetchAsync<TRequest, TResponse>(method: string, path: string, body?: TRequest | unknown): Promise<TResponse> {
         const request: RequestInit = {
             method: method,
             headers: this.getHeaders()
         };
-
         if (body)
             request.body = JSON.stringify(body);
-
-        return await fetch(`${this._gatewayUrl}${path}`, request);
+        const response = await fetch(`${this._gatewayUrl}${path}`, request);
+        return await response.json() as TResponse;
     }
 
     private getHeaders(): Headers {

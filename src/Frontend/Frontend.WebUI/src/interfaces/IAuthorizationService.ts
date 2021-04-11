@@ -1,5 +1,5 @@
-import QueryResponse from "../models/cqrs/QueryResponse";
-import AuthorizationDto from "../models/dtos/AuthorizationDto";
+import QueryResponse from "@/models/cqrs/QueryResponse";
+import AuthorizationDto from "@/models/dtos/AuthorizationDto";
 
 /**
  * Represents the IAuthorizationService interface.

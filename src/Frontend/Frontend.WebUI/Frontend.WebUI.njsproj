@@ -33,15 +33,27 @@
   </PropertyGroup>
   <ItemGroup>
     <Content Include=".env" />
+    <Content Include="public\assets\annoyed-bird.png" />
     <Content Include="public\favicon.ico" />
+    <Content Include="public\assets\heart icon fill.png" />
+    <Content Include="public\assets\heart icon.png" />
     <Content Include="public\index.html" />
     <Content Include="src\App.vue" />
+    <Content Include="src\components\Kweet.vue">
+      <SubType>Code</SubType>
+    </Content>
+    <Content Include="src\components\KweetComposer.vue">
+      <SubType>Code</SubType>
+    </Content>
     <Content Include="src\components\TopBar.vue" />
     <Content Include="src\modules\App\App.actions.ts">
       <SubType>Code</SubType>
     </Content>
     <Content Include="src\views\Alias.vue" />
     <Content Include="src\views\Home.vue" />
+    <Content Include="src\views\Timeline.vue">
+      <SubType>Code</SubType>
+    </Content>
     <Content Include="tsconfig.json" />
     <Content Include="package.json" />
     <Content Include="README.md" />
@@ -49,12 +61,15 @@
   <ItemGroup>
     <Folder Include="dist\" />
     <Folder Include="public\" />
+    <Folder Include="public\assets\" />
     <Folder Include="src\" />
     <Folder Include="src\components\" />
     <Folder Include="src\models\cqrs\" />
+    <Folder Include="src\models\cqrs\Kweet\" />
     <Folder Include="src\models\dtos\" />
     <Folder Include="src\modules\" />
     <Folder Include="src\interfaces\" />
+    <Folder Include="src\modules\Kweet\" />
     <Folder Include="src\modules\User\" />
     <Folder Include="src\models\" />
     <Folder Include="src\services\" />
@@ -81,6 +96,8 @@
     <TypeScriptCompile Include="src\interfaces\IHttpCommunicator.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
+    <TypeScriptCompile Include="src\interfaces\IKweetService.ts" />
+    <TypeScriptCompile Include="src\models\cqrs\Kweet\CreateKweetCommand.ts" />
     <TypeScriptCompile Include="src\models\cqrs\QueryResponse.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
@@ -103,6 +120,12 @@
       <SubType>Code</SubType>
     </TypeScriptCompile>
     <TypeScriptCompile Include="src\modules\index.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="src\modules\Kweet\index.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="src\modules\Kweet\Kweet.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
     <TypeScriptCompile Include="src\modules\User\index.ts">
@@ -129,9 +152,11 @@
     <TypeScriptCompile Include="src\services\AuthorizationService.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
+    <TypeScriptCompile Include="src\services\KweetService.ts" />
     <TypeScriptCompile Include="src\shims-tsx.d.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
+    <TypeScriptCompile Include="src\utils\Guid.ts" />
     <TypeScriptCompile Include="src\utils\HttpCommunicator.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>

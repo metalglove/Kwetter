@@ -1,4 +1,6 @@
 import { createRouter, createWebHashHistory, Router, RouteRecordRaw } from 'vue-router';
+import { User } from '@/modules/User/User';
+import { getItem } from '@/utils/LocalStorageUtilities';
 
 export type KwetterRoute = {
     name: string,
@@ -15,17 +17,16 @@ export function createKwetterRouter(routes: KwetterRoute[]): Router {
         routes: []
     });
 
-    // Check whether the user is logged in.
-    //router.beforeEach((to, from, next) => {
-    //    const publicViews = ['/login', '/register'];
-    //    const authRequired = !publicViews.includes(to.path);
-    //    const loggedIn = localStorage.getItem('user');
-    //    // If not, redirect the user to the login view.
-    //    if (authRequired && !loggedIn) {
-    //        return next('/login');
-    //    }
-    //    return next();
-    //});
+    router.beforeEach((to, from, next) => {
+        const publicViews = ['/', '/Home'];
+        const authRequired = !publicViews.includes(to.path);
+        const loggedIn = getItem<User | null>('user');
+        // If not, redirect the user to the home view.
+        if (authRequired && loggedIn == null) {
+            return next('/Home');
+        }
+        return next();
+    });
 
     routes.forEach(route => {
         const view: string = route.name.replace(/^\w/, (c) => c.toUpperCase());

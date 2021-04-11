@@ -11,7 +11,7 @@
             <img src="/assets/annoyed-bird.png" />
           </div>
         </el-menu-item>
-        <el-menu-item v-for="route in routes" :index="route.to" :route="{ name: route.name }" :key="route.name">
+        <el-menu-item v-for="route, index in activeRoutes" :index="route.to" :key="route.name">
             <i :class="route.icon"></i>{{ route.name }}
         </el-menu-item>
         <div class="dock-right">
@@ -23,6 +23,15 @@
 <script lang="ts">
     import { defineComponent } from 'vue';
     import Profile from '@/components/Profile.vue';
+    import { mapActions, mapGetters } from 'vuex';
+    import { UserGetterTypes } from '@/modules/User/User.getters';
+
+    interface KwetterRoute {
+        to: string;
+        icon: string;
+        name: string;
+        authRequired: boolean;
+    }
 
     export default defineComponent({
         name: 'TopBar',
@@ -36,15 +45,26 @@
                     {
                         to: '/Home',
                         icon: 'el-icon-s-home',
-                        name: 'Home'
+                        name: 'Home',
+                        authRequired: false
                     },
                     {
-                        to: '/Alias',
-                        icon: 'el-icon-circle-plus-outline',
-                        name: 'Alias'
+                        to: '/Timeline',
+                        icon: 'el-icon-tickets',
+                        name: 'Timeline',
+                        authRequired: true
                     }
-                ]
+                ] as KwetterRoute[]
             };
+        },
+        computed: {
+            ...mapGetters('user', [UserGetterTypes.GET_IS_LOGGED_IN]),
+            activeRoutes(): KwetterRoute[] {
+                const isLoggedIn: boolean = this.GET_IS_LOGGED_IN as boolean;
+                if (!isLoggedIn)
+                    return this.$data.routes.filter((route) => !route.authRequired);
+                return this.$data.routes;
+            }
         },
         methods: {
             handleSelect(key: string): void {

@@ -19,4 +19,8 @@
     * {
         font-family: 'Nunito';
     }
+    body {
+        max-width: 1240px!important;
+        margin: auto;
+    }
 </style>
