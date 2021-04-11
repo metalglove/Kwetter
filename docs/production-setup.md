@@ -124,6 +124,7 @@ kubectl apply -f ./K8s/MetalLB/kwetter-metal-loadbalancer-layer-2-config.yaml
 
 Create all local volume directories
 ```
+mkdir /mnt/data/kwetter-authorization-db
 mkdir /mnt/data/kwetter-follow-db
 mkdir /mnt/data/kwetter-user-db
 mkdir /mnt/data/kwetter-kweet-db
@@ -173,6 +174,13 @@ Spin up kweet service!
 kubectl apply -f ./K8s/services/kweet-service/kwetter-kweet-storage-persistent-volume-and-claim.yaml
 kubectl apply -f ./K8s/services/kweet-service/kwetter-kweet-db.deployment.yaml
 kubectl apply -f ./K8s/services/kweet-service/kwetter-kweet-service.deployment.yaml
+```
+
+Spin up authorization service!
+```
+kubectl apply -f ./K8s/services/authorization-service/kwetter-authorization-storage-persistent-volume-and-claim.yaml
+kubectl apply -f ./K8s/services/authorization-service/kwetter-authorization-db.deployment.yaml
+kubectl apply -f ./K8s/services/authorization-service/kwetter-authorization-service.deployment.yaml
 ```
 
 Validate deployment
