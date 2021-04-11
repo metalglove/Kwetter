@@ -98,6 +98,8 @@
     </TypeScriptCompile>
     <TypeScriptCompile Include="src\interfaces\IKweetService.ts" />
     <TypeScriptCompile Include="src\models\cqrs\Kweet\CreateKweetCommand.ts" />
+    <TypeScriptCompile Include="src\models\cqrs\Kweet\LikeKweetCommand.ts" />
+    <TypeScriptCompile Include="src\models\cqrs\Kweet\UnlikeKweetCommand.ts" />
     <TypeScriptCompile Include="src\models\cqrs\QueryResponse.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>

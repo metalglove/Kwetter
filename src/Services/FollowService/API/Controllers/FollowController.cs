@@ -56,7 +56,7 @@ namespace Kwetter.Services.FollowService.API.Controllers
         {
             CommandResponse commandResponse = await _mediator.Send(command);
             return commandResponse.Success
-                ? new OkResult()
+                ? new OkObjectResult(commandResponse)
                 : BadRequest(commandResponse);
         }
     }

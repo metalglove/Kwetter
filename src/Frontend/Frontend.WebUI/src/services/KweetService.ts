@@ -5,6 +5,7 @@ import { Kweet } from '@/modules/Kweet/Kweet';
 import IHttpCommunicator from '@/interfaces/IHttpCommunicator';
 import Guid from '@/utils/Guid';
 import CreateKweetCommand from '@/models/cqrs/Kweet/CreateKweetCommand';
+import LikeKweetCommand from '../models/cqrs/Kweet/LikeKweetCommand';
 
 /**
  * Represents the KweetService class.
@@ -40,11 +41,31 @@ export default class KweetService implements IKweetService {
     }
 
     public async likeKweet(kweetId: string, userId: string): Promise<Response> {
-        throw new Error('Method not implemented.');
+        if (!Guid.isValid(kweetId))
+            throw new Error('Invalid kweet id.');
+        if (!Guid.isValid(userId))
+            throw new Error('Invalid user id.');
+
+        const command: LikeKweetCommand = {
+            UserId: userId,
+            KweetId: kweetId
+        };
+
+        return this._httpCommunicator.post<LikeKweetCommand, Response>(`${this._kweetPath}Like`, command);
     }
 
     public async unlikeKweet(kweetId: string, userId: string): Promise<Response> {
-        throw new Error('Method not implemented.');
+        if (!Guid.isValid(kweetId))
+            throw new Error('Invalid kweet id.');
+        if (!Guid.isValid(userId))
+            throw new Error('Invalid user id.');
+
+        const command: LikeKweetCommand = {
+            UserId: userId,
+            KweetId: kweetId
+        };
+
+        return this._httpCommunicator.delete<LikeKweetCommand, Response>(`${this._kweetPath}Like`, command);
     }
 
     public async paginateKweets(pageNumber: number, pageSize: number, userId: string): Promise<QueryResponse<Kweet[]>> {

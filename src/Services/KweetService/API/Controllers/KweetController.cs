@@ -57,7 +57,7 @@ namespace Kwetter.Services.KweetService.API.Controllers
         {
             CommandResponse commandResponse = await _mediator.Send(command);
             return commandResponse.Success
-                ? new OkResult()
+                ? new OkObjectResult(commandResponse)
                 : BadRequest(commandResponse);
         }
         
@@ -74,7 +74,7 @@ namespace Kwetter.Services.KweetService.API.Controllers
         {
             CommandResponse commandResponse = await _mediator.Send(command);
             return commandResponse.Success
-                ? new OkResult()
+                ? new OkObjectResult(commandResponse)
                 : BadRequest(commandResponse);
         }
     }
