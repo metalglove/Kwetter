@@ -43,3 +43,8 @@ A workaround is to expose the istio-ingressgateway using the `minikube service` 
 minikube service -n istio-system istio-ingressgateway --url
 ```
 Then the second url is the one for http.
+
+For transfering the secrets
+```
+scp -r secrets glovali@kmaster:secrets
+```

@@ -38,6 +38,15 @@ spec:
         port:
           number: 80
         host: kwetter-user-service
+  - name: kwetter-authorization-service-latest-routes
+    match:
+    - uri:
+        prefix: /api/Authorization
+    route:
+    - destination:
+        port:
+          number: 80
+        host: kwetter-authorization-service
   - name: kwetter-kweet-service-latest-routes
     match:
     - uri:
