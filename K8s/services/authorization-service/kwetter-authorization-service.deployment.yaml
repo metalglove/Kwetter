@@ -1,0 +1,56 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: kwetter-authorization-service
+  namespace: kwetter
+  labels:
+    app: kwetter-authorization-service
+    service: kwetter-authorization-service
+spec:
+  selector:
+    app: kwetter-authorization-service-pod
+  ports:
+  - protocol: TCP
+    name: http
+    port: 80
+    targetPort: 80
+  type: LoadBalancer
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kwetter-authorization-service
+  namespace: kwetter
+spec:
+  replicas: 2
+  minReadySeconds: 10
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+  selector:
+    matchLabels:
+      app: kwetter-authorization-service-pod
+      version: latest
+  template:
+    metadata:
+      labels:
+        app: kwetter-authorization-service-pod
+        version: latest
+    spec:
+      containers:
+      - name: kwetter-authorization-container
+        image: neuralm.net:7676/kwetter-authorization-service:latest
+        imagePullPolicy: Always
+        envFrom:
+        - secretRef:
+            name: kwetter-authorization-service-secret
+        resources:
+          limits:
+            memory: 300Mi
+            cpu: 200m
+        ports:
+        - containerPort: 80
+      imagePullSecrets:
+        - name: mydockercredentials

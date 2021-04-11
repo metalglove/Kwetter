@@ -1,0 +1,53 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: kwetter-authorization-db
+  namespace: kwetter
+  labels:
+    app: kwetter-authorization-db
+    service: kwetter-authorization-db
+spec:
+  selector:
+    app: kwetter-authorization-db-pod
+  ports:
+  - protocol: TCP
+    name: tcp-mssql
+    port: 1433
+    targetPort: 1433
+  type: LoadBalancer
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kwetter-authorization-db
+  namespace: kwetter
+spec:
+  selector:
+    matchLabels:
+      app: kwetter-authorization-db-pod
+      version: latest
+  template:
+    metadata:
+      labels:
+        app: kwetter-authorization-db-pod
+        version: latest
+    spec:
+      containers:
+      - name: kwetter-authorization-db-container
+        image: mcr.microsoft.com/mssql/server:2019-latest
+        resources:
+          limits:
+            memory: 2Gi
+            cpu: 1000m
+        ports:
+        - containerPort: 1433
+        envFrom:
+        - secretRef:
+            name: kwetter-authorization-db-secret
+        volumeMounts:
+        - name: kwetter-authorization-db-volume
+          mountPath: /var/opt/mssql
+      volumes:
+      - name: kwetter-authorization-db-volume
+        persistentVolumeClaim:
+          claimName: kwetter-authorization-db-volume-claim
