@@ -67,7 +67,7 @@ namespace Kwetter.Services.KweetService.Tests.Commands
             IActionResult actionResult = await KweetController.LikeAsync(likeKweetCommand);
             
             // Assert
-            XAssert.IsType<OkResult>(actionResult);
+            XAssert.IsType<OkObjectResult>(actionResult);
         }
         
         [TestMethod]

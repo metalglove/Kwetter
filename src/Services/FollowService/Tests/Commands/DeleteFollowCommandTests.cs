@@ -67,7 +67,7 @@ namespace Kwetter.Services.FollowService.Tests.Commands
             IActionResult actionResult = await FollowController.DeleteAsync(deleteFollowCommand);
             
             // Assert
-            XAssert.IsType<OkResult>(actionResult);
+            XAssert.IsType<OkObjectResult>(actionResult);
         }
         
         [TestMethod]
@@ -85,7 +85,7 @@ namespace Kwetter.Services.FollowService.Tests.Commands
             IActionResult actionResult2 = await FollowController.DeleteAsync(deleteFollowCommand);
             
             // Assert
-            XAssert.IsType<OkResult>(actionResult1);
+            XAssert.IsType<OkObjectResult>(actionResult1);
             XAssert.IsType<BadRequestObjectResult>(actionResult2);
         }
         
