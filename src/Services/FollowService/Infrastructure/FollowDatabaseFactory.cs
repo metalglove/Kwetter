@@ -40,7 +40,7 @@ namespace Kwetter.Services.FollowService.Infrastructure
         /// <returns>The follow database context.</returns>
         protected override FollowDbContext CreateNewInstance(DbContextOptions<FollowDbContext> dbContextOptions)
         {
-            return new(dbContextOptions, _mediator);
+            return new(dbContextOptions, _mediator, LoggerFactory.CreateLogger<FollowDbContext>());
         }
     }
 }

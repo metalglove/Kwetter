@@ -3,6 +3,7 @@ using Kwetter.Services.FollowService.Domain.AggregatesModel.FollowAggregate;
 using Kwetter.Services.FollowService.Infrastructure.EntityConfigurations;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace Kwetter.Services.FollowService.Infrastructure
 {
@@ -30,7 +31,8 @@ namespace Kwetter.Services.FollowService.Infrastructure
         /// </summary>
         /// <param name="options">The follow database context options.</param>
         /// <param name="mediator">The mediator.</param>
-        public FollowDbContext(DbContextOptions<FollowDbContext> options, IMediator mediator) : base(options, mediator)
+        /// <param name="logger">The logger.</param>
+        public FollowDbContext(DbContextOptions<FollowDbContext> options, IMediator mediator, ILogger<FollowDbContext> logger) : base(options, mediator, logger)
         {
 
         }

@@ -2,6 +2,7 @@
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -15,6 +16,7 @@ namespace Kwetter.Services.Common.Infrastructure
     public abstract class UnitOfWork<TContext> : DbContext, IAggregateUnitOfWork where TContext : DbContext
     {
         private readonly IMediator _mediator;
+        private readonly ILogger<UnitOfWork<TContext>> _logger;
 
         /// <inheritdoc cref="IAggregateUnitOfWork.CurrentTransaction"/>
         public IDbContextTransaction CurrentTransaction { get; private set; }
@@ -36,9 +38,11 @@ namespace Kwetter.Services.Common.Infrastructure
         /// </summary>
         /// <param name="options">The database context options.</param>
         /// <param name="mediator">The mediator.</param>
-        protected UnitOfWork(DbContextOptions<TContext> options, IMediator mediator) : base(options)
+        /// <param name="logger">The logger.</param>
+        protected UnitOfWork(DbContextOptions<TContext> options, IMediator mediator, ILogger<UnitOfWork<TContext>> logger) : base(options)
         {
             _mediator = mediator;
+            _logger = logger;
         }
 
         /// <inheritdoc cref="IUnitOfWork.SaveEntitiesAsync(CancellationToken)"/>
@@ -60,11 +64,12 @@ namespace Kwetter.Services.Common.Infrastructure
         }
 
         /// <inheritdoc cref="IAggregateUnitOfWork.BeginTransactionAsync(CancellationToken)"/>
-        public async Task<IDbContextTransaction> BeginTransactionAsync(CancellationToken cancellationToken = default)
+        public async Task<IDbContextTransaction> StartTransactionAsync(CancellationToken cancellationToken = default)
         {
             if (CurrentTransaction != null) 
                 return null;
             CurrentTransaction = await Database.BeginTransactionAsync(cancellationToken);
+            _logger.LogInformation($"Started the database transaction {CurrentTransaction.TransactionId} for {GetType().Name}");
             return CurrentTransaction;
         }
 
@@ -79,6 +84,8 @@ namespace Kwetter.Services.Common.Infrastructure
             {
                 await SaveChangesAsync();
                 transaction.Commit();
+                _logger.LogInformation($"Commited the database transaction {CurrentTransaction.TransactionId} for {GetType().Name}");
+
             }
             catch
             {
@@ -101,6 +108,7 @@ namespace Kwetter.Services.Common.Infrastructure
             try
             {
                 CurrentTransaction?.Rollback();
+                _logger.LogInformation($"Rolled back the database transaction {CurrentTransaction.TransactionId} for {GetType().Name}");
             }
             finally
             {

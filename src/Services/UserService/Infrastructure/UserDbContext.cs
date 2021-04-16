@@ -3,6 +3,7 @@ using Kwetter.Services.UserService.Domain.AggregatesModel.UserAggregate;
 using Kwetter.Services.UserService.Infrastructure.EntityConfigurations;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace Kwetter.Services.UserService.Infrastructure
 {
@@ -30,7 +31,8 @@ namespace Kwetter.Services.UserService.Infrastructure
         /// </summary>
         /// <param name="options">The user database context options.</param>
         /// <param name="mediator">The mediator.</param>
-        public UserDbContext(DbContextOptions<UserDbContext> options, IMediator mediator) : base(options, mediator)
+        /// <param name="logger">The logger.</param>
+        public UserDbContext(DbContextOptions<UserDbContext> options, IMediator mediator, ILogger<UserDbContext> logger) : base(options, mediator, logger)
         {
 
         }

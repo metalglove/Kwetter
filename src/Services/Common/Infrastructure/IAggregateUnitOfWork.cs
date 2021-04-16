@@ -27,11 +27,11 @@ namespace Kwetter.Services.Common.Infrastructure
         public DatabaseFacade Database { get; }
 
         /// <summary>
-        /// Begins the database transaction asynchronously.
+        /// Starts the database transaction asynchronously.
         /// </summary>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>Returns an awaitable database transaction.</returns>
-        public Task<IDbContextTransaction> BeginTransactionAsync(CancellationToken cancellationToken = default);
+        public Task<IDbContextTransaction> StartTransactionAsync(CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Commits the transaction to the database asynchronously.

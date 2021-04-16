@@ -1,4 +1,5 @@
-﻿using FluentValidation;
+﻿using EventStore.ClientAPI;
+using FluentValidation;
 using Kwetter.Services.Common.API.Behaviours;
 using Kwetter.Services.Common.EventBus;
 using Kwetter.Services.Common.EventBus.Abstractions;
@@ -6,6 +7,7 @@ using Kwetter.Services.Common.Infrastructure;
 using Kwetter.Services.Common.Infrastructure.Authorization;
 using Kwetter.Services.Common.Infrastructure.Behaviours;
 using Kwetter.Services.Common.Infrastructure.Configurations;
+using Kwetter.Services.Common.Infrastructure.Eventing;
 using Kwetter.Services.Common.Infrastructure.Integration;
 using Kwetter.Services.Common.Infrastructure.MessageSerializers;
 using Kwetter.Services.Common.Infrastructure.RabbitMq;
@@ -90,6 +92,8 @@ namespace Kwetter.Services.Common.API
             serviceCollection.Configure<DbConfiguration>("IntegrationDatabase", configuration.GetSection("Integration:Database").Bind);
             serviceCollection.Configure<IntegrationEventMessagingConfiguration>(configuration.GetSection("Integration").Bind);
             serviceCollection.Configure<MessagingConfiguration>(configuration.GetSection("Messaging").Bind);
+            serviceCollection.Configure<EventStoreConfiguration>(configuration.GetSection("EventStore").Bind);
+            serviceCollection.Configure<ServiceConfiguration>(configuration.GetSection("Service").Bind);
             return serviceCollection;
         }
 
@@ -122,6 +126,20 @@ namespace Kwetter.Services.Common.API
             serviceCollection.AddSingleton<ObjectPoolProvider, DefaultObjectPoolProvider>();
             serviceCollection.AddSingleton<IPooledObjectPolicy<IModel>, RabbitModelPooledObjectPolicy>();
             serviceCollection.AddSingleton<IEventBus, Infrastructure.EventBus>();
+            serviceCollection.AddScoped<IAsyncFactory<IEventStoreConnection>, EventStoreConnectionFactory>();
+            serviceCollection.AddScoped<IEventStore, Infrastructure.Eventing.EventStore>((serviceProvider) => 
+            {
+                ServiceConfiguration serviceConfiguration = serviceProvider.GetRequiredService<IOptions<ServiceConfiguration>>().Value;
+                IAsyncFactory<IEventStoreConnection> factorey = serviceProvider.GetRequiredService<IAsyncFactory<IEventStoreConnection>>();
+                ILogger<Infrastructure.Eventing.EventStore> logger = serviceProvider.GetRequiredService<ILogger<Infrastructure.Eventing.EventStore>>();
+                IMessageSerializer messageSerializer = serviceProvider.GetRequiredService<IMessageSerializer>();
+                return new Infrastructure.Eventing.EventStore(
+                    $"{serviceConfiguration.ShortTitle}-{serviceConfiguration.Version}",
+                    factorey,
+                    logger,
+                    messageSerializer
+                    );
+            });
             return serviceCollection;
         }
 
