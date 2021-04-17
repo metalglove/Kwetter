@@ -55,7 +55,7 @@ namespace Kwetter.Services.Common.Infrastructure.Eventing
 
         private IEventStoreConnection SetupConnection(CancellationToken cancellationToken)
         {
-            IEventStoreConnection localeventStoreConnection = EventStoreConnection.Create(ConnectionSettings.Create(), new Uri(_eventStoreConfiguration.ConnectionUrl));
+            IEventStoreConnection localeventStoreConnection = EventStoreConnection.Create(ConnectionSettings.Create().DisableTls().Build(), new Uri(_eventStoreConfiguration.ConnectionUrl));
             localeventStoreConnection.ErrorOccurred += async (s, e) =>
             {
                 isConnected = false;
@@ -92,7 +92,7 @@ namespace Kwetter.Services.Common.Infrastructure.Eventing
         /// <inheritdoc cref="IDisposable.Dispose"/>
         public void Dispose()
         {
-            eventStoreConnection.Dispose();
+            eventStoreConnection?.Dispose();
         }
     }
 }

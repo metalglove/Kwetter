@@ -1,5 +1,4 @@
 ﻿using EventStore.ClientAPI;
-using EventStore.ClientAPI.SystemData;
 using Kwetter.Services.Common.EventBus.Abstractions;
 using Microsoft.Extensions.Logging;
 using System;
@@ -22,7 +21,7 @@ namespace Kwetter.Services.Common.Infrastructure.Eventing
         private readonly string _eventStream;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="EventStore{TAggregateRoot}"/> class.
+        /// Initializes a new instance of the <see cref="EventStore"/> class.
         /// </summary>
         /// <param name="serviceName">The service name.</param>
         /// <param name="eventStoreConnectionFactory">The event store connection factory.</param>
@@ -46,7 +45,7 @@ namespace Kwetter.Services.Common.Infrastructure.Eventing
             IEventStoreConnection eventStoreConnection = await _eventStoreConnectionFactory.CreateAsync(cancellationToken);
             if (eventStoreTransaction is not null)
                 throw new Exception("Attempted to start a transaction while another transaction is still active.");
-            eventStoreTransaction = await eventStoreConnection.StartTransactionAsync(_eventStream, ExpectedVersion.Any, new UserCredentials("admin", "changeit"));
+            eventStoreTransaction = await eventStoreConnection.StartTransactionAsync(_eventStream, ExpectedVersion.Any);
             _logger.LogInformation($"Started a transaction for the EventStore on the {_eventStream} stream.");
             cancellationToken.ThrowIfCancellationRequested();
         }
@@ -105,6 +104,8 @@ namespace Kwetter.Services.Common.Infrastructure.Eventing
         /// <inheritdoc cref="IDisposable.Dispose"/>
         public void Dispose()
         {
+            if (eventStoreTransaction is null)
+                return;
             ((IDisposable)eventStoreTransaction).Dispose();
         }
     }
