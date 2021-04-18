@@ -1,20 +1,22 @@
-﻿using System;
-using System.IO;
-using System.Reflection;
-using Kwetter.Services.Common.API;
+﻿using Kwetter.Services.Common.API;
+using Kwetter.Services.Common.Application.Configurations;
+using Kwetter.Services.Common.Application.Eventing;
+using Kwetter.Services.Common.Application.Eventing.Bus;
+using Kwetter.Services.Common.Application.Eventing.Integration;
+using Kwetter.Services.Common.Application.Eventing.Store;
 using Kwetter.Services.Common.Domain;
 using Kwetter.Services.Common.Domain.Persistence;
-using Kwetter.Services.Common.EventBus;
-using Kwetter.Services.Common.EventBus.Abstractions;
 using Kwetter.Services.Common.Infrastructure;
-using Kwetter.Services.Common.Infrastructure.Configurations;
+using Kwetter.Services.Common.Infrastructure.EventSerializers;
 using Kwetter.Services.Common.Infrastructure.Integration;
-using Kwetter.Services.Common.Infrastructure.MessageSerializers;
 using Kwetter.Services.Common.Tests.Mocks;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using System;
+using System.IO;
+using System.Reflection;
 
 namespace Kwetter.Services.Common.Tests
 {
@@ -61,18 +63,6 @@ namespace Kwetter.Services.Common.Tests
                 dbConfig.ConnectionString = $"Data Source={Directory.GetCurrentDirectory()}/{Guid.NewGuid()}.db";
                 dbConfig.DbProvider = "sqlite";
             });
-            serviceCollection.Configure<DbConfiguration>("IntegrationDatabase", dbConfig =>
-            {
-                dbConfig.UseLazyLoading = true;
-                dbConfig.ConnectionString = "mssql-in-memory";
-                dbConfig.DbProvider = "mssql-in-memory";
-            });
-            serviceCollection.Configure<IntegrationEventMessagingConfiguration>(integrationEventMessagingConfiguration =>
-            {
-                integrationEventMessagingConfiguration.ServiceName = $"Kwetter.Services.{serviceName}.API";
-                integrationEventMessagingConfiguration.MessageQueueName = "IntegrationEventLog";
-            });
-            
             serviceCollection.Configure<MessagingConfiguration>(messagingConfiguration =>
             {
                 messagingConfiguration.Host = "";
@@ -80,15 +70,23 @@ namespace Kwetter.Services.Common.Tests
                 messagingConfiguration.Port = 8493;
                 messagingConfiguration.VirtualHost = "/";
             });
-            
+
+            serviceCollection.Configure<ServiceConfiguration>(serviceConfiguration =>
+            {
+                serviceConfiguration.Title = $"Kwetter.Services.{serviceName}.API";
+                serviceConfiguration.ShortTitle = serviceName;
+                serviceConfiguration.Version = "v1";
+            });
+
             serviceCollection.AddLogging(p => p.AddConsole());
             serviceCollection.AddDefaultApplicationServices(Assembly.GetAssembly(startUpType), Assembly.GetAssembly(applicationType));
             
             // Mock infrastructure
-            serviceCollection.AddTransient<IMessageSerializer, JsonMessageSerializer>();
+            serviceCollection.AddTransient<IEventSerializer, JsonEventSerializer>();
             serviceCollection.AddSingleton<IEventBus, EventBusMock>();
-            
-            serviceCollection.AddSingleton<IFactory<TDbContext>>(serviceProvider =>
+            serviceCollection.AddScoped<IEventStore, EventStoreMock>();
+            serviceCollection.AddTransient<IIntegrationEventService, IntegrationEventService>();
+            serviceCollection.AddTransient<IFactory<TDbContext>>(serviceProvider =>
             {
                 IOptions<DbConfiguration> options = serviceProvider.GetRequiredService<IOptions<DbConfiguration>>();
                 ILoggerFactory loggerFactory = serviceProvider.GetRequiredService<ILoggerFactory>();
@@ -104,7 +102,6 @@ namespace Kwetter.Services.Common.Tests
             serviceCollection.AddTransient<IAggregateUnitOfWork>(p => p.GetRequiredService<TDbContext>());
             Type repositoryImplementationType = typeof(TRepository);
             serviceCollection.AddTransient(repositoryImplementationType.GetInterfaces()[0], repositoryImplementationType);
-            serviceCollection.AddIntegrationServices<TDbContext>(Assembly.GetAssembly(startUpType));
             return serviceCollection.BuildServiceProvider();
         }
 
@@ -112,10 +109,18 @@ namespace Kwetter.Services.Common.Tests
         /// Cleans up the created sqlite database file
         /// </summary>
         /// <param name="serviceProvider">The serviceName provider.</param>
-        protected void Cleanup(ServiceProvider serviceProvider)
+        protected static void Cleanup(ServiceProvider serviceProvider)
         {
             IOptions<DbConfiguration> options = serviceProvider.GetRequiredService<IOptions<DbConfiguration>>();
-            File.Delete(options.Value.ConnectionString.Replace("Data Source=",""));
+            string path = options.Value.ConnectionString.Replace("Data Source=", "");
+            try
+            {
+                File.Delete(path);
+            }
+            catch (Exception)
+            {
+                serviceProvider.GetRequiredService<ILogger<TestBase>>().LogError($"Failed to delete the temporary database file: {path}");
+            }
         }
     }
 }

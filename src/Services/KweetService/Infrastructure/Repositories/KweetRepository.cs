@@ -45,7 +45,7 @@ namespace Kwetter.Services.KweetService.Infrastructure.Repositories
         public async Task<IEnumerable<KweetAggregate>> FindKweetsByUserIdAsync(Guid userId, CancellationToken cancellationToken)
         {
             return await _kweetDbContext.Kweets
-                .Where(kweet => kweet.UserId == userId)
+                .AsQueryable().Where(kweet => kweet.UserId == userId)
                 .ToListAsync(cancellationToken);
         }
     }

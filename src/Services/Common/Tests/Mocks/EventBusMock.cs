@@ -1,26 +1,28 @@
-﻿using System.Collections.Concurrent;
+﻿using Kwetter.Services.Common.Application.Eventing;
+using Kwetter.Services.Common.Application.Eventing.Bus;
+using Kwetter.Services.Common.Domain.Events;
+using Microsoft.Extensions.Logging;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using Kwetter.Services.Common.EventBus.Abstractions;
-using Microsoft.Extensions.Logging;
 
 namespace Kwetter.Services.Common.Tests.Mocks
 {
     public class EventBusMock : IEventBus
     {
         private readonly ILogger<EventBusMock> _logger;
-        private readonly IMessageSerializer _messageSerializer;
+        private readonly IEventSerializer _eventSerializer;
         private readonly ConcurrentBag<IEvent> _unknownEvents;
         private readonly ConcurrentBag<string> _unknownQueue;
         private readonly ConcurrentDictionary<string, Dictionary<string, List<IEventHandler<IEvent>>>> _eventHandlerMap;
         
         public EventBusMock(
             ILogger<EventBusMock> logger,
-            IMessageSerializer messageSerializer)
+            IEventSerializer messageSerializer)
         {
             _logger = logger;
-            _messageSerializer = messageSerializer;
+            _eventSerializer = messageSerializer;
             _unknownEvents = new ConcurrentBag<IEvent>();
             _unknownQueue = new ConcurrentBag<string>();
             _eventHandlerMap = new ConcurrentDictionary<string, Dictionary<string, List<IEventHandler<IEvent>>>>();
@@ -28,7 +30,7 @@ namespace Kwetter.Services.Common.Tests.Mocks
         
         public void Publish<TEvent>(TEvent @event, string queueName) where TEvent : class, IEvent
         {
-            _logger.LogInformation(_messageSerializer.SerializeToString(@event));
+            _logger.LogInformation(_eventSerializer.SerializeToString(@event));
             if (!_eventHandlerMap.ContainsKey(nameof(TEvent)))
             {
                 _unknownQueue.Add(queueName);

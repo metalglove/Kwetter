@@ -6,13 +6,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Mocks\" />
+    <PackageReference Include="Moq" Version="4.16.1" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\API\Kwetter.Services.Common.API.csproj" />
+    <ProjectReference Include="..\Application\Kwetter.Services.Common.Application.csproj" />
     <ProjectReference Include="..\Domain\Kwetter.Services.Common.Domain.csproj" />
-    <ProjectReference Include="..\EventBus\Kwetter.Services.Common.EventBus.csproj" />
     <ProjectReference Include="..\Infrastructure\Kwetter.Services.Common.Infrastructure.csproj" />
   </ItemGroup>
 

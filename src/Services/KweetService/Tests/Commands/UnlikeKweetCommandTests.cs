@@ -1,6 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
-using Kwetter.Services.Common.API.CQRS;
+﻿using Kwetter.Services.Common.API.CQRS;
 using Kwetter.Services.Common.Tests;
 using Kwetter.Services.KweetService.API;
 using Kwetter.Services.KweetService.API.Application.Commands.CreateKweetCommand;
@@ -14,6 +12,8 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
+using System.Threading.Tasks;
 using XAssert = Xunit.Assert;
 
 namespace Kwetter.Services.KweetService.Tests.Commands
@@ -54,7 +54,6 @@ namespace Kwetter.Services.KweetService.Tests.Commands
         }
 
         [TestCleanup]
-
         public void Cleanup()
         {
             Cleanup(ServiceProvider);

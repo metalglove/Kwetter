@@ -1,20 +1,20 @@
-using System.Diagnostics.CodeAnalysis;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using System.Reflection;
 using Kwetter.Services.Common.API;
+using Kwetter.Services.Common.Application.Configurations;
 using Kwetter.Services.Common.Infrastructure;
 using Kwetter.Services.FollowService.API.Application.Commands.CreateFollowCommand;
 using Kwetter.Services.FollowService.Domain.AggregatesModel.FollowAggregate;
 using Kwetter.Services.FollowService.Infrastructure;
 using Kwetter.Services.FollowService.Infrastructure.Repositories;
 using MediatR;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Kwetter.Services.Common.Infrastructure.Configurations;
+using System.Diagnostics.CodeAnalysis;
+using System.Reflection;
 
 namespace Kwetter.Services.FollowService.API
 {
@@ -56,7 +56,6 @@ namespace Kwetter.Services.FollowService.API
             services.AddTransient<FollowDbContext>(p => p.GetRequiredService<IFactory<FollowDbContext>>().Create());
             services.AddTransient<IAggregateUnitOfWork>(p => p.GetRequiredService<IFactory<FollowDbContext>>().Create());
             services.AddTransient<IFollowRepository, FollowRepository>();
-            services.AddIntegrationServices<FollowDbContext>(Assembly.GetAssembly(typeof(Startup)));
             services.AddControllers();
             services.AddSwagger(_configuration);
             services.VerifyDatabaseConnection<FollowDbContext>();

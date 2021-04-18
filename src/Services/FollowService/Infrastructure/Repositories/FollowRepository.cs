@@ -51,7 +51,7 @@ namespace Kwetter.Services.FollowService.Infrastructure.Repositories
         public async Task<IEnumerable<FollowAggregate>> FindFollowersByUserIdAsync(Guid userId, CancellationToken cancellationToken)
         {
             return await _followDbContext.Follows
-                .Where(follow => follow.FollowingId == userId)
+                .AsQueryable().Where(follow => follow.FollowingId == userId)
                 .ToListAsync(cancellationToken);
         }
 
@@ -59,7 +59,7 @@ namespace Kwetter.Services.FollowService.Infrastructure.Repositories
         public async Task<IEnumerable<FollowAggregate>> FindFollowingsByUserIdAsync(Guid userId, CancellationToken cancellationToken)
         {
             return await _followDbContext.Follows
-                .Where(follow => follow.FollowerId == userId)
+                .AsQueryable().Where(follow => follow.FollowerId == userId)
                 .ToListAsync(cancellationToken);
         }
     }

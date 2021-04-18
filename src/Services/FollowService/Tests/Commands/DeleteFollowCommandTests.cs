@@ -1,6 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
-using Kwetter.Services.Common.API.CQRS;
+﻿using Kwetter.Services.Common.API.CQRS;
 using Kwetter.Services.Common.Tests;
 using Kwetter.Services.FollowService.API;
 using Kwetter.Services.FollowService.API.Application.Commands.CreateFollowCommand;
@@ -13,6 +11,8 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
+using System.Threading.Tasks;
 using XAssert = Xunit.Assert;
 
 namespace Kwetter.Services.FollowService.Tests.Commands

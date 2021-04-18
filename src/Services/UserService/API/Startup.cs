@@ -1,5 +1,5 @@
-using System.Diagnostics.CodeAnalysis;
 using Kwetter.Services.Common.API;
+using Kwetter.Services.Common.Application.Configurations;
 using Kwetter.Services.Common.Infrastructure;
 using Kwetter.Services.UserService.API.Application.Commands.CreateUserCommand;
 using Kwetter.Services.UserService.Domain.AggregatesModel.UserAggregate;
@@ -13,8 +13,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
-using Kwetter.Services.Common.Infrastructure.Configurations;
 
 namespace Kwetter.Services.UserService.API
 {
@@ -56,7 +56,6 @@ namespace Kwetter.Services.UserService.API
             services.AddTransient<UserDbContext>(p => p.GetRequiredService<IFactory<UserDbContext>>().Create());
             services.AddTransient<IAggregateUnitOfWork>(p => p.GetRequiredService<IFactory<UserDbContext>>().Create());
             services.AddTransient<IUserRepository, UserRepository>();
-            services.AddIntegrationServices<UserDbContext>(Assembly.GetAssembly(typeof(Startup)));
             services.AddControllers();
             services.AddSwagger(_configuration);
             services.VerifyDatabaseConnection<UserDbContext>();

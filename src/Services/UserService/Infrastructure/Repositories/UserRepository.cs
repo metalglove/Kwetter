@@ -51,7 +51,7 @@ namespace Kwetter.Services.UserService.Infrastructure.Repositories
         public async Task<UserAggregate> FindByUserDisplayNameAsync(string displayName, CancellationToken cancellationToken)
         {
             return await _userDbContext.Users
-                .Where(user => user.DisplayName.ToLower() == displayName.ToLower())
+                .AsQueryable().Where(user => user.DisplayName.ToLower() == displayName.ToLower())
                 .SingleOrDefaultAsync(cancellationToken);
         }
     }
