@@ -44,7 +44,7 @@ namespace Kwetter.Services.Common.Infrastructure.Eventing.Store
             _eventStoreClient = eventStoreClient ?? throw new ArgumentNullException(nameof(eventStoreClient));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _eventSerializer = eventSerializer ?? throw new ArgumentNullException(nameof(eventSerializer));
-            _eventStream = $"DomainEvents-{_serviceConfiguration.ShortTitle}";
+            _eventStream = $"{_serviceConfiguration.ShortTitle}-DomainEvents";
             _events = new ConcurrentQueue<EventData>();
         }
 
