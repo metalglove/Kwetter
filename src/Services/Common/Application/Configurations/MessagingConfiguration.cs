@@ -1,4 +1,4 @@
-﻿namespace Kwetter.Services.Common.EventBus
+﻿namespace Kwetter.Services.Common.Application.Configurations
 {
     /// <summary>
     /// Represents the <see cref="MessagingConfiguration"/> class.
