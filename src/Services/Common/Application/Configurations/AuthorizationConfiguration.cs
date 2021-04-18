@@ -1,4 +1,4 @@
-﻿namespace Kwetter.Services.Common.Infrastructure.Configurations
+﻿namespace Kwetter.Services.Common.Application.Configurations
 {
     /// <summary>
     /// Represents the <see cref="AuthorizationConfiguration"/> class.
@@ -14,11 +14,6 @@
         /// Gets and sets the issuer.
         /// </summary>
         public string Issuer { get; set; }
-
-        /// <summary>
-        /// Gets and sets the grant type.
-        /// </summary>
-        public string GrantType { get; set; }
 
         /// <summary>
         /// Gets and sets the client secret.
