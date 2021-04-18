@@ -1,5 +1,4 @@
-﻿using Kwetter.Services.Common.EventBus.Abstractions;
-using MediatR;
+﻿using MediatR;
 using System;
 
 namespace Kwetter.Services.Common.Domain.Events

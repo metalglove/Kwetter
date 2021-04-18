@@ -1,4 +1,4 @@
-﻿using Kwetter.Services.Common.Infrastructure.Configurations;
+﻿using Kwetter.Services.Common.Application.Configurations;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.Extensions.Configuration;

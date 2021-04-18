@@ -18,11 +18,10 @@ namespace Kwetter.Services.Common.Infrastructure
         private readonly IMediator _mediator;
         private readonly ILogger<UnitOfWork<TContext>> _logger;
 
-        /// <inheritdoc cref="IAggregateUnitOfWork.CurrentTransaction"/>
-        public IDbContextTransaction CurrentTransaction { get; private set; }
-
-        /// <inheritdoc cref="IAggregateUnitOfWork.HasActiveTransaction"/>
-        public bool HasActiveTransaction => CurrentTransaction != null;
+        /// <summary>
+        /// Gets and sets the current transaction.
+        /// </summary>
+        protected IDbContextTransaction CurrentTransaction { get; private set; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="UnitOfWork{Context}"/> class.
@@ -64,50 +63,47 @@ namespace Kwetter.Services.Common.Infrastructure
         }
 
         /// <inheritdoc cref="IAggregateUnitOfWork.BeginTransactionAsync(CancellationToken)"/>
-        public async Task<IDbContextTransaction> StartTransactionAsync(CancellationToken cancellationToken = default)
+        public async Task<Guid> StartTransactionAsync(CancellationToken cancellationToken = default)
         {
+            // TODO: Check whether this is good... should be scoped service lifetime, but still..
             if (CurrentTransaction != null) 
-                return null;
+                return CurrentTransaction.TransactionId;
+
             CurrentTransaction = await Database.BeginTransactionAsync(cancellationToken);
             _logger.LogInformation($"Started the database transaction {CurrentTransaction.TransactionId} for {GetType().Name}");
-            return CurrentTransaction;
+            return CurrentTransaction.TransactionId;
         }
 
-        /// <inheritdoc cref="IAggregateUnitOfWork.CommitTransactionAsync(IDbContextTransaction)"/>
-        public async Task CommitTransactionAsync(IDbContextTransaction transaction)
+        /// <inheritdoc cref="IAggregateUnitOfWork.CommitTransactionAsync(CancellationToken)"/>
+        public async Task CommitTransactionAsync(CancellationToken cancellationToken = default)
         {
-            if (transaction == null)
-                throw new ArgumentNullException(nameof(transaction));
-            if (transaction != CurrentTransaction)
-                throw new InvalidOperationException($"Transaction {transaction.TransactionId} is not current");
+            if (CurrentTransaction is null)
+                throw new InvalidOperationException($"Transaction is null.");
             try
             {
-                await SaveChangesAsync();
-                transaction.Commit();
+                await SaveChangesAsync(cancellationToken);
+                await CurrentTransaction.CommitAsync(cancellationToken);
                 _logger.LogInformation($"Commited the database transaction {CurrentTransaction.TransactionId} for {GetType().Name}");
 
             }
             catch
             {
-                RollbackTransaction();
+                await RollbackTransactionAsync(default);
                 throw;
             }
             finally
             {
-                if (CurrentTransaction != null)
-                {
-                    CurrentTransaction.Dispose();
-                    CurrentTransaction = null;
-                }
+                CurrentTransaction?.Dispose();
+                CurrentTransaction = null;
             }
         }
 
-        /// <inheritdoc cref="IAggregateUnitOfWork.RollbackTransaction()"/>
-        public void RollbackTransaction()
+        /// <inheritdoc cref="IAggregateUnitOfWork.RollbackTransactionAsync(CancellationToken)"/>
+        public async Task RollbackTransactionAsync(CancellationToken cancellationToken = default)
         {
             try
             {
-                CurrentTransaction?.Rollback();
+                await CurrentTransaction?.RollbackAsync(cancellationToken);
                 _logger.LogInformation($"Rolled back the database transaction {CurrentTransaction.TransactionId} for {GetType().Name}");
             }
             finally

@@ -1,4 +1,6 @@
-﻿namespace Kwetter.Services.Common.EventBus.Abstractions
+﻿using Kwetter.Services.Common.Domain.Events;
+
+namespace Kwetter.Services.Common.Application.Eventing
 {
     /// <summary>
     /// Represents the <see cref="IEventPublisher"/> interface.

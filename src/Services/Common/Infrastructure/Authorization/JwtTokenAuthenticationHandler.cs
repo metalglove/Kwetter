@@ -1,4 +1,4 @@
-﻿using Kwetter.Services.Common.Infrastructure.Configurations;
+﻿using Kwetter.Services.Common.Application.Configurations;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;

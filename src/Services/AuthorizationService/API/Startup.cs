@@ -4,8 +4,8 @@ using Kwetter.Services.AuthorizationService.Infrastructure;
 using Kwetter.Services.AuthorizationService.Infrastructure.Interfaces;
 using Kwetter.Services.AuthorizationService.Infrastructure.Repositories;
 using Kwetter.Services.Common.API;
+using Kwetter.Services.Common.Application.Configurations;
 using Kwetter.Services.Common.Infrastructure;
-using Kwetter.Services.Common.Infrastructure.Configurations;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -58,7 +58,6 @@ namespace Kwetter.Services.AuthorizationService.API
             services.AddTransient<IdentityDbContext>(p => p.GetRequiredService<IFactory<IdentityDbContext>>().Create());
             services.AddTransient<IAggregateUnitOfWork>(p => p.GetRequiredService<IFactory<IdentityDbContext>>().Create());
             services.AddTransient<IIdentityRepository, IdentityRepository>();
-            services.AddIntegrationServices<IdentityDbContext>(Assembly.GetAssembly(typeof(Startup)));
             services.AddControllers();
             services.AddSwagger(_configuration);
             services.VerifyDatabaseConnection<IdentityDbContext>();
@@ -81,7 +80,6 @@ namespace Kwetter.Services.AuthorizationService.API
             }
 
             app.UseRouting();
-            // TODO: fix the CORS stuff
             app.UseCors(x => x.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
             app.UseAuthentication();
             app.UseAuthorization();

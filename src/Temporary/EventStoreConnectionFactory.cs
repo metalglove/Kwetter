@@ -1,12 +1,12 @@
-﻿using EventStore.ClientAPI;
-using Kwetter.Services.Common.Infrastructure.Configurations;
+﻿using EventStore.Client;
+using Kwetter.Services.Common.Application.Configurations;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Kwetter.Services.Common.Infrastructure.Eventing
+namespace Kwetter.Services.Common.Infrastructure.Eventing.Store
 {
     /// <summary>
     /// Represents the <see cref="EventStoreConnectionFactory"/> class.
@@ -74,6 +74,11 @@ namespace Kwetter.Services.Common.Infrastructure.Eventing
             {
                 isConnected = false;
                 isConnecting = false;
+                if ("Connection close requested by client.".Equals(e.Reason))
+                {
+                    _logger.LogInformation($"The EventStore connection was gracefully closed.");
+                    return;
+                }
                 _logger.LogError($"The EventStore connection closed. Attempting to create a new connection...");
                 await ConnectAsync(cancellationToken);
             };
@@ -85,6 +90,7 @@ namespace Kwetter.Services.Common.Infrastructure.Eventing
             eventStoreConnection = SetupConnection(cancellationToken);
             isConnecting = true;
             await eventStoreConnection.ConnectAsync();
+            _logger.LogInformation($"The EventStore connection is established connected successfully.");
             isConnected = true;
             isConnecting = false;
         }

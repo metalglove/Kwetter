@@ -1,6 +1,6 @@
-﻿using Kwetter.Services.Common.Infrastructure.Eventing;
+﻿using Kwetter.Services.Common.Application.Eventing.Integration;
+using Kwetter.Services.Common.Application.Eventing.Store;
 using Kwetter.Services.Common.Infrastructure.Extensions;
-using Kwetter.Services.Common.Infrastructure.Integration;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
@@ -56,19 +56,27 @@ namespace Kwetter.Services.Common.Infrastructure.Behaviours
             string typeName = request.GetGenericTypeName();
             try
             {
-                if (_unitOfWork.HasActiveTransaction)
-                    return await next();
                 IExecutionStrategy strategy = _unitOfWork.Database.CreateExecutionStrategy();
                 await strategy.ExecuteAsync(async () =>
                 {
                     _logger.LogInformation($"Started transactions for {typeName} {request}");
-                    await using IDbContextTransaction transaction = await _unitOfWork.StartTransactionAsync(cancellationToken);
-                    await _eventStore.StartTransactionAsync(cancellationToken);
-                    response = await next();
-                    await _eventStore.CommitTransactionAsync(cancellationToken);
-                    await _unitOfWork.CommitTransactionAsync(transaction);
+                    
+                    await _unitOfWork.StartTransactionAsync(cancellationToken);         // Start database transaction.
+                    await _eventStore.StartTransactionAsync(cancellationToken);             // Start event store transaction.
+                    
+                    response = await next();                                                    // Continues the middleware flow...
+                    
+                    await _eventStore.CommitTransactionAsync(cancellationToken);            // End event store transaction.
+                    await _unitOfWork.CommitTransactionAsync(cancellationToken);        // End database transaction.
+                    
                     _logger.LogInformation($"Commited transactions for {typeName} {request}");
-                    await _integrationEventService.PublishEventsThroughEventBusAsync(transaction.TransactionId, cancellationToken);
+
+                    // NOTE: Persist aggregate changes -> Publish integration events
+                    // After the changes to aggregates are persisted and domain events are published,
+                    // integration events are allowed to be published.
+                    // An Event is "something that has happened in the past", therefore its name has to be in the past. (i.e. Created, Updated, etc..)
+                    // An Integration Event is an event that can cause side effects to other microservices, Bounded-Contexts or external systems.
+                    _integrationEventService.PublishEvents();
                 });
                 return response;
             }

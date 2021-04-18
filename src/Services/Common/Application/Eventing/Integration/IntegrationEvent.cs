@@ -1,7 +1,7 @@
-﻿using Kwetter.Services.Common.EventBus.Abstractions;
-using System;
+﻿using System;
+using Kwetter.Services.Common.Domain.Events;
 
-namespace Kwetter.Services.Common.EventBus.Events
+namespace Kwetter.Services.Common.Application.Eventing.Integration
 {
     /// <summary>
     /// Represents the <see cref="IntegrationEvent"/> record.

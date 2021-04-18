@@ -1,4 +1,4 @@
-﻿using Kwetter.Services.Common.EventBus;
+﻿using Kwetter.Services.Common.Application.Configurations;
 using Microsoft.Extensions.ObjectPool;
 using Microsoft.Extensions.Options;
 using RabbitMQ.Client;
@@ -33,10 +33,7 @@ namespace Kwetter.Services.Common.Infrastructure.RabbitMq
         public bool Return(IModel obj)
         {
             if (obj.IsOpen)
-            {
                 return true;
-            }
-
             obj?.Dispose();
             return false;
         }
@@ -52,7 +49,6 @@ namespace Kwetter.Services.Common.Infrastructure.RabbitMq
                 Port = _options.Port,
                 VirtualHost = _options.VirtualHost
             };
-
             return factory.CreateConnection();
         }
     }

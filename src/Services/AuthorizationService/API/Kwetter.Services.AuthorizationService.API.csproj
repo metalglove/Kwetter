@@ -11,6 +11,7 @@
 
   <ItemGroup>
     <Folder Include="Application\Commands\" />
+    <Folder Include="Application\Queries\AuthorizationQuery\EventHandlers\" />
   </ItemGroup>
 
   <ItemGroup>

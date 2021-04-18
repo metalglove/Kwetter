@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Kwetter.Services.Common.Domain.Events;
 
-namespace Kwetter.Services.Common.EventBus.Abstractions
+namespace Kwetter.Services.Common.Application.Eventing
 {
     /// <summary>
     /// Represents the <see cref="IEventHandler{TEvent}"/> interface.

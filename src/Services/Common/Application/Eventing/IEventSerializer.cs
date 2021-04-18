@@ -1,11 +1,11 @@
 ﻿using System;
 
-namespace Kwetter.Services.Common.EventBus.Abstractions
+namespace Kwetter.Services.Common.Application.Eventing
 {
     /// <summary>
-    /// Represents the <see cref="IMessageSerializer"/> interface.
+    /// Represents the <see cref="IEventSerializer"/> interface.
     /// </summary>
-    public interface IMessageSerializer
+    public interface IEventSerializer
     {
         /// <summary>
         /// Serializes a message to a readonly memory byte array.

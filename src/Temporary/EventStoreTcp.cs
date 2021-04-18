@@ -1,5 +1,7 @@
 ﻿using EventStore.ClientAPI;
-using Kwetter.Services.Common.EventBus.Abstractions;
+using Kwetter.Services.Common.Application.Eventing;
+using Kwetter.Services.Common.Application.Eventing.Store;
+using Kwetter.Services.Common.Domain.Events;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -7,36 +9,36 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Kwetter.Services.Common.Infrastructure.Eventing
+namespace Kwetter.Services.Common.Infrastructure.Eventing.Store
 {
     /// <summary>
-    /// Represents the <see cref="EventStore"/> class.
+    /// Represents the <see cref="EventStoreTcp"/> class.
     /// </summary>
-    public sealed class EventStore : IEventStore, IDisposable
+    public sealed class EventStoreTcp : IEventStore, IDisposable
     {
         private readonly IAsyncFactory<IEventStoreConnection> _eventStoreConnectionFactory;
-        private readonly ILogger<EventStore> _logger;
-        private readonly IMessageSerializer _messageSerializer;
+        private readonly ILogger<EventStoreTcp> _logger;
+        private readonly IEventSerializer _eventSerializer;
         private EventStoreTransaction eventStoreTransaction;
         private readonly string _eventStream;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="EventStore"/> class.
+        /// Initializes a new instance of the <see cref="EventStoreTcp"/> class.
         /// </summary>
         /// <param name="serviceName">The service name.</param>
         /// <param name="eventStoreConnectionFactory">The event store connection factory.</param>
         /// <param name="logger">The logger.</param>
-        /// <param name="messageSerializer">The message serializer.</param>
-        public EventStore(
+        /// <param name="eventSerializer">The event serializer.</param>
+        public EventStoreTcp(
             string serviceName,
             IAsyncFactory<IEventStoreConnection> eventStoreConnectionFactory,
-            ILogger<EventStore> logger,
-            IMessageSerializer messageSerializer)
+            ILogger<EventStoreTcp> logger,
+            IEventSerializer eventSerializer)
         {
             _eventStream = $"DomainEvents-{serviceName}";
             _eventStoreConnectionFactory = eventStoreConnectionFactory;
             _logger = logger;
-            _messageSerializer = messageSerializer;
+            _eventSerializer = eventSerializer;
         }
 
         /// <inheritdoc cref="IEventStore.StartTransactionAsync(CancellationToken)"/>
@@ -62,7 +64,7 @@ namespace Kwetter.Services.Common.Infrastructure.Eventing
             cancellationToken.ThrowIfCancellationRequested();
         }
 
-        /// <inheritdoc cref="IEventStore.RollbackTransaction"/>
+        /// <inheritdoc cref="IEventStore.RollbackTransaction()"/>
         public void RollbackTransaction()
         {
             if (eventStoreTransaction is null)
@@ -81,8 +83,8 @@ namespace Kwetter.Services.Common.Infrastructure.Eventing
                     eventId: @event.Id,
                     type: @event.Name,
                     isJson: true,
-                    data: _messageSerializer.Serialize(@event).ToArray(),
-                    metadata: _messageSerializer.Serialize(new { @event.Version, @event.Name }).ToArray());
+                    data: _eventSerializer.Serialize(@event).ToArray(),
+                    metadata: _eventSerializer.Serialize(new { @event.Version, @event.Name }).ToArray());
             });
             await eventStoreTransaction.WriteAsync(eventData);
             cancellationToken.ThrowIfCancellationRequested();
@@ -95,8 +97,8 @@ namespace Kwetter.Services.Common.Infrastructure.Eventing
                     eventId: @event.Id,
                     type: @event.Name,
                     isJson: true,
-                    data: _messageSerializer.Serialize(@event).ToArray(),
-                    metadata: _messageSerializer.Serialize(new { @event.Version, @event.Name }).ToArray());
+                    data: _eventSerializer.Serialize(@event).ToArray(),
+                    metadata: _eventSerializer.Serialize(new { @event.Version, @event.Name }).ToArray());
             await eventStoreTransaction.WriteAsync(eventData);
             cancellationToken.ThrowIfCancellationRequested();
         }

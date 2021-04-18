@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Kwetter.Services.Common.EventBus.Abstractions
+namespace Kwetter.Services.Common.Domain.Events
 {
     /// <summary>
     /// Represents the <see cref="IEvent"/> interface.
