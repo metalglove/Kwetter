@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Kwetter.Services.UserService.Infrastructure.Migrations
 {
     [DbContext(typeof(UserDbContext))]
-    [Migration("20210316214816_InitialCreate")]
+    [Migration("20210420231825_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -18,7 +18,7 @@ namespace Kwetter.Services.UserService.Infrastructure.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
-                .HasAnnotation("ProductVersion", "5.0.4")
+                .HasAnnotation("ProductVersion", "5.0.5")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
             modelBuilder.Entity("Kwetter.Services.UserService.Domain.AggregatesModel.UserAggregate.UserAggregate", b =>
@@ -34,9 +34,6 @@ namespace Kwetter.Services.UserService.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("DisplayName")
-                        .IsUnique();
-
                     b.ToTable("Users");
                 });
 
@@ -47,7 +44,12 @@ namespace Kwetter.Services.UserService.Infrastructure.Migrations
                             b1.Property<Guid>("UserAggregateId")
                                 .HasColumnType("uniqueidentifier");
 
-                            b1.Property<string>("ProfileDescription")
+                            b1.Property<string>("Description")
+                                .IsRequired()
+                                .HasMaxLength(512)
+                                .HasColumnType("nvarchar(512)");
+
+                            b1.Property<string>("PictureUrl")
                                 .IsRequired()
                                 .HasMaxLength(512)
                                 .HasColumnType("nvarchar(512)");

@@ -1,18 +1,15 @@
 using Kwetter.Services.Common.API;
-using Kwetter.Services.Common.Application.Configurations;
 using Kwetter.Services.Common.Infrastructure;
 using Kwetter.Services.KweetService.API.Application.Commands.CreateKweetCommand;
 using Kwetter.Services.KweetService.Domain.AggregatesModel.KweetAggregate;
 using Kwetter.Services.KweetService.Infrastructure;
 using Kwetter.Services.KweetService.Infrastructure.Repositories;
-using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 
@@ -46,16 +43,10 @@ namespace Kwetter.Services.KweetService.API
             services.AddDefaultApplicationServices(Assembly.GetAssembly(typeof(Startup)), Assembly.GetAssembly(typeof(CreateKweetCommand)));
             services.AddDefaultInfrastructureServices();
             services.AddDefaultAuthentication(_configuration);
-            services.AddSingleton<IFactory<KweetDbContext>>(serviceProvider =>
-            {
-                IOptions<DbConfiguration> options = serviceProvider.GetRequiredService<IOptions<DbConfiguration>>();
-                ILoggerFactory loggerFactory = serviceProvider.GetRequiredService<ILoggerFactory>();
-                IMediator mediator = serviceProvider.GetRequiredService<IMediator>();
-                return new KweetDatabaseFactory(options, loggerFactory, mediator);
-            });
-            services.AddTransient<KweetDbContext>(p => p.GetRequiredService<IFactory<KweetDbContext>>().Create());
-            services.AddTransient<IAggregateUnitOfWork>(p => p.GetRequiredService<IFactory<KweetDbContext>>().Create());
-            services.AddTransient<IKweetRepository, KweetRepository>();
+            services.AddScoped<IFactory<KweetDbContext>, KweetDatabaseFactory>();
+            services.AddScoped<KweetDbContext>(p => p.GetRequiredService<IFactory<KweetDbContext>>().Create());
+            services.AddScoped<IAggregateUnitOfWork>(p => p.GetRequiredService<IFactory<KweetDbContext>>().Create());
+            services.AddScoped<IKweetRepository, KweetRepository>();
             services.AddControllers();
             services.AddSwagger(_configuration);
             services.VerifyDatabaseConnection<KweetDbContext>();

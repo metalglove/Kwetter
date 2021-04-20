@@ -46,16 +46,10 @@ namespace Kwetter.Services.FollowService.API
             services.AddDefaultApplicationServices(Assembly.GetAssembly(typeof(Startup)), Assembly.GetAssembly(typeof(CreateFollowCommand)));
             services.AddDefaultInfrastructureServices();
             services.AddDefaultAuthentication(_configuration);
-            services.AddSingleton<IFactory<FollowDbContext>>(serviceProvider =>
-            {
-                IOptions<DbConfiguration> options = serviceProvider.GetRequiredService<IOptions<DbConfiguration>>();
-                ILoggerFactory loggerFactory = serviceProvider.GetRequiredService<ILoggerFactory>();
-                IMediator mediator = serviceProvider.GetRequiredService<IMediator>();
-                return new FollowDatabaseFactory(options, loggerFactory, mediator);
-            });
-            services.AddTransient<FollowDbContext>(p => p.GetRequiredService<IFactory<FollowDbContext>>().Create());
-            services.AddTransient<IAggregateUnitOfWork>(p => p.GetRequiredService<IFactory<FollowDbContext>>().Create());
-            services.AddTransient<IFollowRepository, FollowRepository>();
+            services.AddScoped<IFactory<FollowDbContext>, FollowDatabaseFactory>();
+            services.AddScoped<FollowDbContext>(p => p.GetRequiredService<IFactory<FollowDbContext>>().Create());
+            services.AddScoped<IAggregateUnitOfWork>(p => p.GetRequiredService<IFactory<FollowDbContext>>().Create());
+            services.AddScoped<IFollowRepository, FollowRepository>();
             services.AddControllers();
             services.AddSwagger(_configuration);
             services.VerifyDatabaseConnection<FollowDbContext>();

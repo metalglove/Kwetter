@@ -13,18 +13,13 @@ namespace Kwetter.Services.UserService.Infrastructure.Migrations
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     DisplayName = table.Column<string>(type: "nvarchar(64)", maxLength: 64, nullable: false),
-                    Profile_Description = table.Column<string>(type: "nvarchar(512)", maxLength: 512, nullable: true)
+                    Profile_Description = table.Column<string>(type: "nvarchar(512)", maxLength: 512, nullable: true),
+                    Profile_PictureUrl = table.Column<string>(type: "nvarchar(512)", maxLength: 512, nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Users", x => x.Id);
                 });
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Users_Username",
-                table: "Users",
-                column: "DisplayName",
-                unique: true);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

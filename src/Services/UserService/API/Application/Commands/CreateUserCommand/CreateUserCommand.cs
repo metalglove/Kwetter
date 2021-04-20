@@ -10,19 +10,23 @@ namespace Kwetter.Services.UserService.API.Application.Commands.CreateUserComman
     public record CreateUserCommand : IRequest<CommandResponse>
     {
         /// <summary>
-        /// Gets or initializes the user id.
+        /// Gets and initializes the user id.
         /// </summary>
-
         public Guid UserId { get; init; }
 
         /// <summary>
-        /// Gets or initializes the user display name.
+        /// Gets and initializes the user display name.
         /// </summary>
         public string UserDisplayName { get; init; }
 
         /// <summary>
-        /// Gets or initializes the user profile description.
+        /// Gets and initializes the user profile description.
         /// </summary>
         public string UserProfileDescription { get; init; }
+
+        /// <summary>
+        /// Gets and sets the user profile picture url.
+        /// </summary>
+        public string UserProfilePictureUrl { get; init; }
     }
 }

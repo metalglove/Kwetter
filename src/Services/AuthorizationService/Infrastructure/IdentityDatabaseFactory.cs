@@ -40,7 +40,9 @@ namespace Kwetter.Services.AuthorizationService.Infrastructure
         /// <returns>The identity database context.</returns>
         protected override IdentityDbContext CreateNewInstance(DbContextOptions<IdentityDbContext> dbContextOptions)
         {
-            return new(dbContextOptions, _mediator, LoggerFactory.CreateLogger<IdentityDbContext>());
+            return LoggerFactory is null
+                ? (new(dbContextOptions, _mediator, default))
+                : (new(dbContextOptions, _mediator, LoggerFactory.CreateLogger<IdentityDbContext>()));
         }
     }
 }

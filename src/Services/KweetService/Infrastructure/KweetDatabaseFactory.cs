@@ -40,7 +40,9 @@ namespace Kwetter.Services.KweetService.Infrastructure
         /// <returns>The kweet database context.</returns>
         protected override KweetDbContext CreateNewInstance(DbContextOptions<KweetDbContext> dbContextOptions)
         {
-            return new(dbContextOptions, _mediator, LoggerFactory.CreateLogger<KweetDbContext>());
+            return LoggerFactory is null
+                ? (new(dbContextOptions, _mediator, default))
+                : (new(dbContextOptions, _mediator, LoggerFactory.CreateLogger<KweetDbContext>()));
         }
     }
 }

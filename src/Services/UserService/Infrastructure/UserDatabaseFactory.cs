@@ -40,7 +40,9 @@ namespace Kwetter.Services.UserService.Infrastructure
         /// <returns>The user database context.</returns>
         protected override UserDbContext CreateNewInstance(DbContextOptions<UserDbContext> dbContextOptions)
         {
-            return new(dbContextOptions, _mediator, LoggerFactory.CreateLogger<UserDbContext>());
+            return LoggerFactory is null
+                ? (new(dbContextOptions, _mediator, default))
+                : (new(dbContextOptions, _mediator, LoggerFactory.CreateLogger<UserDbContext>()));
         }
     }
 }
