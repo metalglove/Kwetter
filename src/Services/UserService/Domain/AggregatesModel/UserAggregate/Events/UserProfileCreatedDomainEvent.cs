@@ -4,9 +4,9 @@ using System;
 namespace Kwetter.Services.UserService.Domain.AggregatesModel.UserAggregate.Events
 {
     /// <summary>
-    /// Represents the <see cref="UserProfileCreatedDomainEvent"/> record.
+    /// Represents the <see cref="UserProfileCreatedDomainEvent"/> class.
     /// </summary>
-    public record UserProfileCreatedDomainEvent : DomainEvent
+    public sealed class UserProfileCreatedDomainEvent : DomainEvent
     {
         /// <summary>
         /// Gets and sets the user id.
@@ -14,13 +14,13 @@ namespace Kwetter.Services.UserService.Domain.AggregatesModel.UserAggregate.Even
         public Guid UserId { get; }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="UserProfileCreatedDomainEvent"/> record.
+        /// Initializes a new instance of the <see cref="UserProfileCreatedDomainEvent"/> class.
         /// </summary>
         /// <param name="userId">The user id.</param>
         public UserProfileCreatedDomainEvent(Guid userId)
         {
             UserId = userId;
-            Version = 1;
+            EventVersion = 1;
         }
     }
 }

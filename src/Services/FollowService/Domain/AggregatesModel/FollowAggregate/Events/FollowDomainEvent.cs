@@ -4,9 +4,9 @@ using Kwetter.Services.Common.Domain.Events;
 namespace Kwetter.Services.FollowService.Domain.AggregatesModel.FollowAggregate.Events
 {
     /// <summary>
-    /// Represents the <see cref="FollowDomainEvent"/> record.
+    /// Represents the <see cref="FollowDomainEvent"/> class.
     /// </summary>
-    public record FollowDomainEvent : DomainEvent
+    public sealed class FollowDomainEvent : DomainEvent
     {
         /// <summary>
         /// Gets and sets the following id.
@@ -24,7 +24,7 @@ namespace Kwetter.Services.FollowService.Domain.AggregatesModel.FollowAggregate.
         public DateTime FollowedDateTime { get; }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="FollowDomainEvent"/> record.
+        /// Initializes a new instance of the <see cref="FollowDomainEvent"/> class.
         /// </summary>
         /// <param name="followingId">The following id.</param>
         /// <param name="followerId">The follower id.</param>
@@ -34,7 +34,7 @@ namespace Kwetter.Services.FollowService.Domain.AggregatesModel.FollowAggregate.
             FollowingId = followingId;
             FollowerId = followerId;
             FollowedDateTime = followedDateTime;
-            Version = 1;
+            EventVersion = 1;
         }
     }
 }

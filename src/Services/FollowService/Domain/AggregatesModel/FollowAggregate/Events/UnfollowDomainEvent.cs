@@ -1,12 +1,12 @@
-﻿using System;
-using Kwetter.Services.Common.Domain.Events;
+﻿using Kwetter.Services.Common.Domain.Events;
+using System;
 
 namespace Kwetter.Services.FollowService.Domain.AggregatesModel.FollowAggregate.Events
 {
     /// <summary>
-    /// Represents the <see cref="UnfollowDomainEvent"/> record.
+    /// Represents the <see cref="UnfollowDomainEvent"/> class.
     /// </summary>
-    public record UnfollowDomainEvent : DomainEvent
+    public sealed class UnfollowDomainEvent : DomainEvent
     {
         /// <summary>
         /// Gets and sets the following id.
@@ -24,7 +24,7 @@ namespace Kwetter.Services.FollowService.Domain.AggregatesModel.FollowAggregate.
         public DateTime UnfollowedDateTime { get; }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="UnfollowDomainEvent"/> record.
+        /// Initializes a new instance of the <see cref="UnfollowDomainEvent"/> class.
         /// </summary>
         /// <param name="followingId">The following id.</param>
         /// <param name="followerId">The follower id.</param>
@@ -33,7 +33,7 @@ namespace Kwetter.Services.FollowService.Domain.AggregatesModel.FollowAggregate.
             FollowingId = followingId;
             FollowerId = followerId;
             UnfollowedDateTime = DateTime.UtcNow;
-            Version = 1;
+            EventVersion = 1;
         }
     }
 }

@@ -4,9 +4,9 @@ using System;
 namespace Kwetter.Services.KweetService.Domain.AggregatesModel.KweetAggregate.Events
 {
     /// <summary>
-    /// Represents the <see cref="KweetLikedDomainEvent"/> record.
+    /// Represents the <see cref="KweetLikedDomainEvent"/> class.
     /// </summary>
-    public record KweetLikedDomainEvent : DomainEvent
+    public sealed class KweetLikedDomainEvent : DomainEvent
     {
         /// <summary>
         /// Gets and sets the kweet id.
@@ -24,7 +24,7 @@ namespace Kwetter.Services.KweetService.Domain.AggregatesModel.KweetAggregate.Ev
         public DateTime LikedDateTime { get; }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="KweetLikedDomainEvent"/> record.
+        /// Initializes a new instance of the <see cref="KweetLikedDomainEvent"/> class.
         /// </summary>
         /// <param name="kweetId">The kweet id.</param>
         /// <param name="userId">The user id.</param>
@@ -34,7 +34,7 @@ namespace Kwetter.Services.KweetService.Domain.AggregatesModel.KweetAggregate.Ev
             KweetId = kweetId;
             UserId = userId;
             LikedDateTime = likedDateTime;
-            Version = 1;
+            EventVersion = 1;
         }
     }
 }

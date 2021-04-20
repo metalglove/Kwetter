@@ -4,9 +4,9 @@ using System;
 namespace Kwetter.Services.UserService.Domain.AggregatesModel.UserAggregate.Events
 {
     /// <summary>
-    /// Represents the <see cref="UserDisplayNameUpdatedDomainEvent"/> record.
+    /// Represents the <see cref="UserDisplayNameUpdatedDomainEvent"/> class.
     /// </summary>
-    public record UserDisplayNameUpdatedDomainEvent : DomainEvent
+    public sealed class UserDisplayNameUpdatedDomainEvent : DomainEvent
     {
         /// <summary>
         /// Gets and sets the user id.
@@ -17,9 +17,9 @@ namespace Kwetter.Services.UserService.Domain.AggregatesModel.UserAggregate.Even
         /// Gets and sets the display name.
         /// </summary>
         public string DisplayName { get; }
-        
+
         /// <summary>
-        /// Initializes a new instance of the <see cref="UserDisplayNameUpdatedDomainEvent"/> record.
+        /// Initializes a new instance of the <see cref="UserDisplayNameUpdatedDomainEvent"/> class.
         /// </summary>
         /// <param name="userId">The user id.</param>
         /// <param name="displayName">The display name.</param>
@@ -27,7 +27,7 @@ namespace Kwetter.Services.UserService.Domain.AggregatesModel.UserAggregate.Even
         {
             UserId = userId;
             DisplayName = displayName;
-            Version = 1;
+            EventVersion = 1;
         }
     }
 }
