@@ -12,13 +12,13 @@ namespace Kwetter.Services.Common.Tests.Mocks
 {
     public class EventStoreMock : IEventStore
     {
-        private readonly List<IEvent> _events = new();
-        private readonly List<IEvent> _committedEvents = new();
+        private readonly List<Event> _events = new();
+        private readonly List<Event> _committedEvents = new();
         private readonly ILogger<EventStoreMock> _logger;
         private object transaction;
 
-        public IReadOnlyList<IEvent> Events => _events.AsReadOnly();
-        public IReadOnlyList<IEvent> CommittedEvents => _committedEvents.AsReadOnly();
+        public IReadOnlyList<Event> Events => _events.AsReadOnly();
+        public IReadOnlyList<Event> CommittedEvents => _committedEvents.AsReadOnly();
 
         public EventStoreMock(ILogger<EventStoreMock> logger)
         {
@@ -37,10 +37,10 @@ namespace Kwetter.Services.Common.Tests.Mocks
                 return Task.CompletedTask;
             }
 
-            foreach (IEvent @event in _events)
+            foreach (Event @event in _events)
             {
                 _committedEvents.Add(@event);
-                _logger.LogInformation($"Committed event: {@event.Name.ToCamelCase()}:{@event.Id}");
+                _logger.LogInformation($"Committed event: {@event.EventName.ToCamelCase()}:{@event.EventId}");
             }
             _events.Clear();
             _logger.LogInformation($"Completed event store transaction.");
@@ -81,7 +81,7 @@ namespace Kwetter.Services.Common.Tests.Mocks
             if (transaction is null)
                 throw new Exception("Attempted to save an event while there is not an active transaction.");
             _events.Add(@event);
-            _logger.LogInformation($"Enqueued event: {@event.Name.ToCamelCase()}:{@event.Id}");
+            _logger.LogInformation($"Enqueued event: {@event.EventName.ToCamelCase()}:{@event.EventId}");
         }
     }
 }

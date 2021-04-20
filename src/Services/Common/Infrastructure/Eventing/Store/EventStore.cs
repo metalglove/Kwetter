@@ -93,17 +93,17 @@ namespace Kwetter.Services.Common.Infrastructure.Eventing.Store
                 throw new Exception("Attempted to save an event while there is not an active transaction.");
 
             // NOTE: recommended by EventStore to use camelcase event names.
-            string camelCaseEventName = @event.Name.ToCamelCase();
+            string camelCaseEventName = @event.EventName.ToCamelCase();
             _events.Enqueue(new EventData(
-                    eventId: Uuid.FromGuid(@event.Id),
+                    eventId: Uuid.FromGuid(@event.EventId),
                     type: camelCaseEventName,
                     contentType: "application/json",
                     data: _eventSerializer.Serialize(@event),
-                    metadata: _eventSerializer.Serialize(new { @event.Version, @event.Name })));
-            _logger.LogInformation($"Enqueued event: {camelCaseEventName}:{@event.Id}");
+                    metadata: _eventSerializer.Serialize(new { @event.EventVersion, @event.EventName })));
+            _logger.LogInformation($"Enqueued event: {camelCaseEventName}:{@event.EventId}");
         }
 
-        /// <inheritdoc cref="IEventStore.SaveEvents(IEnumerable{IEvent})"/>
+        /// <inheritdoc cref="IEventStore.SaveEvents{TEvent}(IEnumerable{TEvent})"/>
         public void SaveEvents<TEvent>(IEnumerable<TEvent> events) where TEvent : DomainEvent
         {
             foreach (TEvent @event in events)

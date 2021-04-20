@@ -8,13 +8,13 @@ namespace Kwetter.Services.Common.Application.Eventing.Bus
     public interface IEventBus : IEventPublisher
     {
         /// <summary>
-        /// Subscribes to the event bus.
+        /// Subscribes to the event bus using a specified queue name.
         /// </summary>
         /// <param name="queueName">The name of the queue to subscribe to.</param>
         /// <param name="eventHandler">The event handler.</param>
         /// <typeparam name="TEvent">The type of event.</typeparam>
         /// <typeparam name="TEventHandler">The type of event handler.</typeparam>
-        void Subscribe<TEvent, TEventHandler>(string queueName, TEventHandler eventHandler) where TEvent : class, IEvent where TEventHandler : IEventHandler<TEvent>;
+        public void Subscribe<TEvent, TEventHandler>(string queueName, TEventHandler eventHandler) where TEvent : Event where TEventHandler : IEventHandler<TEvent>;
 
         /// <summary>
         /// Unsubscribe from the event bus.
@@ -22,6 +22,6 @@ namespace Kwetter.Services.Common.Application.Eventing.Bus
         /// <param name="eventHandler">The event handler.</param>
         /// <typeparam name="TEvent">The type of event.</typeparam>
         /// <typeparam name="TEventHandler">The type of event handler.</typeparam>
-        void Unsubscribe<TEvent, TEventHandler>(TEventHandler eventHandler) where TEvent : class, IEvent where TEventHandler : IEventHandler<TEvent>;
+        public void Unsubscribe<TEvent, TEventHandler>(TEventHandler eventHandler) where TEvent : Event where TEventHandler : IEventHandler<TEvent>;
     }
 }

@@ -13,6 +13,6 @@ namespace Kwetter.Services.Common.Application.Eventing
         /// <typeparam name="TEvent">The type of event.</typeparam>
         /// <param name="event">The event to publish.</param>
         /// <param name="queueName">The name of the queue to publish to.</param>
-        void Publish<TEvent>(TEvent @event, string queueName) where TEvent : class, IEvent;
+        public void Publish<TEvent>(TEvent @event, string queueName) where TEvent : Event;
     }
 }

@@ -9,7 +9,7 @@ namespace Kwetter.Services.Common.Application.Eventing
     /// Represents the base <see cref="KwetterEventHandler{TEvent}"/> class.
     /// </summary>
     /// <typeparam name="TEvent">The event type.</typeparam>
-    public abstract class KwetterEventHandler<TEvent> : IEventHandler<TEvent> where TEvent : class, IEvent
+    public abstract class KwetterEventHandler<TEvent> : IEventHandler<TEvent> where TEvent : Event
     {
         private EventHandler _unsubscribeEventHandler;
 

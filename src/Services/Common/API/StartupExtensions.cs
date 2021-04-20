@@ -107,10 +107,11 @@ namespace Kwetter.Services.Common.API
         {
             serviceCollection.AddAutoMapper(mappingAssembly, Assembly.GetAssembly(typeof(StartupExtensions)));
             serviceCollection.AddValidatorsFromAssembly(applicationAssembly);
-            serviceCollection.AddMediatR(applicationAssembly, Assembly.GetAssembly(typeof(AnyDomainEventHandler<>)));
-            serviceCollection.AddTransient(typeof(IPipelineBehavior<,>), typeof(ExceptionBehaviour<,>));
-            serviceCollection.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehaviour<,>));
-            serviceCollection.AddTransient(typeof(IPipelineBehavior<,>), typeof(TransactionBehaviour<,>));
+            serviceCollection.AddMediatR(c => c.AsScoped(), applicationAssembly, Assembly.GetAssembly(typeof(AnyDomainEventHandler<>)));
+            serviceCollection.AddScoped(typeof(IPipelineBehavior<,>), typeof(ScopeBehaviour<,>));
+            serviceCollection.AddScoped(typeof(IPipelineBehavior<,>), typeof(ExceptionBehaviour<,>));
+            serviceCollection.AddScoped(typeof(IPipelineBehavior<,>), typeof(ValidationBehaviour<,>));
+            serviceCollection.AddScoped(typeof(IPipelineBehavior<,>), typeof(TransactionBehaviour<,>));
             return serviceCollection;
         }
 
@@ -131,9 +132,8 @@ namespace Kwetter.Services.Common.API
                 EventStoreClientSettings settings = EventStoreClientSettings.Create(eventStoreConfiguration.ConnectionUrl);
                 return new EventStoreClient(settings);
             });
-            // TODO: Fix event store to be scoped again!!
-            serviceCollection.AddSingleton<IEventStore, Infrastructure.Eventing.Store.EventStore>();
-            serviceCollection.AddSingleton<IIntegrationEventService, IntegrationEventService>();
+            serviceCollection.AddScoped<IEventStore, Infrastructure.Eventing.Store.EventStore>();
+            serviceCollection.AddScoped<IIntegrationEventService, IntegrationEventService>();
             return serviceCollection;
         }
 

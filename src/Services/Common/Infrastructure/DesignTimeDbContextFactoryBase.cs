@@ -114,7 +114,6 @@ namespace Kwetter.Services.Common.Infrastructure
             IConfigurationSection configurationSection = databaseType switch
             {
                 "Service" => ConfigurationLoader.GetConfiguration("appsettings").GetSection("Database"),
-                "EventLog" => ConfigurationLoader.GetConfiguration("appsettings").GetSection("Integration:Database"),
                 _ => throw new Exception("Unknown database type passed to database factory.")
             };
             DbConfiguration dbConfiguration = new()

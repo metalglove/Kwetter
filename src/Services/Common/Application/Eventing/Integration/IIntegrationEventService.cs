@@ -15,6 +15,7 @@
         /// Enqueues the integration event to the queue.
         /// </summary>
         /// <param name="event">The integration event.</param>
-        public void EnqueueEvent(IntegrationEvent @event);
+        /// <typeparam name="TIntegrationEvent">The integration event type.</typeparam>
+        public void EnqueueEvent<TIntegrationEvent>(TIntegrationEvent @event) where TIntegrationEvent : IntegrationEvent;
     }
 }

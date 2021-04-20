@@ -38,11 +38,12 @@ namespace Kwetter.Services.Common.Infrastructure.Eventing.Bus
         }
 
         /// <inheritdoc cref="IEventPublisher.Publish{TEvent}(TEvent,string)"/>
-        public void Publish<TEvent>(TEvent @event, string queueName) where TEvent : class, IEvent
+        public void Publish<TEvent>(TEvent @event, string queueName) where TEvent : Event
         {
             string actualQueueName = $"{_serviceConfiguration.ShortTitle}.{queueName}";
             IModel channel = GetChannel(actualQueueName);
-            ReadOnlyMemory<byte> message = _eventSerializer.Serialize(@event);
+            // NOTE: type casted to object to ensure no type issues when serializing.
+            ReadOnlyMemory<byte> message = _eventSerializer.Serialize<object>(@event);
             IBasicProperties basicProperties = channel.CreateBasicProperties();
             basicProperties.DeliveryMode = 2;
             channel.BasicPublish(Exchange, actualQueueName, basicProperties: basicProperties, body: message);
@@ -50,8 +51,8 @@ namespace Kwetter.Services.Common.Infrastructure.Eventing.Bus
         }
 
         /// <inheritdoc cref="IEventBus.Subscribe{TEvent,TEventHandler}(string,TEventHandler)"/>
-        public void Subscribe<TEvent, TEventHandler>(string queueName, TEventHandler eventHandler)
-            where TEvent : class, IEvent
+        public void Subscribe<TEvent, TEventHandler>(string queueName, TEventHandler eventHandler) 
+            where TEvent : Event 
             where TEventHandler : IEventHandler<TEvent>
         {
             IModel channel = GetChannel(queueName);
@@ -71,7 +72,7 @@ namespace Kwetter.Services.Common.Infrastructure.Eventing.Bus
 
         /// <inheritdoc cref="IEventBus.Unsubscribe{TEvent,TEventHandler}(TEventHandler)"/>
         public void Unsubscribe<TEvent, TEventHandler>(TEventHandler eventHandler)
-            where TEvent : class, IEvent
+            where TEvent : Event
             where TEventHandler : IEventHandler<TEvent>
         {
             eventHandler.Unsubscribe();

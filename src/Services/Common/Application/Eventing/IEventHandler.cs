@@ -1,7 +1,7 @@
-﻿using System;
+﻿using Kwetter.Services.Common.Domain.Events;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Kwetter.Services.Common.Domain.Events;
 
 namespace Kwetter.Services.Common.Application.Eventing
 {
@@ -9,7 +9,7 @@ namespace Kwetter.Services.Common.Application.Eventing
     /// Represents the <see cref="IEventHandler{TEvent}"/> interface.
     /// </summary>
     /// <typeparam name="TEvent">The type of event.</typeparam>
-    public interface IEventHandler<in TEvent> where TEvent : class, IEvent
+    public interface IEventHandler<in TEvent> where TEvent : Event
     {
         /// <summary>
         /// The unsubscribe event.

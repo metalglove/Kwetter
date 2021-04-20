@@ -12,9 +12,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Application\Behaviours\" />
-    <Folder Include="Application\Models\" />
-    <Folder Include="Application\IntegrationEvents\" />
     <Folder Include="Application\Queries\" />
   </ItemGroup>
 

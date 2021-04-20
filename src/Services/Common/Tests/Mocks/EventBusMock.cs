@@ -13,9 +13,9 @@ namespace Kwetter.Services.Common.Tests.Mocks
     {
         private readonly ILogger<EventBusMock> _logger;
         private readonly IEventSerializer _eventSerializer;
-        private readonly ConcurrentBag<IEvent> _unknownEvents;
+        private readonly ConcurrentBag<Event> _unknownEvents;
         private readonly ConcurrentBag<string> _unknownQueue;
-        private readonly ConcurrentDictionary<string, Dictionary<string, List<IEventHandler<IEvent>>>> _eventHandlerMap;
+        private readonly ConcurrentDictionary<string, Dictionary<string, List<IEventHandler<Event>>>> _eventHandlerMap;
         
         public EventBusMock(
             ILogger<EventBusMock> logger,
@@ -23,12 +23,12 @@ namespace Kwetter.Services.Common.Tests.Mocks
         {
             _logger = logger;
             _eventSerializer = messageSerializer;
-            _unknownEvents = new ConcurrentBag<IEvent>();
+            _unknownEvents = new ConcurrentBag<Event>();
             _unknownQueue = new ConcurrentBag<string>();
-            _eventHandlerMap = new ConcurrentDictionary<string, Dictionary<string, List<IEventHandler<IEvent>>>>();
+            _eventHandlerMap = new ConcurrentDictionary<string, Dictionary<string, List<IEventHandler<Event>>>>();
         }
         
-        public void Publish<TEvent>(TEvent @event, string queueName) where TEvent : class, IEvent
+        public void Publish<TEvent>(TEvent @event, string queueName) where TEvent : Event
         {
             _logger.LogInformation(_eventSerializer.SerializeToString(@event));
             if (!_eventHandlerMap.ContainsKey(nameof(TEvent)))
@@ -43,31 +43,33 @@ namespace Kwetter.Services.Common.Tests.Mocks
                 return;
             }
 
-            foreach (IEventHandler<IEvent> eventHandler in _eventHandlerMap[queueName][nameof(TEvent)])
+            foreach (IEventHandler<Event> eventHandler in _eventHandlerMap[queueName][nameof(TEvent)])
             {
                 Task.Run(() => eventHandler.HandleAsync(@event, CancellationToken.None));
             }
         }
 
-        public void Subscribe<TEvent, TEventHandler>(string queueName, TEventHandler eventHandler) where TEvent : class, IEvent where TEventHandler : IEventHandler<TEvent>
+        public void Subscribe<TEvent, TEventHandler>(string queueName, TEventHandler eventHandler) 
+            where TEvent : Event 
+            where TEventHandler : IEventHandler<TEvent>
         {
-            IEventHandler<IEvent> handler = eventHandler as IEventHandler<IEvent>;
+            IEventHandler<Event> handler = eventHandler as IEventHandler<Event>;
             _eventHandlerMap.AddOrUpdate(
                 queueName, 
-                new Dictionary<string, List<IEventHandler<IEvent>>>() {{queueName, new List<IEventHandler<IEvent>>
+                new Dictionary<string, List<IEventHandler<Event>>>() {{queueName, new List<IEventHandler<Event>>
                     {
                         handler
                     }}},
                 (key, oldValue) =>
                 {
-                    if (oldValue.TryGetValue(nameof(TEvent), out List<IEventHandler<IEvent>> eventHandlers))
+                    if (oldValue.TryGetValue(nameof(TEvent), out List<IEventHandler<Event>> eventHandlers))
                     {
                         eventHandler.UnsubscribeEventHandler += (_, _) => eventHandlers.Remove(handler);
                         eventHandlers.Add(handler);
                     }
                     else
                     {
-                        List<IEventHandler<IEvent>> eventHandlers2 = new() {handler};
+                        List<IEventHandler<Event>> eventHandlers2 = new() {handler};
                         eventHandler.UnsubscribeEventHandler += (_, _) => eventHandlers2.Remove(handler);
                         oldValue.Add(nameof(TEvent), eventHandlers2);
                     }
@@ -75,7 +77,9 @@ namespace Kwetter.Services.Common.Tests.Mocks
                 });
         }
 
-        public void Unsubscribe<TEvent, TEventHandler>(TEventHandler eventHandler) where TEvent : class, IEvent where TEventHandler : IEventHandler<TEvent>
+        public void Unsubscribe<TEvent, TEventHandler>(TEventHandler eventHandler) 
+            where TEvent : Event
+            where TEventHandler : IEventHandler<TEvent>
         {
             eventHandler.Unsubscribe();
         }
