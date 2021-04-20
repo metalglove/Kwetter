@@ -10,7 +10,6 @@ using Kwetter.Services.Common.Infrastructure;
 using Kwetter.Services.Common.Infrastructure.EventSerializers;
 using Kwetter.Services.Common.Infrastructure.Integration;
 using Kwetter.Services.Common.Tests.Mocks;
-using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -32,14 +31,13 @@ namespace Kwetter.Services.Common.Tests
         /// <param name="startUpType">The start up class type.</param>
         /// <param name="applicationType">The application type.</param>
         /// <param name="serviceName">The service name.</param>
-        /// <param name="databaseFactory">The database factory.</param>
         /// <typeparam name="TDbContext">The database context/</typeparam>
         /// <typeparam name="TDatabaseFactory">The database factory type.</typeparam>
         /// <typeparam name="TRepository">The repository type.</typeparam>
         /// <typeparam name="TAggregateRoot">The aggregate root type.</typeparam>
         /// <returns>Returns a service provider.</returns>
         protected static ServiceProvider InitializeServices<TDbContext, TDatabaseFactory, TRepository, TAggregateRoot>(
-            Type startUpType, Type applicationType, string serviceName, Func<IOptions<DbConfiguration>, ILoggerFactory, IMediator, TDatabaseFactory> databaseFactory) 
+            Type startUpType, Type applicationType, string serviceName) 
             where TDbContext : UnitOfWork<TDbContext>, IAggregateUnitOfWork
             where TDatabaseFactory : DatabaseFactory<TDbContext>, new()
             where TAggregateRoot : Entity, IAggregateRoot
@@ -84,16 +82,10 @@ namespace Kwetter.Services.Common.Tests
             // Mock infrastructure
             serviceCollection.AddTransient<IEventSerializer, JsonEventSerializer>();
             serviceCollection.AddSingleton<IEventBus, EventBusMock>();
-            serviceCollection.AddScoped<IEventStore, EventStoreMock>();
-            serviceCollection.AddTransient<IIntegrationEventService, IntegrationEventService>();
-            serviceCollection.AddTransient<IFactory<TDbContext>>(serviceProvider =>
-            {
-                IOptions<DbConfiguration> options = serviceProvider.GetRequiredService<IOptions<DbConfiguration>>();
-                ILoggerFactory loggerFactory = serviceProvider.GetRequiredService<ILoggerFactory>();
-                IMediator mediator = serviceProvider.GetRequiredService<IMediator>();
-                return databaseFactory(options, loggerFactory, mediator);
-            });
-            serviceCollection.AddSingleton<TDbContext>(p =>
+            serviceCollection.AddSingleton<IEventStore, EventStoreMock>();
+            serviceCollection.AddScoped<IIntegrationEventService, IntegrationEventService>();
+            serviceCollection.AddScoped<IFactory<TDbContext>, TDatabaseFactory>();
+            serviceCollection.AddScoped<TDbContext>(p =>
             {
                 TDbContext followDbContext = p.GetRequiredService<IFactory<TDbContext>>().Create();
                 followDbContext.Database.EnsureCreated();

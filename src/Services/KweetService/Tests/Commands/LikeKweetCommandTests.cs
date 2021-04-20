@@ -18,7 +18,7 @@ using XAssert = Xunit.Assert;
 namespace Kwetter.Services.KweetService.Tests.Commands
 {
     [TestClass]
-    public class LikeKweetVCommandTests : TestBase
+    public class LikeKweetCommandTests : TestBase
     {
         public ServiceProvider ServiceProvider { get; set; }
         public IMediator Mediator { get; set; }
@@ -29,9 +29,7 @@ namespace Kwetter.Services.KweetService.Tests.Commands
         [TestInitialize]
         public async Task Initialize()
         {
-            ServiceProvider = InitializeServices<KweetDbContext, KweetDatabaseFactory, KweetRepository, KweetAggregate>(
-                typeof(Startup), typeof(CreateKweetCommand), "KweetService",
-                (options, loggerFactory, mediator) => new KweetDatabaseFactory(options, loggerFactory, mediator));
+            ServiceProvider = InitializeServices<KweetDbContext, KweetDatabaseFactory, KweetRepository, KweetAggregate>(typeof(Startup), typeof(CreateKweetCommand), "KweetService");
             Mediator = ServiceProvider.GetRequiredService<IMediator>();
             KweetController = new KweetController(Mediator);
             

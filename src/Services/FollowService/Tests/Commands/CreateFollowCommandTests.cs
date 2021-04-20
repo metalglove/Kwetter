@@ -26,9 +26,7 @@ namespace Kwetter.Services.FollowService.Tests.Commands
         [TestInitialize]
         public void Initialize()
         {
-            ServiceProvider = InitializeServices<FollowDbContext, FollowDatabaseFactory, FollowRepository, FollowAggregate>(
-                typeof(Startup), typeof(CreateFollowCommand), "FollowService",
-                (options, loggerFactory, mediator) => new FollowDatabaseFactory(options, loggerFactory, mediator));
+            ServiceProvider = InitializeServices<FollowDbContext, FollowDatabaseFactory, FollowRepository, FollowAggregate>(typeof(Startup), typeof(CreateFollowCommand), "FollowService");
             Mediator = ServiceProvider.GetRequiredService<IMediator>();
             FollowController = new FollowController(Mediator);
         }

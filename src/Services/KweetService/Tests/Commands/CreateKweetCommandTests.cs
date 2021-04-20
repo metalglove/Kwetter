@@ -26,9 +26,7 @@ namespace Kwetter.Services.KweetService.Tests.Commands
         [TestInitialize]
         public void Initialize()
         {
-            ServiceProvider = InitializeServices<KweetDbContext, KweetDatabaseFactory, KweetRepository, KweetAggregate>(
-                typeof(Startup), typeof(CreateKweetCommand), "KweetService",
-                (options, loggerFactory, mediator) => new KweetDatabaseFactory(options, loggerFactory, mediator));
+            ServiceProvider = InitializeServices<KweetDbContext, KweetDatabaseFactory, KweetRepository, KweetAggregate>(typeof(Startup), typeof(CreateKweetCommand), "KweetService");
             Mediator = ServiceProvider.GetRequiredService<IMediator>();
             KweetController = new KweetController(Mediator);
         }

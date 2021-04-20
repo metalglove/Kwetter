@@ -53,3 +53,8 @@ For checking the available resources in the nodes
 ```
 kubectl describe nodes
 ```
+
+For scavenging the event store
+```
+curl -i -d {} -X POST http://localhost:2113/admin/scavenge -u "admin:changeit"
+```
