@@ -19,6 +19,7 @@ namespace Kwetter.Services.AuthorizationService.API.Application.Queries.Authoriz
         private readonly IAuthorizationService _authorizationService;
         private readonly IIdentityRepository _identityRepository;
         private readonly JwtSecurityTokenHandler _jwtSecurityTokenHandler;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="AuthorizationQueryHandler"/> class.
         /// </summary>
@@ -28,8 +29,8 @@ namespace Kwetter.Services.AuthorizationService.API.Application.Queries.Authoriz
             IAuthorizationService authorizationService,
             IIdentityRepository identityRepository)
         {
-            _authorizationService = authorizationService;
-            _identityRepository = identityRepository;
+            _authorizationService = authorizationService ?? throw new ArgumentNullException(nameof(authorizationService));
+            _identityRepository = identityRepository ?? throw new ArgumentNullException(nameof(identityRepository));
             _jwtSecurityTokenHandler = new JwtSecurityTokenHandler();
         }
 
@@ -61,16 +62,12 @@ namespace Kwetter.Services.AuthorizationService.API.Application.Queries.Authoriz
                 string email = token.Claims.First(claim => claim.Type == "email").Value;
                 string profilePictureUrl = token.Claims.First(claim => claim.Type == "picture").Value;
                 IdentityAggregate newIdentity = new(Guid.NewGuid(), openId, givenName, email, profilePictureUrl);
-                IdentityAggregate trackedIdentity = _identityRepository.Create(newIdentity);
+                identity = _identityRepository.Create(newIdentity);
                 await _identityRepository.UnitOfWork.SaveEntitiesAsync(cancellationToken);
-                authorizationDto.UserId = trackedIdentity.Id;
-            }
-            else
-            {
-                authorizationDto.UserId = identity.Id;
             }
             // TODO: maybe update the identity if the picture changed?
 
+            authorizationDto.UserId = identity.Id;
             queryResponse.Data = authorizationDto;
             queryResponse.Success = true;
             return queryResponse;
