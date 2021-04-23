@@ -143,13 +143,13 @@ kubectl apply -f ./K8s/kwetter-storage-class.yaml
 
 Install rabbitmq
 ```
-kubectl apply -f ./K8s/rabbitmq/rabbit-rbac.yaml
-kubectl apply -f ./K8s/rabbitmq/rabbit-configmap.yaml
-kubectl apply -f ./K8s/rabbitmq/rabbit-statefulset.yaml
 kubectl apply -f ./K8s/rabbitmq/rabbit-pv.yaml
 kubectl apply -f ./K8s/rabbitmq/rabbit-pv-1.yaml
 kubectl apply -f ./K8s/rabbitmq/rabbit-pv-2.yaml
 kubectl apply -f ./K8s/rabbitmq/rabbit-pv-3.yaml
+kubectl apply -f ./K8s/rabbitmq/rabbit-rbac.yaml
+kubectl apply -f ./K8s/rabbitmq/rabbit-configmap.yaml
+kubectl apply -f ./K8s/rabbitmq/rabbit-statefulset.yaml
 ```
 
 Install EventStore

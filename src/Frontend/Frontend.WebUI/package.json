@@ -49,6 +49,8 @@
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
+    "serve-prod": "vue-cli-service serve --mode production",
+    "serve-mini": "vue-cli-service serve --mode minikube",
     "build": "vue-cli-service build"
   },
   "version": "0.1.0"
