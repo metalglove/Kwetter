@@ -12,7 +12,7 @@ spec:
     name: eventstore-web
   selector:
     app: eventstore
-  type: NodePort
+  type: ClusterIP
 ---
 apiVersion: apps/v1
 kind: Deployment
