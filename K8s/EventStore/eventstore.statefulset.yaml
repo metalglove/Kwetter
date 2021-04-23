@@ -18,7 +18,7 @@ spec:
     name: gossip
   selector:
     app: eventstore
-  type: LoadBalancer
+  type: ClusterIP
 ---
 apiVersion: apps/v1
 kind: StatefulSet
