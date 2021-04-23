@@ -132,7 +132,13 @@ mkdir /mnt/data/rabbit-store
 mkdir /mnt/data/rabbit-store-1
 mkdir /mnt/data/rabbit-store-2
 mkdir /mnt/data/rabbit-store-3
+mkdir /mnt/data/eventstore
 chown -R 10001:0 /mnt/data
+```
+
+Install the kwetter storage class
+```
+kubectl apply -f ./K8s/kwetter-storage-class.yaml
 ```
 
 Install rabbitmq
@@ -146,12 +152,16 @@ kubectl apply -f ./K8s/rabbitmq/rabbit-pv-2.yaml
 kubectl apply -f ./K8s/rabbitmq/rabbit-pv-3.yaml
 ```
 
+Install EventStore
+```
+kubectl apply -f ./K8s/EventStore/eventstore-storage-persistent-volume-and-claim.yaml
+kubectl apply -f ./K8s/EventStore/eventstore.deployment.yaml
+```
+
 Deploy the services
 Let's start deploying those services!
-Starting with the gateway, storage class and volume:
+Starting with the gateway:
 ```
-<!-- kubectl apply -f ./K8s --recursive -->
-kubectl apply -f ./K8s/kwetter-storage-class.yaml
 kubectl apply -f ./K8s/Istio/kwetter-istio-gateway.yaml
 ```
 

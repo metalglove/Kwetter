@@ -350,5 +350,5 @@ MigrationBackup/
 .ionide/
 /.vscode/solution-explorer
 K8s/secrets
-/src/Frontend/Frontend.WebUI/.env
+/src/Frontend/Frontend.WebUI/.env*
 /src/docfx_project
