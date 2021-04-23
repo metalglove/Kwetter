@@ -55,10 +55,10 @@ namespace Kwetter.Services.AuthorizationService.Infrastructure.Services
                 HttpContent httpContent = new StringContent(codeQuery, Encoding.UTF8, "application/x-www-form-urlencoded");
                 httpRequestMessage.Content = httpContent;
                 _logger.LogInformation("About to send request to google!");
-                HttpResponseMessage httpResponseMessage = await _httpClient.SendAsync(httpRequestMessage);
+                HttpResponseMessage httpResponseMessage = _httpClient.Send(httpRequestMessage);
                 _logger.LogInformation("Received response from google!");
                 _logger.LogInformation("Reading json from response 1....");
-                using (StreamReader reader = new(await httpResponseMessage.Content.ReadAsStreamAsync()))
+                using (StreamReader reader = new(httpResponseMessage.Content.ReadAsStream()))
                 {
                     string response = reader.ReadToEnd();
                     _logger.LogInformation(response);
