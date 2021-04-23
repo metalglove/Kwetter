@@ -12,7 +12,7 @@ spec:
     name: eventstore-web
   selector:
     app: eventstore
-  type: ClusterIP
+  type: LoadBalancer
 ---
 apiVersion: apps/v1
 kind: Deployment
