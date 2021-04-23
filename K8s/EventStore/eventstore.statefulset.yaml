@@ -89,6 +89,8 @@ spec:
           value: "http://*:2114/"
         - name: EVENTSTORE_EXT_HTTP_PREFIXES
           value: "http://*:2113/"
+        - name: EVENTSTORE_GOSSIP_ON_SINGLE_NODE
+          value: "true"
         volumeMounts:
         - name: eventstore-data
           mountPath: /var/lib/eventstore
