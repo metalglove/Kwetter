@@ -135,9 +135,9 @@ jobs:
     - name: Build and push KweetService Docker image 
       run: |
         echo "Building KweetService docker image"
-        docker build -t ${{ secrets.NEURALM_REGISTRY }}/kwetter-kweet-service:${{ env.SEMVER }} -f ./kwetter-kweet-service.Dockerfile .
+        docker build -t ${{ secrets.NEURALM_REGISTRY }}/kwetter-kweet-service:${{ env.SEMVER }} -t ${{ secrets.NEURALM_REGISTRY }}/kwetter-kweet-service:latest -f ./kwetter-kweet-service.Dockerfile .
         echo "Publishing KweetService docker image"
-        docker push ${{ secrets.NEURALM_REGISTRY }}/kwetter-kweet-service:${{ env.SEMVER }}
+        docker push --all-tags ${{ secrets.NEURALM_REGISTRY }}/kwetter-kweet-service
 
   production:
     needs: 

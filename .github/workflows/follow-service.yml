@@ -135,9 +135,9 @@ jobs:
     - name: Build and push FollowService Docker image 
       run: |
         echo "Building FollowService docker image"
-        docker build -t ${{ secrets.NEURALM_REGISTRY }}/kwetter-follow-service:${{ env.SEMVER }} -f ./kwetter-follow-service.Dockerfile .
+        docker build -t ${{ secrets.NEURALM_REGISTRY }}/kwetter-follow-service:${{ env.SEMVER }} -t ${{ secrets.NEURALM_REGISTRY }}/kwetter-follow-service:latest -f ./kwetter-follow-service.Dockerfile .
         echo "Publishing FollowService docker image"
-        docker push ${{ secrets.NEURALM_REGISTRY }}/kwetter-follow-service:${{ env.SEMVER }}
+        docker push --all-tags ${{ secrets.NEURALM_REGISTRY }}/kwetter-follow-service
 
   production:
     needs: 

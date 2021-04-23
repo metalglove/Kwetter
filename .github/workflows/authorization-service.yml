@@ -135,9 +135,9 @@ jobs:
     - name: Build and push AuthorizationService Docker image 
       run: |
         echo "Building AuthorizationService docker image"
-        docker build -t ${{ secrets.NEURALM_REGISTRY }}/kwetter-authorization-service:${{ env.SEMVER }} -f ./kwetter-authorization-service.Dockerfile .
+        docker build -t ${{ secrets.NEURALM_REGISTRY }}/kwetter-authorization-service:${{ env.SEMVER }} -t ${{ secrets.NEURALM_REGISTRY }}/kwetter-authorization-service:latest -f ./kwetter-authorization-service.Dockerfile .
         echo "Publishing AuthorizationService docker image"
-        docker push ${{ secrets.NEURALM_REGISTRY }}/kwetter-authorization-service:${{ env.SEMVER }}
+        docker push --all-tags ${{ secrets.NEURALM_REGISTRY }}/kwetter-authorization-service
 
   production:
     needs: 

@@ -135,9 +135,9 @@ jobs:
     - name: Build and push UserService Docker image 
       run: |
         echo "Building UserService docker image"
-        docker build -t ${{ secrets.NEURALM_REGISTRY }}/kwetter-user-service:${{ env.SEMVER }} -f ./kwetter-user-service.Dockerfile .
+        docker build -t ${{ secrets.NEURALM_REGISTRY }}/kwetter-user-service:${{ env.SEMVER }} -t ${{ secrets.NEURALM_REGISTRY }}/kwetter-user-service:latest -f ./kwetter-user-service.Dockerfile .
         echo "Publishing UserService docker image"
-        docker push ${{ secrets.NEURALM_REGISTRY }}/kwetter-user-service:${{ env.SEMVER }}
+        docker push --all-tags ${{ secrets.NEURALM_REGISTRY }}/kwetter-user-service
 
   production:
     needs: 
