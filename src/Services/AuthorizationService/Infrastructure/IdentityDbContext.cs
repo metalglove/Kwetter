@@ -3,6 +3,7 @@ using Kwetter.Services.AuthorizationService.Infrastructure.EntityConfigurations;
 using Kwetter.Services.Common.Infrastructure;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace Kwetter.Services.AuthorizationService.Infrastructure
 {
@@ -30,7 +31,8 @@ namespace Kwetter.Services.AuthorizationService.Infrastructure
         /// </summary>
         /// <param name="options">The identity database context options.</param>
         /// <param name="mediator">The mediator.</param>
-        public IdentityDbContext(DbContextOptions<IdentityDbContext> options, IMediator mediator) : base(options, mediator)
+        /// <param name="logger">The logger.</param>
+        public IdentityDbContext(DbContextOptions<IdentityDbContext> options, IMediator mediator, ILogger<IdentityDbContext> logger) : base(options, mediator, logger)
         {
 
         }

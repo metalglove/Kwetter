@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Kwetter.Services.Common.Infrastructure
@@ -19,8 +20,9 @@ namespace Kwetter.Services.Common.Infrastructure
         /// </summary>
         /// <param name="mediator">The mediator.</param>
         /// <param name="dbContext">The database context.</param>
+        /// <param name="cancellationToken">The  cancellation token.</param>
         /// <returns>Returns an awaitable task.</returns>
-        public static async Task DispatchDomainEventsAsync(this IMediator mediator, DbContext dbContext)
+        public static async Task DispatchDomainEventsAsync(this IMediator mediator, DbContext dbContext, CancellationToken cancellationToken)
         {
             IEnumerable<EntityEntry<Entity>> domainEntities = dbContext.ChangeTracker
                 .Entries<Entity>()
@@ -34,7 +36,7 @@ namespace Kwetter.Services.Common.Infrastructure
                 .ForEach(entity => entity.Entity.ClearDomainEvents());
 
             foreach (DomainEvent domainEvent in domainEvents)
-                await mediator.Publish(domainEvent);
+                await mediator.Publish(domainEvent, cancellationToken);
         }
     }
 }

@@ -1,20 +1,20 @@
-using System.Diagnostics.CodeAnalysis;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using System.Reflection;
 using Kwetter.Services.Common.API;
+using Kwetter.Services.Common.Application.Configurations;
 using Kwetter.Services.Common.Infrastructure;
 using Kwetter.Services.FollowService.API.Application.Commands.CreateFollowCommand;
 using Kwetter.Services.FollowService.Domain.AggregatesModel.FollowAggregate;
 using Kwetter.Services.FollowService.Infrastructure;
 using Kwetter.Services.FollowService.Infrastructure.Repositories;
 using MediatR;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Kwetter.Services.Common.Infrastructure.Configurations;
+using System.Diagnostics.CodeAnalysis;
+using System.Reflection;
 
 namespace Kwetter.Services.FollowService.API
 {
@@ -46,17 +46,10 @@ namespace Kwetter.Services.FollowService.API
             services.AddDefaultApplicationServices(Assembly.GetAssembly(typeof(Startup)), Assembly.GetAssembly(typeof(CreateFollowCommand)));
             services.AddDefaultInfrastructureServices();
             services.AddDefaultAuthentication(_configuration);
-            services.AddSingleton<IFactory<FollowDbContext>>(serviceProvider =>
-            {
-                IOptions<DbConfiguration> options = serviceProvider.GetRequiredService<IOptions<DbConfiguration>>();
-                ILoggerFactory loggerFactory = serviceProvider.GetRequiredService<ILoggerFactory>();
-                IMediator mediator = serviceProvider.GetRequiredService<IMediator>();
-                return new FollowDatabaseFactory(options, loggerFactory, mediator);
-            });
-            services.AddTransient<FollowDbContext>(p => p.GetRequiredService<IFactory<FollowDbContext>>().Create());
-            services.AddTransient<IAggregateUnitOfWork>(p => p.GetRequiredService<IFactory<FollowDbContext>>().Create());
-            services.AddTransient<IFollowRepository, FollowRepository>();
-            services.AddIntegrationServices<FollowDbContext>(Assembly.GetAssembly(typeof(Startup)));
+            services.AddScoped<IFactory<FollowDbContext>, FollowDatabaseFactory>();
+            services.AddScoped<FollowDbContext>(p => p.GetRequiredService<IFactory<FollowDbContext>>().Create());
+            services.AddScoped<IAggregateUnitOfWork>(p => p.GetRequiredService<IFactory<FollowDbContext>>().Create());
+            services.AddScoped<IFollowRepository, FollowRepository>();
             services.AddControllers();
             services.AddSwagger(_configuration);
             services.VerifyDatabaseConnection<FollowDbContext>();

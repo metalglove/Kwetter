@@ -1,4 +1,4 @@
-﻿using Kwetter.Services.Common.Infrastructure.Configurations;
+﻿using Kwetter.Services.Common.Application.Configurations;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.Extensions.Configuration;
@@ -16,7 +16,7 @@ namespace Kwetter.Services.Common.Infrastructure
     {
         private DbContextOptionsBuilder<TContext> _dbContextOptionsBuilder;
         private readonly DbConfiguration _dbConfiguration;
-        private readonly ILoggerFactory _loggerFactory;
+        protected readonly ILoggerFactory LoggerFactory;
 
         /// <summary>
         /// Initializes an instance of the <see cref="DesignTimeDbContextFactoryBase{TContext}"/> class.
@@ -29,7 +29,7 @@ namespace Kwetter.Services.Common.Infrastructure
             _dbConfiguration = dbConfigurationOptions == default
                 ? GetDbConfiguration(databaseType)
                 : dbConfigurationOptions.Value;
-            _loggerFactory = loggerFactory;
+            LoggerFactory = loggerFactory;
         }
 
         /// <summary>
@@ -41,7 +41,7 @@ namespace Kwetter.Services.Common.Infrastructure
         protected DesignTimeDbContextFactoryBase(string databaseType, DbConfiguration dbConfiguration, ILoggerFactory loggerFactory)
         {
             _dbConfiguration = dbConfiguration ?? GetDbConfiguration(databaseType);
-            _loggerFactory = loggerFactory;
+            LoggerFactory = loggerFactory;
         }
 
         /// <summary>
@@ -100,9 +100,9 @@ namespace Kwetter.Services.Common.Infrastructure
             }
 
             // Adds logging.
-            if (_loggerFactory != null)
+            if (LoggerFactory != null)
             {
-                optionsBuilder.UseLoggerFactory(_loggerFactory);
+                optionsBuilder.UseLoggerFactory(LoggerFactory);
                 optionsBuilder.EnableSensitiveDataLogging();
             }
 
@@ -114,7 +114,6 @@ namespace Kwetter.Services.Common.Infrastructure
             IConfigurationSection configurationSection = databaseType switch
             {
                 "Service" => ConfigurationLoader.GetConfiguration("appsettings").GetSection("Database"),
-                "EventLog" => ConfigurationLoader.GetConfiguration("appsettings").GetSection("Integration:Database"),
                 _ => throw new Exception("Unknown database type passed to database factory.")
             };
             DbConfiguration dbConfiguration = new()

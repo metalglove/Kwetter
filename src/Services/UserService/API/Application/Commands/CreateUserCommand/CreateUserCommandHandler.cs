@@ -1,5 +1,4 @@
 ﻿using Kwetter.Services.Common.API.CQRS;
-using Kwetter.Services.Common.Infrastructure.Integration;
 using Kwetter.Services.UserService.Domain.AggregatesModel.UserAggregate;
 using MediatR;
 using System;
@@ -13,20 +12,14 @@ namespace Kwetter.Services.UserService.API.Application.Commands.CreateUserComman
     /// </summary>
     public sealed class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, CommandResponse>
     {
-        private readonly IIntegrationEventService _integrationEventService;
         private readonly IUserRepository _userRepository;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CreateUserCommandHandler"/> class.
         /// </summary>
-        /// <param name="integrationEventService">The integration event service.</param>
         /// <param name="userRepository">The user repository.</param>
-        public CreateUserCommandHandler(
-            IIntegrationEventService integrationEventService,
-            IUserRepository userRepository
-            )
+        public CreateUserCommandHandler(IUserRepository userRepository)
         {
-            _integrationEventService = integrationEventService ?? throw new ArgumentNullException(nameof(integrationEventService));
             _userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
         }
 
@@ -38,18 +31,9 @@ namespace Kwetter.Services.UserService.API.Application.Commands.CreateUserComman
         /// <returns>Returns the command response.</returns>
         public async Task<CommandResponse> Handle(CreateUserCommand request, CancellationToken cancellationToken)
         {
-            // TODO: UserCreationStartedIntegrationEvent?
-            // NOTE:
-            // Integration Events notes: 
-            // An Event is “something that has happened in the past”, therefore its name has to be   
-            // An Integration Event is an event that can cause side effects to other microservices, Bounded-Contexts or external systems.
-            // --------------------------
-            // UserCreationStartedIntegrationEvent userCreationStartedIntegrationEvent = new UserCreationStartedIntegrationEvent();
-            // await _integrationEventService.AddAndSaveEventAsync(event, cancellationToken);
-
             // Only the aggregate root can be created.
             // The user profile will be created by the aggregate root.
-            UserAggregate userAggregate = new(request.UserId, request.UserDisplayName, request.UserProfileDescription);
+            UserAggregate userAggregate = new(request.UserId, request.UserDisplayName, request.UserProfileDescription, request.UserProfilePictureUrl);
 
             // Creates the user aggregate.
             _userRepository.Create(userAggregate);

@@ -3,6 +3,7 @@ using Kwetter.Services.KweetService.Domain.AggregatesModel.KweetAggregate;
 using Kwetter.Services.KweetService.Infrastructure.EntityConfigurations;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace Kwetter.Services.KweetService.Infrastructure
 {
@@ -30,7 +31,8 @@ namespace Kwetter.Services.KweetService.Infrastructure
         /// </summary>
         /// <param name="options">The kweet database context options.</param>
         /// <param name="mediator">The mediator.</param>
-        public KweetDbContext(DbContextOptions<KweetDbContext> options, IMediator mediator) : base(options, mediator)
+        /// <param name="logger">The logger.</param>
+        public KweetDbContext(DbContextOptions<KweetDbContext> options, IMediator mediator, ILogger<KweetDbContext> logger) : base(options, mediator, logger)
         {
 
         }

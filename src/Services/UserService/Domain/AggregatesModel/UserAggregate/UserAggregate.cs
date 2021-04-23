@@ -32,12 +32,13 @@ namespace Kwetter.Services.UserService.Domain.AggregatesModel.UserAggregate
         /// <param name="userId">The user id.</param>
         /// <param name="displayName">The display name.</param>
         /// <param name="description">The profile description.</param>
-        public UserAggregate(Guid userId, string displayName, string description)
+        /// <param name="pictureUrl">The profile picture url.</param>
+        public UserAggregate(Guid userId, string displayName, string description, string pictureUrl)
         {
             SetId(userId);
             AddDomainEvent(new UserCreatedDomainEvent(Id));
             SetDisplayName(displayName);
-            Profile = new UserProfile(Id, description);
+            Profile = new UserProfile(Id, description, pictureUrl);
         }
 
         /// <summary>

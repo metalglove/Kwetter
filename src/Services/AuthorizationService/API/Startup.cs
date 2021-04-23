@@ -5,15 +5,12 @@ using Kwetter.Services.AuthorizationService.Infrastructure.Interfaces;
 using Kwetter.Services.AuthorizationService.Infrastructure.Repositories;
 using Kwetter.Services.Common.API;
 using Kwetter.Services.Common.Infrastructure;
-using Kwetter.Services.Common.Infrastructure.Configurations;
-using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 
@@ -48,17 +45,10 @@ namespace Kwetter.Services.AuthorizationService.API
             services.AddDefaultInfrastructureServices();
             services.AddDefaultAuthentication(_configuration);
             services.AddHttpClient<IAuthorizationService, Infrastructure.Services.AuthorizationService>();
-            services.AddSingleton<IFactory<IdentityDbContext>>(serviceProvider =>
-            {
-                IOptions<DbConfiguration> options = serviceProvider.GetRequiredService<IOptions<DbConfiguration>>();
-                ILoggerFactory loggerFactory = serviceProvider.GetRequiredService<ILoggerFactory>();
-                IMediator mediator = serviceProvider.GetRequiredService<IMediator>();
-                return new IdentityDatabaseFactory(options, loggerFactory, mediator);
-            });
-            services.AddTransient<IdentityDbContext>(p => p.GetRequiredService<IFactory<IdentityDbContext>>().Create());
-            services.AddTransient<IAggregateUnitOfWork>(p => p.GetRequiredService<IFactory<IdentityDbContext>>().Create());
-            services.AddTransient<IIdentityRepository, IdentityRepository>();
-            services.AddIntegrationServices<IdentityDbContext>(Assembly.GetAssembly(typeof(Startup)));
+            services.AddScoped<IFactory<IdentityDbContext>, IdentityDatabaseFactory>();
+            services.AddScoped<IdentityDbContext>(p => p.GetRequiredService<IFactory<IdentityDbContext>>().Create());
+            services.AddScoped<IAggregateUnitOfWork>(p => p.GetRequiredService<IFactory<IdentityDbContext>>().Create());
+            services.AddScoped<IIdentityRepository, IdentityRepository>();
             services.AddControllers();
             services.AddSwagger(_configuration);
             services.VerifyDatabaseConnection<IdentityDbContext>();
@@ -81,7 +71,6 @@ namespace Kwetter.Services.AuthorizationService.API
             }
 
             app.UseRouting();
-            // TODO: fix the CORS stuff
             app.UseCors(x => x.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
             app.UseAuthentication();
             app.UseAuthorization();

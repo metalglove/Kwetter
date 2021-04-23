@@ -203,6 +203,12 @@ Port forwards the rabbitmq management ui.
 ```
 kubectl -n kwetter port-forward rabbitmq-0 8080:15672 --address 192.168.1.136
 ```
+
+Port forwards the eventstore
+```
+kubectl port-forward service/eventstore 2113:2113 --address 192.168.1.136
+```
+
 Port forwards the kiali ui.
 ```
 istioctl dashboard kiali --address 192.168.1.136

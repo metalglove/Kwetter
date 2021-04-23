@@ -1,5 +1,6 @@
-﻿using Kwetter.Services.Common.Infrastructure.Extensions;
-using Kwetter.Services.Common.Infrastructure.Integration;
+﻿using Kwetter.Services.Common.Application.Eventing.Integration;
+using Kwetter.Services.Common.Application.Eventing.Store;
+using Kwetter.Services.Common.Infrastructure.Extensions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
@@ -21,6 +22,7 @@ namespace Kwetter.Services.Common.Infrastructure.Behaviours
         private readonly ILogger<TransactionBehaviour<TRequest, TResponse>> _logger;
         private readonly IIntegrationEventService _integrationEventService;
         private readonly IAggregateUnitOfWork _unitOfWork;
+        private readonly IEventStore _eventStore;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="TransactionBehaviour{TRequest,TResponse}"/> class.
@@ -28,14 +30,17 @@ namespace Kwetter.Services.Common.Infrastructure.Behaviours
         /// <param name="logger">The logger.</param>
         /// <param name="integrationEventService">The integration event service.</param>
         /// <param name="unitOfWork">The unit of work associated with the service.</param>
+        /// <param name="eventStore">The event store for the service.</param>
         public TransactionBehaviour(
             ILogger<TransactionBehaviour<TRequest, TResponse>> logger,
             IIntegrationEventService integrationEventService,
-            IAggregateUnitOfWork unitOfWork)
+            IAggregateUnitOfWork unitOfWork,
+            IEventStore eventStore)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _integrationEventService = integrationEventService ?? throw new ArgumentNullException(nameof(integrationEventService));
             _unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
+            _eventStore = eventStore ?? throw new ArgumentNullException(nameof(eventStore));
         }
 
         /// <summary>
@@ -51,23 +56,33 @@ namespace Kwetter.Services.Common.Infrastructure.Behaviours
             string typeName = request.GetGenericTypeName();
             try
             {
-                if (_unitOfWork.HasActiveTransaction)
-                    return await next();
                 IExecutionStrategy strategy = _unitOfWork.Database.CreateExecutionStrategy();
                 await strategy.ExecuteAsync(async () =>
                 {
-                    await using IDbContextTransaction transaction = await _unitOfWork.BeginTransactionAsync(cancellationToken);
-                    _logger.LogInformation("----- Begin transaction {TransactionId} for {CommandName} ({@Command})", transaction.TransactionId, typeName, request);
-                    response = await next();
-                    _logger.LogInformation("----- Commit transaction {TransactionId} for {CommandName}", transaction.TransactionId, typeName);
-                    await _unitOfWork.CommitTransactionAsync(transaction);
-                    await _integrationEventService.PublishEventsThroughEventBusAsync(transaction.TransactionId, cancellationToken);
+                    _logger.LogInformation($"Started transactions for {typeName} {request}");
+                    
+                    await _unitOfWork.StartTransactionAsync(cancellationToken);         // Start database transaction.
+                    await _eventStore.StartTransactionAsync(cancellationToken);             // Start event store transaction.
+                    
+                    response = await next();                                                    // Continues the middleware flow...
+                    
+                    await _eventStore.CommitTransactionAsync(cancellationToken);            // End event store transaction.
+                    await _unitOfWork.CommitTransactionAsync(cancellationToken);        // End database transaction.
+                    
+                    _logger.LogInformation($"Commited transactions for {typeName} {request}");
+
+                    // NOTE: Persist aggregate changes -> Publish integration events
+                    // After the changes to aggregates are persisted and domain events are published,
+                    // integration events are allowed to be published.
+                    // An Event is "something that has happened in the past", therefore its name has to be in the past. (i.e. Created, Updated, etc..)
+                    // An Integration Event is an event that can cause side effects to other microservices, Bounded-Contexts or external systems.
+                    _integrationEventService.PublishEvents();
                 });
                 return response;
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "ERROR Handling transaction for {CommandName} ({@Command})", typeName, request);
+                _logger.LogError(ex, $"ERROR Handling transactions for {typeName} {request}");
                 throw;
             }
         }

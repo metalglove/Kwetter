@@ -1,5 +1,5 @@
-﻿using Kwetter.Services.Common.Infrastructure;
-using Kwetter.Services.Common.Infrastructure.Configurations;
+﻿using Kwetter.Services.Common.Application.Configurations;
+using Kwetter.Services.Common.Infrastructure;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -40,7 +40,9 @@ namespace Kwetter.Services.FollowService.Infrastructure
         /// <returns>The follow database context.</returns>
         protected override FollowDbContext CreateNewInstance(DbContextOptions<FollowDbContext> dbContextOptions)
         {
-            return new(dbContextOptions, _mediator);
+            return LoggerFactory is null
+                ? (new(dbContextOptions, _mediator, default))
+                : (new(dbContextOptions, _mediator, LoggerFactory.CreateLogger<FollowDbContext>()));
         }
     }
 }

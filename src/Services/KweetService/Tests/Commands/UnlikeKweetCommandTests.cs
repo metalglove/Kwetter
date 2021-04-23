@@ -1,6 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
-using Kwetter.Services.Common.API.CQRS;
+﻿using Kwetter.Services.Common.API.CQRS;
 using Kwetter.Services.Common.Tests;
 using Kwetter.Services.KweetService.API;
 using Kwetter.Services.KweetService.API.Application.Commands.CreateKweetCommand;
@@ -14,6 +12,8 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
+using System.Threading.Tasks;
 using XAssert = Xunit.Assert;
 
 namespace Kwetter.Services.KweetService.Tests.Commands
@@ -30,9 +30,7 @@ namespace Kwetter.Services.KweetService.Tests.Commands
         [TestInitialize]
         public async Task Initialize()
         {
-            ServiceProvider = InitializeServices<KweetDbContext, KweetDatabaseFactory, KweetRepository, KweetAggregate>(
-                typeof(Startup), typeof(CreateKweetCommand), "KweetService",
-                (options, loggerFactory, mediator) => new KweetDatabaseFactory(options, loggerFactory, mediator));
+            ServiceProvider = InitializeServices<KweetDbContext, KweetDatabaseFactory, KweetRepository, KweetAggregate>(typeof(Startup), typeof(CreateKweetCommand), "KweetService");
             Mediator = ServiceProvider.GetRequiredService<IMediator>();
             KweetController = new KweetController(Mediator);
             
@@ -54,7 +52,6 @@ namespace Kwetter.Services.KweetService.Tests.Commands
         }
 
         [TestCleanup]
-
         public void Cleanup()
         {
             Cleanup(ServiceProvider);

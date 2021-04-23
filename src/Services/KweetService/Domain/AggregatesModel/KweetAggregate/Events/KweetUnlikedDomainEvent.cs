@@ -1,12 +1,12 @@
-﻿using System;
-using Kwetter.Services.Common.Domain.Events;
+﻿using Kwetter.Services.Common.Domain.Events;
+using System;
 
 namespace Kwetter.Services.KweetService.Domain.AggregatesModel.KweetAggregate.Events
 {
     /// <summary>
-    /// Represents the <see cref="KweetUnlikedDomainEvent"/> record.
+    /// Represents the <see cref="KweetUnlikedDomainEvent"/> class.
     /// </summary>
-    public record KweetUnlikedDomainEvent : DomainEvent
+    public sealed class KweetUnlikedDomainEvent : DomainEvent
     {
         /// <summary>
         /// Gets and sets the kweet id.
@@ -24,7 +24,7 @@ namespace Kwetter.Services.KweetService.Domain.AggregatesModel.KweetAggregate.Ev
         public DateTime UnlikedDateTime { get; }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="KweetUnlikedDomainEvent"/> record.
+        /// Initializes a new instance of the <see cref="KweetUnlikedDomainEvent"/> class.
         /// </summary>
         /// <param name="kweetId">The kweet id.</param>
         /// <param name="userId">The user id.</param>
@@ -33,7 +33,7 @@ namespace Kwetter.Services.KweetService.Domain.AggregatesModel.KweetAggregate.Ev
             KweetId = kweetId;
             UserId = userId;
             UnlikedDateTime = DateTime.UtcNow;
-            Version = 1;
+            EventVersion = 1;
         }
     }
 }

@@ -15,7 +15,10 @@ namespace Kwetter.Services.UserService.Domain.AggregatesModel.UserAggregate
         /// </summary>
         public string Description { get; private set; }
 
-        // TODO: profile picture?
+        /// <summary>
+        /// Gets and sets the picture url.
+        /// </summary>
+        public string PictureUrl { get; private set; }
 
         /// <summary>
         /// EF constructor...
@@ -27,10 +30,12 @@ namespace Kwetter.Services.UserService.Domain.AggregatesModel.UserAggregate
         /// </summary>
         /// <param name="userId">The user id.</param>
         /// <param name="description">The description.</param>
-        public UserProfile(Guid userId, string description)
+        /// <param name="pictureUrl">The picture url.</param>
+        public UserProfile(Guid userId, string description, string pictureUrl)
         {
             AddDomainEvent(new UserProfileCreatedDomainEvent(userId));
             SetDescription(userId, description);
+            SetPictureUrl(userId, pictureUrl);
         }
 
         /// <summary>
@@ -45,6 +50,20 @@ namespace Kwetter.Services.UserService.Domain.AggregatesModel.UserAggregate
                 throw new UserDomainException("The length of the profile description exceeded 512.");
             Description = description;
             AddDomainEvent(new UserProfileDescriptionUpdatedDomainEvent(userId, description));
+        }
+
+        /// <summary>
+        /// Sets the profile picture url.
+        /// </summary>
+        /// <param name="userId">The user id.</param>
+        /// <param name="pictureUrl">The picture url.</param>
+        /// <exception cref="UserDomainException">Thrown when the provided picture url is empty.</exception>
+        public void SetPictureUrl(Guid userId, string pictureUrl)
+        {
+            if (string.IsNullOrWhiteSpace(pictureUrl))
+                throw new UserDomainException("The profile picture url is null, empty or contains only white spaces.");
+            PictureUrl = pictureUrl;
+            AddDomainEvent(new UserProfilePictureUrlUpdatedDomainEvent(userId, pictureUrl));
         }
     }
 }

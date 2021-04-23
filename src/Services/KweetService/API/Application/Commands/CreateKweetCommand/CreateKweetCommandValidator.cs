@@ -37,6 +37,7 @@ namespace Kwetter.Services.KweetService.API.Application.Commands.CreateKweetComm
                 context.AddFailure("The length of the message exceeded 140 characters.");
                 return;
             }
+
             // NOTE:
             //  Assumption can be made that the UserId will always be valid since the user
             //  has to be authorized to post a request for creating a kweet.

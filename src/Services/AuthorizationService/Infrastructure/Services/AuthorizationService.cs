@@ -1,6 +1,6 @@
 ﻿using Kwetter.Services.AuthorizationService.Infrastructure.Dtos;
 using Kwetter.Services.AuthorizationService.Infrastructure.Interfaces;
-using Kwetter.Services.Common.Infrastructure.Configurations;
+using Kwetter.Services.Common.Application.Configurations;
 using Microsoft.Extensions.Options;
 using System.Net.Http;
 using System.Text;
@@ -40,7 +40,7 @@ namespace Kwetter.Services.AuthorizationService.Infrastructure.Services
                 $"&client_id={_authorizationConfiguration.ClientId}" +
                 $"&client_secret={_authorizationConfiguration.ClientSecret}" +
                 $"&redirect_uri=postmessage" +
-                $"&grant_type={_authorizationConfiguration.GrantType}";
+                $"&grant_type=authorization_code";
             HttpContent httpContent = new StringContent(codeQuery, Encoding.UTF8, "application/x-www-form-urlencoded");
             httpRequestMessage.Content = httpContent;
             HttpResponseMessage httpResponseMessage = await _httpClient.SendAsync(httpRequestMessage);

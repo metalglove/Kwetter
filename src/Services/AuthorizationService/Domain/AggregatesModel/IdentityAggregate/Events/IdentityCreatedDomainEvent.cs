@@ -4,9 +4,9 @@ using System;
 namespace Kwetter.Services.AuthorizationService.Domain.AggregatesModel.IdentityAggregate.Events
 {
     /// <summary>
-    /// Represents the <see cref="IdentityCreatedDomainEvent"/> record.
+    /// Represents the <see cref="IdentityCreatedDomainEvent"/> class.
     /// </summary>
-    public record IdentityCreatedDomainEvent : DomainEvent
+    public sealed class IdentityCreatedDomainEvent : DomainEvent
     {
         /// <summary>
         /// Gets and sets the user id.
@@ -34,7 +34,7 @@ namespace Kwetter.Services.AuthorizationService.Domain.AggregatesModel.IdentityA
         public string ProfilePictureUrl { get; }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="IdentityCreatedDomainEvent"/> record.
+        /// Initializes a new instance of the <see cref="IdentityCreatedDomainEvent"/> class.
         /// </summary>
         /// <param name="userId">The user id.</param>
         /// <param name="openId">The OpenId identifier.</param>
@@ -48,7 +48,7 @@ namespace Kwetter.Services.AuthorizationService.Domain.AggregatesModel.IdentityA
             GivenName = givenName;
             Email = email;
             ProfilePictureUrl = profilePictureUrl;
-            Version = 1;
+            EventVersion = 1;
         }
     }
 }

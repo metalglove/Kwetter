@@ -19,16 +19,12 @@ namespace Kwetter.Services.UserService.Infrastructure.EntityConfigurations
             
             // The primary key is Id.
             builder.HasKey(p => p.Id);
-            
-            // The display name is unique.
-            builder.HasIndex(p => p.DisplayName)
-                .IsUnique(true);
 
-            // The username is required.
+            // The display name is required.
             builder.Property(p => p.DisplayName)
                 .IsRequired(true);
 
-            // The username has a maximum length of 64.
+            // The display name has a maximum length of 64.
             builder.Property(p => p.DisplayName)
                 .HasMaxLength(64);
 
@@ -46,6 +42,14 @@ namespace Kwetter.Services.UserService.Infrastructure.EntityConfigurations
 
                 // The description is required.
                 navigationBuilder.Property(p => p.Description)
+                    .IsRequired(true);
+
+                // The picture url has a maximum length of 512.
+                navigationBuilder.Property(p => p.PictureUrl)
+                    .HasMaxLength(512);
+
+                // The picture url is required.
+                navigationBuilder.Property(p => p.PictureUrl)
                     .IsRequired(true);
 
                 // UserAggregate is the owner.
