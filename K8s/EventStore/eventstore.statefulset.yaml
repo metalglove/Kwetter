@@ -52,13 +52,13 @@ spec:
         image: eventstore/eventstore:20.10.2-bionic
         ports: 
         - containerPort: 1112
-          name: eventstore-int-tcp
+          name: es-int-tcp
         - containerPort: 1113
-          name: eventstore-ext-tcp
+          name: es-ext-tcp
         - containerPort: 2113
-          name: eventstore-web
+          name: es-web
         - containerPort: 2114
-          name: gossip
+          name: es-gossip
         env:
         - name: EVENTSTORE_INT_IP
           valueFrom:
