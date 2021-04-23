@@ -40,14 +40,8 @@ spec:
           - containerPort: 2113
             name: es-web
         env:
-        - name: EVENTSTORE_INT_IP
-          valueFrom:
-            fieldRef:
-              fieldPath: status.podIP
         - name: EVENTSTORE_EXT_IP
-          valueFrom:
-            fieldRef:
-              fieldPath: status.podIP
+          value: "0.0.0.0"
         - name: EVENTSTORE_ENABLE_EXTERNAL_TCP
           value: "false"
         - name: EVENTSTORE_INSECURE
@@ -56,6 +50,8 @@ spec:
           value: "2113"
         - name: EVENTSTORE_EXT_HTTP_PREFIXES
           value: "http://*:2113/"
+        - name: EVENTSTORE_ENABLE_ATOM_PUB_OVER_HTTP
+          value: "true"
         resources:
           limits:
             memory: 300Mi
