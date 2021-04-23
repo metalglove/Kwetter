@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: eventstore-cluster-data-2
+  name: eventstore-data-2
   namespace: kwetter
 spec:
   capacity:
