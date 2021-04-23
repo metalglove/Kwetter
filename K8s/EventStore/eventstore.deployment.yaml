@@ -56,10 +56,14 @@ spec:
           value: "1112"
         - name: EVENTSTORE_EXT_HTTP_PORT
           value: "2113"
-        volumeMounts:
-        - name: eventstore-data
-          mountPath: /var/lib/eventstore
         resources:
           limits:
             memory: 300Mi
             cpu: 200m
+        volumeMounts:
+        - name: eventstore-data-volume
+          mountPath: /var/lib/eventstore
+      volumes:
+      - name: eventstore-data-volume
+        persistentVolumeClaim:
+          claimName: eventstore-data-volume-claim
