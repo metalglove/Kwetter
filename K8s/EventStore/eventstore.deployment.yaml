@@ -52,8 +52,6 @@ spec:
           value: "false"
         - name: EVENTSTORE_INSECURE
           value: "true"
-        - name: EVENTSTORE_INT_TCP_PORT
-          value: "1112"
         - name: EVENTSTORE_EXT_HTTP_PORT
           value: "2113"
         - name: EVENTSTORE_EXT_HTTP_PREFIXES
