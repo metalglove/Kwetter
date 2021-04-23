@@ -63,3 +63,8 @@ Docker run for eventstore
 ```
 docker run --name esdb-node -it -p 2113:2113 -p 1113:1113 eventstore/eventstore:21.2.0-bionic --insecure --run-projections=All --enable-external-tcp --enable-atom-pub-over-http
 ```
+
+if persistent volumes get stuck
+```
+kubectl patch pv pvname -p '{"metadata":{"finalizers":null}}'
+```

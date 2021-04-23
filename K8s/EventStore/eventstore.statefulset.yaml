@@ -70,9 +70,7 @@ spec:
               fieldPath: status.podIP
         - name: EVENTSTORE_ENABLE_EXTERNAL_TCP
           value: "true"
-        - name: EVENTSTORE_DISABLE_INTERNAL_TCP_TLS
-          value: "true"
-        - name: EVENTSTORE_DISABLE_EXTERNAL_TCP_TLS
+        - name: EVENTSTORE_INSECURE
           value: "true"
         volumeMounts:
         - name: eventstore-cluster-data
