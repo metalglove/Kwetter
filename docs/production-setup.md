@@ -103,7 +103,9 @@ export PATH=~/istio-1.9.1/bin:$PATH
 Afterwards, install Istio into the cluster
 ```
 istioctl install --set values.gateways.istio-egressgateway.enabled=true \
---set meshConfig.outboundTrafficPolicy.mode=ALLOW_ANY
+--set meshConfig.outboundTrafficPolicy.mode=ALLOW_ANY \
+--set components.egressGateways[0].name=istio-egressgateway \
+--set components.egressGateways[0].enabled=true
 ```
 Label the kwetter namespace with `istio-injection`
 ```

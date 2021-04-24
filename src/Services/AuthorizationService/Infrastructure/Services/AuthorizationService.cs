@@ -1,7 +1,10 @@
 ﻿using Kwetter.Services.AuthorizationService.Infrastructure.Dtos;
 using Kwetter.Services.AuthorizationService.Infrastructure.Interfaces;
 using Kwetter.Services.Common.Application.Configurations;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using System;
+using System.Collections.Generic;
 using System.Net.Http;
 using System.Text;
 using System.Text.Json;
@@ -16,6 +19,7 @@ namespace Kwetter.Services.AuthorizationService.Infrastructure.Services
     public class AuthorizationService : IAuthorizationService
     {
         private readonly AuthorizationConfiguration _authorizationConfiguration;
+        private readonly ILogger<AuthorizationService> _logger;
         private readonly HttpClient _httpClient;
 
         /// <summary>
@@ -23,11 +27,14 @@ namespace Kwetter.Services.AuthorizationService.Infrastructure.Services
         /// </summary>
         /// <param name="options">The authorization configuration options.</param>
         /// <param name="httpClient">The http client instance.</param>
+        /// <param name="logger">The logger.</param>
         public AuthorizationService(
             IOptions<AuthorizationConfiguration> options,
-            HttpClient httpClient)
+            HttpClient httpClient,
+            ILogger<AuthorizationService> logger)
         {
             _authorizationConfiguration = options.Value;
+            _logger = logger;
             _httpClient = httpClient;
         }
 
@@ -41,10 +48,24 @@ namespace Kwetter.Services.AuthorizationService.Infrastructure.Services
                 $"&client_secret={_authorizationConfiguration.ClientSecret}" +
                 $"&redirect_uri=postmessage" +
                 $"&grant_type=authorization_code";
+            _logger.LogInformation($"codeQuery: {codeQuery}");
             HttpContent httpContent = new StringContent(codeQuery, Encoding.UTF8, "application/x-www-form-urlencoded");
             httpRequestMessage.Content = httpContent;
+            _logger.LogInformation("About to send request to google!");
             HttpResponseMessage httpResponseMessage = await _httpClient.SendAsync(httpRequestMessage);
+            _logger.LogInformation("Received response from google!");
+
+            StringBuilder builder = new(Environment.NewLine);
+            builder.AppendLine($"HTTP StatusCode:{Environment.NewLine}{httpResponseMessage.StatusCode}");
+            builder.AppendLine($"HTTP ReasonPhrase:{Environment.NewLine}{httpResponseMessage.ReasonPhrase}");
+            builder.AppendLine($"HTTP Response headers:");
+            foreach (KeyValuePair<string, IEnumerable<string>> header in httpResponseMessage.Headers)
+                builder.AppendLine($"\t{header.Key}:{string.Join(',', header.Value)}");
+            _logger.LogInformation(builder.ToString());
+
+            _logger.LogInformation("Reading json from response....");
             string json = await httpResponseMessage.Content.ReadAsStringAsync();
+            _logger.LogInformation($"JSON:{Environment.NewLine}{json}");
             httpResponseMessage.EnsureSuccessStatusCode();
             AuthorizationDto authorizationDto = JsonSerializer.Deserialize<AuthorizationDto>(json);
             return authorizationDto;
