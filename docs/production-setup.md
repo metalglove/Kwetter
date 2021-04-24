@@ -112,8 +112,8 @@ Label the kwetter namespace with `istio-injection`
 kubectl label namespace kwetter istio-injection=enabled
 ```
 
-To ensure that the egress gateway works properly on baremetal clusters, sometimes it is necesarry to configure the CoreDNS
-See: https://crt.the-mori.com/2020-03-18-coredns-connection-timeout-external-domain-name
+To ensure that the egress gateway works properly on baremetal clusters, sometimes it is necesarry to configure the CoreDNS <br/>
+See: https://crt.the-mori.com/2020-03-18-coredns-connection-timeout-external-domain-name <br/>
 Store the ConfigMap of the coredns into a yaml file.
 ```
 kubectl get configmap coredns -n kube-system -o yaml > coredns.yaml
