@@ -102,11 +102,31 @@ export PATH=~/istio-1.9.1/bin:$PATH
 ```
 Afterwards, install Istio into the cluster
 ```
-istioctl install -y
+istioctl install --set values.gateways.istio-egressgateway.enabled=true \
+--set meshConfig.outboundTrafficPolicy.mode=ALLOW_ANY
 ```
 Label the kwetter namespace with `istio-injection`
 ```
 kubectl label namespace kwetter istio-injection=enabled
+```
+
+To ensure that the egress gateway works properly on baremetal clusters, sometimes it is necesarry to configure the CoreDNS
+See: https://crt.the-mori.com/2020-03-18-coredns-connection-timeout-external-domain-name
+Store the ConfigMap of the coredns into a yaml file.
+```
+kubectl get configmap coredns -n kube-system -o yaml > coredns.yaml
+```
+Change the forward block: forward . /etc/resolv.conf (including the { ... }) to forward .  8.8.8.8 8.8.4.4 (be aware of 2 spaces after .) 
+```
+vim coredns.yaml
+```
+Deploy the new ConfigMap
+```
+kubectl apply -f coredns.yaml 
+```
+Redploy the coredns pods by deleting them
+```
+kubectl rollout restart -n kube-system deployment/coredns
 ```
 
 Install MetalLB
@@ -223,3 +243,5 @@ Port forwards the kiali ui.
 ```
 istioctl dashboard kiali --address 192.168.1.136
 ```
+
+> **_NOTE:_**  When using baremetal, don't forget to portforward the ingress-gateway!
