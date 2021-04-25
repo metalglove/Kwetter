@@ -40,7 +40,7 @@ namespace Kwetter.Services.KweetService.Infrastructure.EntityConfigurations
 
                 // This is an owned entity type so the id can be ignored.
                 navigationBuilder.Ignore(p => p.Id);
-            
+
                 // The key is the kweet and user id.
                 navigationBuilder.HasKey(p => new {p.KweetId, p.UserId});
 
@@ -54,6 +54,9 @@ namespace Kwetter.Services.KweetService.Infrastructure.EntityConfigurations
             .Navigation(p => p.Likes)
             .HasField("_likes")
             .UsePropertyAccessMode(PropertyAccessMode.Field);
+
+            // The like count is computed from the likes set.
+            builder.Ignore(p => p.LikeCount);
         }
     }
 }

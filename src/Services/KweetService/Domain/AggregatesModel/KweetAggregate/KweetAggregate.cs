@@ -31,6 +31,11 @@ namespace Kwetter.Services.KweetService.Domain.AggregatesModel.KweetAggregate
         public DateTime CreatedDateTime { get; private set; }
 
         /// <summary>
+        /// Gets the like count.
+        /// </summary>
+        public int LikeCount => _likes.Count;
+
+        /// <summary>
         /// Gets and sets the likes of the kweet.
         /// </summary>
         public IReadOnlySet<KweetLike> Likes => _likes;

@@ -1,8 +1,8 @@
-﻿using System;
+﻿using Kwetter.Services.Common.Domain.Persistence;
+using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using Kwetter.Services.Common.Domain.Persistence;
 
 namespace Kwetter.Services.KweetService.Domain.AggregatesModel.KweetAggregate
 {

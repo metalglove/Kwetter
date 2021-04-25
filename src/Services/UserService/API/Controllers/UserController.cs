@@ -39,7 +39,7 @@ namespace Kwetter.Services.UserService.API.Controllers
             CommandResponse commandResponse = await _mediator.Send(command);
             return commandResponse.Success
                 ? new CreatedAtRouteResult(new { command.UserId }, commandResponse)
-                : BadRequest(commandResponse);
+                : new BadRequestObjectResult(commandResponse);
         }
     }
 }
