@@ -1,6 +1,7 @@
 using Kwetter.Services.Common.API;
 using Kwetter.Services.Common.Application.Configurations;
 using Kwetter.Services.Common.Infrastructure;
+using Kwetter.Services.Common.Infrastructure.Behaviours;
 using Kwetter.Services.FollowService.API.Application.Commands.CreateFollowCommand;
 using Kwetter.Services.FollowService.Domain.AggregatesModel.FollowAggregate;
 using Kwetter.Services.FollowService.Infrastructure;
@@ -44,7 +45,9 @@ namespace Kwetter.Services.FollowService.API
             services.AddConfigurations(_configuration);
             services.AddLogging(p => p.AddConsole());
             services.AddDefaultApplicationServices(Assembly.GetAssembly(typeof(Startup)), Assembly.GetAssembly(typeof(CreateFollowCommand)));
+            services.AddScoped(typeof(IPipelineBehavior<,>), typeof(TransactionBehaviour<,>));
             services.AddDefaultInfrastructureServices();
+            services.AddEventStore();
             services.AddDefaultAuthentication(_configuration);
             services.AddScoped<IFactory<FollowDbContext>, FollowDatabaseFactory>();
             services.AddScoped<FollowDbContext>(p => p.GetRequiredService<IFactory<FollowDbContext>>().Create());

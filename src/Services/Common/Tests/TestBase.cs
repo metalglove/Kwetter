@@ -7,9 +7,12 @@ using Kwetter.Services.Common.Application.Eventing.Store;
 using Kwetter.Services.Common.Domain;
 using Kwetter.Services.Common.Domain.Persistence;
 using Kwetter.Services.Common.Infrastructure;
+using Kwetter.Services.Common.Infrastructure.Behaviours;
+using Kwetter.Services.Common.Infrastructure.Eventing;
 using Kwetter.Services.Common.Infrastructure.EventSerializers;
 using Kwetter.Services.Common.Infrastructure.Integration;
 using Kwetter.Services.Common.Tests.Mocks;
+using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -78,11 +81,13 @@ namespace Kwetter.Services.Common.Tests
 
             serviceCollection.AddLogging(p => p.AddConsole());
             serviceCollection.AddDefaultApplicationServices(Assembly.GetAssembly(startUpType), Assembly.GetAssembly(applicationType));
-            
+            serviceCollection.AddScoped(typeof(IPipelineBehavior<,>), typeof(TransactionBehaviour<,>));
+
             // Mock infrastructure
             serviceCollection.AddTransient<IEventSerializer, JsonEventSerializer>();
             serviceCollection.AddSingleton<IEventBus, EventBusMock>();
             serviceCollection.AddSingleton<IEventStore, EventStoreMock>();
+            serviceCollection.AddScoped(typeof(INotificationHandler<>), typeof(AnyDomainEventHandler<>));
             serviceCollection.AddScoped<IIntegrationEventService, IntegrationEventService>();
             serviceCollection.AddScoped<IFactory<TDbContext>, TDatabaseFactory>();
             serviceCollection.AddScoped<TDbContext>(p =>

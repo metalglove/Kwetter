@@ -40,8 +40,7 @@ namespace Kwetter.Services.FollowService.Tests.Commands
                 FollowingId = FollowingId,
                 FollowerId = FollowerId
             };
-            
-            await Mediator.Send(createFollowCommand);
+            CommandResponse _ = await Mediator.Send(createFollowCommand);
         }
         
         [TestCleanup]

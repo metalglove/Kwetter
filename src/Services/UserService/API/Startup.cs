@@ -1,6 +1,7 @@
 using Kwetter.Services.Common.API;
 using Kwetter.Services.Common.Application.Eventing.Bus;
 using Kwetter.Services.Common.Infrastructure;
+using Kwetter.Services.Common.Infrastructure.Behaviours;
 using Kwetter.Services.UserService.API.Application.Commands.CreateUserCommand;
 using Kwetter.Services.UserService.API.Application.IntegrationEventHandlers.IdentityCreatedIntegration;
 using Kwetter.Services.UserService.Domain.AggregatesModel.UserAggregate;
@@ -44,7 +45,9 @@ namespace Kwetter.Services.UserService.API
             services.AddConfigurations(_configuration);
             services.AddLogging(p => p.AddConsole());
             services.AddDefaultApplicationServices(Assembly.GetAssembly(typeof(Startup)), Assembly.GetAssembly(typeof(CreateUserCommand)));
+            services.AddScoped(typeof(IPipelineBehavior<,>), typeof(TransactionBehaviour<,>));
             services.AddDefaultInfrastructureServices();
+            services.AddEventStore();
             services.AddDefaultAuthentication(_configuration);
             services.AddScoped<IFactory<UserDbContext>, UserDatabaseFactory>();
             services.AddScoped<UserDbContext>(p => p.GetRequiredService<IFactory<UserDbContext>>().Create());

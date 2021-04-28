@@ -1,5 +1,7 @@
-﻿using EventStore.Client;
+using EventStore.Client;
+using FirebaseAdmin;
 using FluentValidation;
+using Google.Apis.Auth.OAuth2;
 using Kwetter.Services.Common.API.Behaviours;
 using Kwetter.Services.Common.Application.Configurations;
 using Kwetter.Services.Common.Application.Eventing;
@@ -107,7 +109,7 @@ namespace Kwetter.Services.Common.API
         {
             serviceCollection.AddAutoMapper(mappingAssembly, Assembly.GetAssembly(typeof(StartupExtensions)));
             serviceCollection.AddValidatorsFromAssembly(applicationAssembly);
-            serviceCollection.AddMediatR(c => c.AsScoped(), applicationAssembly, Assembly.GetAssembly(typeof(AnyDomainEventHandler<>)));
+            serviceCollection.AddMediatR(c => c.AsScoped(), applicationAssembly);
             serviceCollection.AddScoped(typeof(IPipelineBehavior<,>), typeof(ScopeBehaviour<,>));
             serviceCollection.AddScoped(typeof(IPipelineBehavior<,>), typeof(ExceptionBehaviour<,>));
             serviceCollection.AddScoped(typeof(IPipelineBehavior<,>), typeof(ValidationBehaviour<,>));
@@ -151,6 +153,12 @@ namespace Kwetter.Services.Common.API
                 IConfigurationRetriever<JsonWebKeySet> retriever = a.GetRequiredService<IConfigurationRetriever<JsonWebKeySet>>();
                 return new ConfigurationManager<JsonWebKeySet>($"{configuration["Authorization:JwksUri"]}", retriever); ;
             });
+
+            FirebaseApp firebaseApp = FirebaseApp.Create(new AppOptions()
+            {
+                Credential = GoogleCredential.FromFile(configuration["Authorization:Credential"])
+            });
+            serviceCollection.AddSingleton(firebaseApp);
 
             serviceCollection
                 .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)

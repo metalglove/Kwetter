@@ -1,10 +1,12 @@
-using Kwetter.Services.AuthorizationService.API.Application.Queries.AuthorizationQuery;
+using Kwetter.Services.AuthorizationService.API.Application.Queries.ClaimsQuery;
 using Kwetter.Services.AuthorizationService.Domain.AggregatesModel.IdentityAggregate;
 using Kwetter.Services.AuthorizationService.Infrastructure;
 using Kwetter.Services.AuthorizationService.Infrastructure.Interfaces;
 using Kwetter.Services.AuthorizationService.Infrastructure.Repositories;
 using Kwetter.Services.Common.API;
 using Kwetter.Services.Common.Infrastructure;
+using Kwetter.Services.Common.Infrastructure.Behaviours;
+using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -40,9 +42,11 @@ namespace Kwetter.Services.AuthorizationService.API
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddConfigurations(_configuration);
-            services.AddDefaultApplicationServices(Assembly.GetAssembly(typeof(Startup)), Assembly.GetAssembly(typeof(AuthorizationQuery)));
+            services.AddDefaultApplicationServices(Assembly.GetAssembly(typeof(Startup)), Assembly.GetAssembly(typeof(ClaimsQuery)));
+            services.AddScoped(typeof(IPipelineBehavior<,>), typeof(TransactionBehaviour<,>));
             services.AddLogging(p => p.AddConsole());
             services.AddDefaultInfrastructureServices();
+            services.AddEventStore();
             services.AddDefaultAuthentication(_configuration);
             services.AddHttpClient<IAuthorizationService, Infrastructure.Services.AuthorizationService>();
             services.AddScoped<IFactory<IdentityDbContext>, IdentityDatabaseFactory>();

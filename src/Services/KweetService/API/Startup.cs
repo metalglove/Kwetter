@@ -1,9 +1,11 @@
 using Kwetter.Services.Common.API;
 using Kwetter.Services.Common.Infrastructure;
+using Kwetter.Services.Common.Infrastructure.Behaviours;
 using Kwetter.Services.KweetService.API.Application.Commands.CreateKweetCommand;
 using Kwetter.Services.KweetService.Domain.AggregatesModel.KweetAggregate;
 using Kwetter.Services.KweetService.Infrastructure;
 using Kwetter.Services.KweetService.Infrastructure.Repositories;
+using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -41,7 +43,9 @@ namespace Kwetter.Services.KweetService.API
             services.AddConfigurations(_configuration);
             services.AddLogging(p => p.AddConsole());
             services.AddDefaultApplicationServices(Assembly.GetAssembly(typeof(Startup)), Assembly.GetAssembly(typeof(CreateKweetCommand)));
+            services.AddScoped(typeof(IPipelineBehavior<,>), typeof(TransactionBehaviour<,>));
             services.AddDefaultInfrastructureServices();
+            services.AddEventStore();
             services.AddDefaultAuthentication(_configuration);
             services.AddScoped<IFactory<KweetDbContext>, KweetDatabaseFactory>();
             services.AddScoped<KweetDbContext>(p => p.GetRequiredService<IFactory<KweetDbContext>>().Create());
