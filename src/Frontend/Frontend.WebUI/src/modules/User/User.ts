@@ -1,4 +1,3 @@
-import AuthorizationDto from "../../models/dtos/AuthorizationDto";
 import jwtDecode, { JwtPayload } from "jwt-decode";
 
 export type User = {
@@ -15,27 +14,25 @@ export type UserProfile = {
 
 export type UserAuthentication = {
     token_type: string,
-    access_token: string,
     id_token: string,
     expires_at: number,
     expires_in: number
 };
 
-export function toUser(authorizationDto: AuthorizationDto): User {
-    const payload: GoogleJwtPayload = jwtDecode<GoogleJwtPayload>(authorizationDto.id_token);
+export function toUserFromIdToken(idToken: string): User {
+    const payload: GoogleJwtPayload = jwtDecode<GoogleJwtPayload>(idToken);
     const user: User = {
-        userId: authorizationDto.user_id,
+        userId: payload.UserId,
         profile: {
             name: payload.name,
             picture: payload.picture,
             email: payload.email
         },
         authentication: {
-            token_type: authorizationDto.token_type,
-            access_token: authorizationDto.access_token,
+            token_type: 'Bearer',
             expires_at: payload.iat,
             expires_in: payload.exp,
-            id_token: authorizationDto.id_token
+            id_token: idToken
         }
     }
     return user;
@@ -52,4 +49,6 @@ interface GoogleJwtPayload extends JwtPayload {
     locale: string;
     iat: number;
     exp: number;
+    UserId: string;
+    User: boolean;
 }

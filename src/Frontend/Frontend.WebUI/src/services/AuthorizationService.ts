@@ -1,6 +1,6 @@
 import IAuthorizationService from '@/interfaces/IAuthorizationService';
-import QueryResponse from '../models/cqrs/QueryResponse';
-import AuthorizationDto from '../models/dtos/AuthorizationDto';
+import ClaimsResponse from '@/models/dtos/ClaimsResponse';
+import QueryResponse from '@/models/cqrs/QueryResponse';
 
 /**
  * Represents the AuthorizationService class.
@@ -15,9 +15,9 @@ export default class AuthorizationService implements IAuthorizationService {
         this._authorizationServiceUri = authorizationServiceUri;
     }
 
-    public async AuthorizeCode(code: string): Promise<QueryResponse<AuthorizationDto>> {
-        const response = await fetch(
-            `${this._authorizationServiceUri}/Code`,
+    public async RequestClaimsForNewUser(idToken: string): Promise<QueryResponse<ClaimsResponse>> {
+         const response = await fetch(
+            `${this._authorizationServiceUri}/Claims`,
             {
                 method: 'POST',
                 cache: 'no-cache',
@@ -25,13 +25,13 @@ export default class AuthorizationService implements IAuthorizationService {
                     'Content-Type': 'application/json'
                 },
                 redirect: 'follow',
-                body: JSON.stringify({ code: code })
+                body: JSON.stringify({ IdToken: idToken })
             });
         if (!response.ok) {
             const message = `An error has occured: ${response.status}`;
             throw new Error(message);
         }
-        const queryResponse: QueryResponse<AuthorizationDto> = await response.json();
+        const queryResponse: QueryResponse<ClaimsResponse> = await response.json();
         return queryResponse;
     }
 }

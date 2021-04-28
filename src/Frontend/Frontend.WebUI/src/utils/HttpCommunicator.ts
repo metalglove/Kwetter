@@ -52,7 +52,7 @@ export default class HttpCommunicator implements IHttpCommunicator {
         headers.append('Content-Type', 'application/json');
         const user: User | null = getItem<User>('user');
         if (user)
-            headers.append('Authorization', `Bearer ${user.authentication.access_token}`);
+            headers.append('Authorization', `Bearer ${user.authentication.id_token}`);
         return headers;
     }
 }

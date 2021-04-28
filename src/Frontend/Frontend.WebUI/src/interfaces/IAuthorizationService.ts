@@ -1,13 +1,13 @@
 import QueryResponse from "@/models/cqrs/QueryResponse";
-import AuthorizationDto from "@/models/dtos/AuthorizationDto";
+import ClaimsResponse from "@/models/dtos/ClaimsResponse";
 
 /**
  * Represents the IAuthorizationService interface.
  */
 export default interface IAuthorizationService {
     /**
-     * Authorizes the client using the authorization_code flow.
-     * @param code The authorization code.
+     * Request claims for a new user from the authorization service.
+     * @param idToken The id token.
      */
-    AuthorizeCode(code: string): Promise<QueryResponse<AuthorizationDto>>;
+    RequestClaimsForNewUser(idToken: string): Promise<QueryResponse<ClaimsResponse>>;
 }
