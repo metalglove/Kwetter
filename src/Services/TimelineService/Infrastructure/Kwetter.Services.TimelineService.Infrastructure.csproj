@@ -2,15 +2,13 @@
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
+    <Configurations>Debug;Release;Services Build;Services Release</Configurations>
   </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="StackExchange.Redis" Version="2.2.4" />
-    <PackageReference Include="StackExchange.Redis.Extensions.System.Text.Json" Version="7.0.0" />
-  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\Common\Infrastructure\Kwetter.Services.Common.Infrastructure.csproj" />
+    <ProjectReference Include="..\Domain\Kwetter.Services.TimelineService.Domain.csproj" />
   </ItemGroup>
 
 </Project>

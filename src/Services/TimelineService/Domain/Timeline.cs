@@ -1,19 +1,22 @@
-﻿using Kwetter.Services.Common.API.CQRS;
-using MediatR;
-using System;
+﻿using System;
 using System.Collections.Generic;
 
-namespace Kwetter.Services.TimelineService.API.Application.Queries.KweetTimelineQuery
+namespace Kwetter.Services.TimelineService.Domain
 {
     /// <summary>
-    /// Represents the <see cref="KweetTimelineQuery"/> record.
+    /// Gets and sets the <see cref="Timeline"/> class.
     /// </summary>
-    public record KweetTimelineQuery : IRequest<QueryResponse<IEnumerable<KweetDto>>>
+    public class Timeline
     {
         /// <summary>
         /// Gets and sets the user id.
         /// </summary>
         public Guid UserId { get; set; }
+        
+        /// <summary>
+        /// Gets and sets the list of timeline kweets.
+        /// </summary>
+        public List<TimelineKweet> Kweets { get; set; }
 
         /// <summary>
         /// Gets and sets the page number.

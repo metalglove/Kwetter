@@ -1,4 +1,4 @@
-using EventStore.Client;
+﻿using EventStore.Client;
 using FirebaseAdmin;
 using FluentValidation;
 using Google.Apis.Auth.OAuth2;
@@ -9,7 +9,6 @@ using Kwetter.Services.Common.Application.Eventing.Bus;
 using Kwetter.Services.Common.Application.Eventing.Integration;
 using Kwetter.Services.Common.Application.Eventing.Store;
 using Kwetter.Services.Common.Infrastructure.Authorization;
-using Kwetter.Services.Common.Infrastructure.Behaviours;
 using Kwetter.Services.Common.Infrastructure.Eventing;
 using Kwetter.Services.Common.Infrastructure.Eventing.Bus;
 using Kwetter.Services.Common.Infrastructure.EventSerializers;
@@ -24,6 +23,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Protocols;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Neo4j.Driver;
 using RabbitMQ.Client;
 using System;
 using System.Reflection;
@@ -113,7 +113,6 @@ namespace Kwetter.Services.Common.API
             serviceCollection.AddScoped(typeof(IPipelineBehavior<,>), typeof(ScopeBehaviour<,>));
             serviceCollection.AddScoped(typeof(IPipelineBehavior<,>), typeof(ExceptionBehaviour<,>));
             serviceCollection.AddScoped(typeof(IPipelineBehavior<,>), typeof(ValidationBehaviour<,>));
-            serviceCollection.AddScoped(typeof(IPipelineBehavior<,>), typeof(TransactionBehaviour<,>));
             return serviceCollection;
         }
 
@@ -128,6 +127,17 @@ namespace Kwetter.Services.Common.API
             serviceCollection.AddSingleton<ObjectPoolProvider, DefaultObjectPoolProvider>();
             serviceCollection.AddSingleton<IPooledObjectPolicy<IModel>, RabbitModelPooledObjectPolicy>();
             serviceCollection.AddSingleton<IEventBus, EventBus>();
+            serviceCollection.AddScoped<IIntegrationEventService, IntegrationEventService>();
+            return serviceCollection;
+        }
+
+        /// <summary>
+        /// Adds the event store to the service collection.
+        /// </summary>
+        /// <param name="serviceCollection">The service collection.</param>
+        /// <returns>Returns the service collection to chain further upon.</returns>
+        public static IServiceCollection AddEventStore(this IServiceCollection serviceCollection)
+        {
             serviceCollection.AddSingleton<EventStoreClient>((serviceProvider) =>
             {
                 EventStoreConfiguration eventStoreConfiguration = serviceProvider.GetRequiredService<IOptions<EventStoreConfiguration>>().Value;
@@ -135,7 +145,25 @@ namespace Kwetter.Services.Common.API
                 return new EventStoreClient(settings);
             });
             serviceCollection.AddScoped<IEventStore, Infrastructure.Eventing.Store.EventStore>();
-            serviceCollection.AddScoped<IIntegrationEventService, IntegrationEventService>();
+            serviceCollection.AddScoped(typeof(INotificationHandler<>), typeof(AnyDomainEventHandler<>));
+            return serviceCollection;
+        }
+
+        /// <summary>
+        /// Adds theNeo4j driver to the service collection.
+        /// </summary>
+        /// <param name="serviceCollection">The service collection.</param>
+        /// <param name="configuration">The configuration.</param>
+        /// <returns>Returns the service collection to chain further upon.</returns>
+        public static IServiceCollection AddNeo4jDriver(this IServiceCollection serviceCollection, IConfiguration configuration)
+        {
+            serviceCollection.AddSingleton(GraphDatabase.Driver(
+                configuration["NEO4J:Host"],
+                AuthTokens.Basic(
+                    configuration["NEO4J:User"],
+                    configuration["NEO4J:Password"]
+                )
+            ));
             return serviceCollection;
         }
 

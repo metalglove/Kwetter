@@ -1,14 +1,14 @@
 ﻿using System;
 
-namespace Kwetter.Services.TimelineService.API.Application.Queries
+namespace Kwetter.Services.TimelineService.Domain
 {
     /// <summary>
-    /// Represents the <see cref="KweetDto"/> class.
+    /// Represents the <see cref="TimelineKweet"/> class.
     /// </summary>
-    public record KweetDto
+    public class TimelineKweet
     {
         /// <summary>
-        /// Gets and sets the kweet id.
+        /// Gets and sets the timeline kweet id.
         /// </summary>
         public Guid Id { get; set; }
 
@@ -18,12 +18,17 @@ namespace Kwetter.Services.TimelineService.API.Application.Queries
         public Guid UserId { get; set; }
 
         /// <summary>
+        /// Gets and sets the kweet message.
+        /// </summary>
+        public string Message { get; set; }
+
+        /// <summary>
         /// Gets and sets the user display name.
         /// </summary>
         public string UserDisplayName { get; set; }
 
         /// <summary>
-        /// Gets and sets whether the user has liked the kweet.
+        /// Gets and sets a value indicating whether the kweet is liked by the user.
         /// </summary>
         public bool Liked { get; set; }
 
@@ -33,12 +38,7 @@ namespace Kwetter.Services.TimelineService.API.Application.Queries
         public int LikeCount { get; set; }
 
         /// <summary>
-        /// Gets and sets the kweet message.
-        /// </summary>
-        public string Message { get; set; }
-
-        /// <summary>
-        /// Gets and sets the created date time.
+        /// Gets and sets the create date time of the kweet.
         /// </summary>
         public DateTime CreatedDateTime { get; set; }
     }

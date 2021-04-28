@@ -1,13 +1,12 @@
 using Kwetter.Services.Common.API;
 using Kwetter.Services.TimelineService.API.Application.Queries.KweetTimelineQuery;
+using Kwetter.Services.TimelineService.Infrastructure;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using StackExchange.Redis.Extensions.Core.Configuration;
-using StackExchange.Redis.Extensions.System.Text.Json;
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 
@@ -40,33 +39,11 @@ namespace Kwetter.Services.TimelineService.API
             services.AddLogging(p => p.AddConsole());
             services.AddDefaultApplicationServices(Assembly.GetAssembly(typeof(Startup)), Assembly.GetAssembly(typeof(KweetTimelineQuery)));
             services.AddDefaultInfrastructureServices();
+            services.AddNeo4jDriver(_configuration);
             services.AddDefaultAuthentication(_configuration);
-
-            RedisConfiguration conf = new()
-            {
-                AbortOnConnectFail = true,
-                Hosts = new[] { new RedisHost { Host = "localhost", Port = 6379 } },
-                AllowAdmin = true,
-                ConnectTimeout = 5000,
-                Database = 0,
-                PoolSize = 50,
-                ServerEnumerationStrategy = new ServerEnumerationStrategy()
-                {
-                    Mode = ServerEnumerationStrategy.ModeOptions.All,
-                    TargetRole = ServerEnumerationStrategy.TargetRoleOptions.Any,
-                    UnreachableServerAction = ServerEnumerationStrategy.UnreachableServerActionOptions.Throw
-                }
-            };
-
-            services.AddStackExchangeRedisExtensions<SystemTextJsonSerializer>(conf);
-
-            //services.AddScoped<IFactory<KweetDbContext>, KweetDatabaseFactory>();
-            //services.AddScoped<KweetDbContext>(p => p.GetRequiredService<IFactory<KweetDbContext>>().Create());
-            //services.AddScoped<IAggregateUnitOfWork>(p => p.GetRequiredService<IFactory<KweetDbContext>>().Create());
-            //services.AddScoped<IKweetRepository, KweetRepository>();
+            services.AddSingleton<ITimelineGraphStore, TimelineGraphStore>();
             services.AddControllers();
             services.AddSwagger(_configuration);
-            //services.VerifyDatabaseConnection<KweetDbContext>();
         }
 
         /// <summary>
