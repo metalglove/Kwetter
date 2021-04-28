@@ -1,0 +1,26 @@
+        /// <summary>
+        /// Adds Redis to the service collection.
+        /// </summary>
+        /// <param name="serviceCollection">The service collection.</param>
+        /// <param name="configuration">The configuration.</param>
+        /// <returns>Returns the service collection to chain further upon.</returns>
+        public static IServiceCollection AddRedis(this IServiceCollection serviceCollection, IConfiguration configuration)
+        {
+            RedisConfiguration conf = new()
+            {
+                AbortOnConnectFail = true,
+                Hosts = new[] { new RedisHost { Host = configuration["Redis:Host"], Port = int.Parse(configuration["Redis:Port"]) } },
+                AllowAdmin = true,
+                ConnectTimeout = 5000,
+                Database = 0,
+                PoolSize = 50,
+                ServerEnumerationStrategy = new ServerEnumerationStrategy()
+                {
+                    Mode = ServerEnumerationStrategy.ModeOptions.All,
+                    TargetRole = ServerEnumerationStrategy.TargetRoleOptions.Any,
+                    UnreachableServerAction = ServerEnumerationStrategy.UnreachableServerActionOptions.Throw
+                }
+            };
+            serviceCollection.AddStackExchangeRedisExtensions<SystemTextJsonSerializer>(conf);
+            return serviceCollection;
+        }
