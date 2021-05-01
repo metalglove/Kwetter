@@ -51,5 +51,4 @@ namespace Kwetter.Services.TimelineService.Infrastructure
         /// <returns>Returns a timeline.</returns>
         public Task<Timeline> GetPaginatedTimelineAsync(Guid userId, int pageNumber, int pageSize);
     }
-   
 }

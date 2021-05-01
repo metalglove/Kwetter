@@ -12,12 +12,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Application\Commands\" />
+    <ProjectReference Include="..\..\Common\API\Kwetter.Services.Common.API.csproj" />
+    <ProjectReference Include="..\Infrastructure\Kwetter.Services.AuthorizationService.Infrastructure.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Common\API\Kwetter.Services.Common.API.csproj" />
-    <ProjectReference Include="..\Infrastructure\Kwetter.Services.AuthorizationService.Infrastructure.csproj" />
+    <Folder Include="Application\Queries\" />
   </ItemGroup>
 
 </Project>

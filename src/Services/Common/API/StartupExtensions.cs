@@ -8,6 +8,7 @@ using Kwetter.Services.Common.Application.Eventing;
 using Kwetter.Services.Common.Application.Eventing.Bus;
 using Kwetter.Services.Common.Application.Eventing.Integration;
 using Kwetter.Services.Common.Application.Eventing.Store;
+using Kwetter.Services.Common.Application.Interfaces;
 using Kwetter.Services.Common.Infrastructure.Authorization;
 using Kwetter.Services.Common.Infrastructure.Eventing;
 using Kwetter.Services.Common.Infrastructure.Eventing.Bus;
@@ -20,8 +21,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.ObjectPool;
 using Microsoft.Extensions.Options;
-using Microsoft.IdentityModel.Protocols;
-using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Neo4j.Driver;
 using RabbitMQ.Client;
@@ -175,23 +174,15 @@ namespace Kwetter.Services.Common.API
         /// <returns>Returns the service collection to chain further upon.</returns>
         public static IServiceCollection AddDefaultAuthentication(this IServiceCollection serviceCollection, IConfiguration configuration)
         {
-            serviceCollection.AddTransient<IConfigurationRetriever<JsonWebKeySet>, JsonWebKeySetRetriever>();
-            serviceCollection.AddSingleton<IConfigurationManager<JsonWebKeySet>>((a) =>
-            {
-                IConfigurationRetriever<JsonWebKeySet> retriever = a.GetRequiredService<IConfigurationRetriever<JsonWebKeySet>>();
-                return new ConfigurationManager<JsonWebKeySet>($"{configuration["Authorization:JwksUri"]}", retriever); ;
-            });
-
             FirebaseApp firebaseApp = FirebaseApp.Create(new AppOptions()
             {
                 Credential = GoogleCredential.FromFile(configuration["Authorization:Credential"])
             });
             serviceCollection.AddSingleton(firebaseApp);
-
+            serviceCollection.AddSingleton<ITokenVerifier, GoogleTokenVerifier>();
             serviceCollection
                 .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddScheme<JwtBearerOptions, JwtTokenAuthenticationHandler>(JwtBearerDefaults.AuthenticationScheme, o => { });
-
             return serviceCollection;
         }
     }

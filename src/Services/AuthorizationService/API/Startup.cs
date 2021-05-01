@@ -1,8 +1,9 @@
-using Kwetter.Services.AuthorizationService.API.Application.Queries.ClaimsQuery;
+using Kwetter.Services.AuthorizationService.API.Application.Commands.ClaimsCommand;
 using Kwetter.Services.AuthorizationService.Domain.AggregatesModel.IdentityAggregate;
 using Kwetter.Services.AuthorizationService.Infrastructure;
 using Kwetter.Services.AuthorizationService.Infrastructure.Interfaces;
 using Kwetter.Services.AuthorizationService.Infrastructure.Repositories;
+using Kwetter.Services.AuthorizationService.Infrastructure.Services;
 using Kwetter.Services.Common.API;
 using Kwetter.Services.Common.Infrastructure;
 using Kwetter.Services.Common.Infrastructure.Behaviours;
@@ -42,13 +43,13 @@ namespace Kwetter.Services.AuthorizationService.API
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddConfigurations(_configuration);
-            services.AddDefaultApplicationServices(Assembly.GetAssembly(typeof(Startup)), Assembly.GetAssembly(typeof(ClaimsQuery)));
+            services.AddDefaultApplicationServices(Assembly.GetAssembly(typeof(Startup)), Assembly.GetAssembly(typeof(ClaimsCommand)));
             services.AddScoped(typeof(IPipelineBehavior<,>), typeof(TransactionBehaviour<,>));
             services.AddLogging(p => p.AddConsole());
             services.AddDefaultInfrastructureServices();
             services.AddEventStore();
             services.AddDefaultAuthentication(_configuration);
-            services.AddHttpClient<IAuthorizationService, Infrastructure.Services.AuthorizationService>();
+            services.AddSingleton<IAuthorizationService, GoogleAuthorizationService>();
             services.AddScoped<IFactory<IdentityDbContext>, IdentityDatabaseFactory>();
             services.AddScoped<IdentityDbContext>(p => p.GetRequiredService<IFactory<IdentityDbContext>>().Create());
             services.AddScoped<IAggregateUnitOfWork>(p => p.GetRequiredService<IFactory<IdentityDbContext>>().Create());

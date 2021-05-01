@@ -1,5 +1,5 @@
-﻿using FirebaseAdmin;
-using FirebaseAdmin.Auth;
+﻿using Kwetter.Services.Common.Application.Dtos;
+using Kwetter.Services.Common.Application.Interfaces;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -20,7 +20,7 @@ namespace Kwetter.Services.Common.Infrastructure.Authorization
     /// </summary>
     public sealed class JwtTokenAuthenticationHandler : AuthenticationHandler<JwtBearerOptions>
     {
-        private readonly FirebaseAuth _firebaseAuth;
+        private readonly ITokenVerifier _tokenVerifier;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="JwtTokenAuthenticationHandler"/> class.
@@ -29,16 +29,16 @@ namespace Kwetter.Services.Common.Infrastructure.Authorization
         /// <param name="logger">The logger factory.</param>
         /// <param name="encoder">The url encoder.</param>
         /// <param name="clock">The system clock.</param>
-        /// <param name="firebaseApp">The firebase app.</param>
+        /// <param name="tokenVerifier">The token verifier.</param>
         public JwtTokenAuthenticationHandler(
             IOptionsMonitor<JwtBearerOptions> options,
             ILoggerFactory logger,
             UrlEncoder encoder,
             ISystemClock clock,
-            FirebaseApp firebaseApp)
+            ITokenVerifier tokenVerifier)
             : base(options, logger, encoder, clock)
         {
-            _firebaseAuth = FirebaseAuth.GetAuth(firebaseApp ?? throw new ArgumentNullException(nameof(firebaseApp)));
+            _tokenVerifier = tokenVerifier ?? throw new ArgumentNullException(nameof(tokenVerifier));
         }
 
         /// <inheritdoc cref="AuthenticationHandler{T}.HandleAuthenticateAsync()"/>
@@ -49,14 +49,12 @@ namespace Kwetter.Services.Common.Infrastructure.Authorization
             {
                 // TODO: fix random requests like /favicon.ico
                 Endpoint endPoint = Request.HttpContext.GetEndpoint();
-
                 if (endPoint is not null && endPoint.Metadata.Any(em => em.GetType() == typeof(AllowAnonymousAttribute)))
                 {
                     ClaimsIdentity id = new(new List<Claim>(), JwtBearerDefaults.AuthenticationScheme);
                     AuthenticationTicket tick = new(new ClaimsPrincipal(id), JwtBearerDefaults.AuthenticationScheme);
                     return AuthenticateResult.Success(tick);
                 }
-
                 return AuthenticateResult.Fail($"Authorization header not found.");
             }
 
@@ -64,11 +62,9 @@ namespace Kwetter.Services.Common.Infrastructure.Authorization
             List<Claim> claims = new();
             try
             {
-                FirebaseToken decodedToken = await _firebaseAuth.VerifyIdTokenAsync(token);
-                string userId = decodedToken.Claims.First(claim => claim.Key == "UserId").Value as string;
-                string hasUserClaim = decodedToken.Claims.First(claim => claim.Key == "User").Value.ToString();
-                claims.Add(new Claim("UserId", userId));
-                claims.Add(new Claim("User", hasUserClaim));
+                ClaimsDto claimsDto = await _tokenVerifier.VerifyIdTokenAsync(token);
+                claims.Add(claimsDto.Claims["UserId"].ToClaim());
+                claims.Add(claimsDto.Claims["User"].ToClaim());
             }
             catch (Exception ex)
             {

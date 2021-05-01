@@ -72,7 +72,8 @@ namespace Kwetter.Services.TimelineService.Infrastructure
                 {
                     IResultCursor cursor = await transaction.RunAsync(@"
                         MATCH (a:User) 
-                        WHERE (a.id = $userId) CREATE (a)<-[:KWEETED_BY]-(:Kweet {id: $kweetId, message: $message, createdDateTime: $createdDateTime})",
+                        WHERE (a.id = $userId) 
+                        CREATE (a)<-[:KWEETED_BY]-(:Kweet {id: $kweetId, message: $message, createdDateTime: $createdDateTime})",
                         new
                         {
                             kweetId = kweet.Id.ToString(),

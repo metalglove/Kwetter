@@ -1,0 +1,16 @@
+﻿using Kwetter.Services.Common.API.CQRS;
+using MediatR;
+
+namespace Kwetter.Services.AuthorizationService.API.Application.Commands.ClaimsCommand
+{
+    /// <summary>
+    /// Represents the <see cref="ClaimsCommand"/> record.
+    /// </summary>
+    public record ClaimsCommand : IRequest<CommandResponse>
+    {
+        /// <summary>
+        /// Gets and sets the id token.
+        /// </summary>
+        public string IdToken { get; set; }
+    }
+}

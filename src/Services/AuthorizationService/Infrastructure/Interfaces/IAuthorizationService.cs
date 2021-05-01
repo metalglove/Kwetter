@@ -1,4 +1,6 @@
-﻿using Kwetter.Services.AuthorizationService.Infrastructure.Dtos;
+﻿using Kwetter.Services.Common.Application.Interfaces;
+using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Kwetter.Services.AuthorizationService.Infrastructure.Interfaces
@@ -6,13 +8,15 @@ namespace Kwetter.Services.AuthorizationService.Infrastructure.Interfaces
     /// <summary>
     /// Represents the <see cref="IAuthorizationService"/> interface.
     /// </summary>
-    public interface IAuthorizationService
+    public interface IAuthorizationService : ITokenVerifier
     {
         /// <summary>
-        /// Performs the authorization using the authorization_code flow.
+        /// Sets user claims aysynchronously.
         /// </summary>
-        /// <param name="code">The authorization code.</param>
-        /// <returns>Returns the access and refresh token.</returns>
-        public Task<AuthorizationDto> AuthorizeAsync(string code);
+        /// <param name="openId">The open id.</param>
+        /// <param name="claims">The claims dictionary.</param>
+        /// <param name="cancellationToken"></param>
+        /// <returns>Returns an awaitable task.</returns>
+        public Task SetUserClaimsAsync(string openId, Dictionary<string, object> claims, CancellationToken cancellationToken);
     }
 }

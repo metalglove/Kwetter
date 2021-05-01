@@ -1,4 +1,4 @@
-﻿using Kwetter.Services.AuthorizationService.API.Application.Queries.ClaimsQuery;
+﻿using Kwetter.Services.AuthorizationService.API.Application.Commands.ClaimsCommand;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -28,12 +28,12 @@ namespace Kwetter.Services.AuthorizationService.API.Controllers
         /// <summary>
         /// Special endpoint for claims request when using the firebase api.
         /// </summary>
-        /// <param name="claimsQuery">The claims query.</param>
-        /// <returns>Returns the query response.</returns>
+        /// <param name="claimsCommand">The claims command.</param>
+        /// <returns>Returns the command response.</returns>
         [AllowAnonymous, HttpPost("Claims")]
-        public async Task<IActionResult> ClaimsAsync([FromBody] ClaimsQuery claimsQuery)
+        public async Task<IActionResult> ClaimsAsync([FromBody] ClaimsCommand claimsCommand)
         {
-            return Ok(await _mediator.Send(claimsQuery));
+            return Ok(await _mediator.Send(claimsCommand));
         }
     }
 }
