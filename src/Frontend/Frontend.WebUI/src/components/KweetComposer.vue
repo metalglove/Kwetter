@@ -56,20 +56,26 @@
                 const response: Response = await this.$kweetService.postKweet(kweetId, message, userId);
                 if (response.success) {
                     const kweet: Kweet = {
-                        avatar: user.profile.picture,
+                        userProfilePictureUrl: user.profile.picture,
                         id: kweetId,
                         liked: false,
                         message: message,
                         userId: userId,
-                        createdAt: 'now?'
+                        createdDateTime: '',
+                        userDisplayName: user.profile.name,
+                        likeCount: 0
                     };
                     this.$emit('posted', kweet);
                     ElMessage({
                         message: 'Successfully posted the kweet!',
                         type: 'success'
                     });
-                }
-                else {
+                } else if (response.errors.includes('Service unreachable.')) {
+                    ElMessage({
+                        message: 'The kweet service is currently unreachable. Try again later.',
+                        type: 'warning'
+                    });
+                } else {
                     ElMessage({
                         message: 'The kweet failed to post. Try again later.',
                         type: 'error'

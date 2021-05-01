@@ -66,7 +66,6 @@ namespace Kwetter.Services.Common.Infrastructure.Authorization
                 if (Request.Path.Value != "/api/Authorization/Claims")
                 {
                     claims.Add(claimsDto.Claims["UserId"].ToClaim());
-                    claims.Add(claimsDto.Claims["User"].ToClaim());
                 }
             }
             catch (Exception ex)

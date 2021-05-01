@@ -201,8 +201,8 @@ namespace Kwetter.Services.TimelineService.Infrastructure
             return result.Counters.NodesCreated == 1 && result.Counters.RelationshipsCreated == 1;
         }
 
-        /// <inheritdoc cref="ITimelineGraphStore.GetPaginatedTimelineAsync(Guid,int,int)"/>
-        public async Task<Timeline> GetPaginatedTimelineAsync(Guid userId, int pageNumber, int pageSize)
+        /// <inheritdoc cref="ITimelineGraphStore.GetPaginatedTimelineAsync(Guid,uint,uint)"/>
+        public async Task<Timeline> GetPaginatedTimelineAsync(Guid userId, uint pageNumber, uint pageSize)
         {
             IAsyncSession session = _driver.AsyncSession((c) => c.WithDatabase(DATABASE));
             Timeline timeline = new();
@@ -217,12 +217,13 @@ namespace Kwetter.Services.TimelineService.Infrastructure
                     IResultCursor cursor = await transaction.RunAsync(@"
                         CALL {
                             MATCH (:User {id: $userId})-[:FOLLOWS]->(user:User)<-[:KWEETED_BY]-(kweet:Kweet)
-                            RETURN user, kweet
+                            MATCH (userProfile:UserProfile)<-[:DESCRIBED_BY]-(user)
+                            RETURN userProfile, user, kweet
                             UNION
-                            MATCH (user:User {id: $userId})<-[:KWEETED_BY]-(kweet:Kweet)
-                            RETURN user, kweet
+                            MATCH (userProfile:UserProfile)<-[:DESCRIBED_BY]-(user:User {id: $userId})<-[:KWEETED_BY]-(kweet:Kweet)
+                            RETURN userProfile, user, kweet
                         }
-                        WITH user, kweet
+                        WITH userProfile, user, kweet
                         SKIP $skip
                         LIMIT $limit
                         CALL {
@@ -235,12 +236,12 @@ namespace Kwetter.Services.TimelineService.Infrastructure
                             OPTIONAL MATCH (i:User {id: $userId})<-[:LIKED_BY]-(kweet)
                             RETURN (i.id IS NOT NULL) as liked
                         }
-                        RETURN user.id, user.userDisplayName, kweet.createdDateTime, kweet.id, kweet.message, count(liker) as likes, liked",
+                        RETURN user.id, user.userDisplayName, userProfile.pictureUrl, kweet.createdDateTime, kweet.id, kweet.message, count(liker) as likes, liked",
                         new
                         {
                             userId = userId.ToString(),
-                            skip = pageNumber * pageSize,
-                            limit = pageSize
+                            skip = (int)pageNumber * pageSize,
+                            limit = (int)pageSize
                         }
                     );
                     return await cursor.ToListAsync(record => new TimelineKweet()
@@ -251,6 +252,7 @@ namespace Kwetter.Services.TimelineService.Infrastructure
                         Message = record["kweet.message"].As<string>(),
                         UserDisplayName = record["user.userDisplayName"].As<string>(),
                         CreatedDateTime = DateTime.Parse(record["kweet.createdDateTime"].As<string>()),
+                        UserProfilePictureUrl = record["userProfile.pictureUrl"].As<string>(),
                         Liked = record["liked"].As<bool>(),
                     });
                 });

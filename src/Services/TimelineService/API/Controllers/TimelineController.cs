@@ -37,11 +37,11 @@ namespace Kwetter.Services.TimelineService.API.Controllers
         /// <param name="pageNumber">The page number.</param>
         /// <param name="pageSize">The page size.</param>
         /// <returns>Returns the command response.</returns>
-        [HttpGet("")]
+        [HttpGet("Paginate")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetKweetTimelineAsync(int pageNumber, int pageSize)
+        public async Task<IActionResult> GetKweetTimelineAsync([FromQuery] uint pageNumber, [FromQuery] uint pageSize)
         {
             Guid userId = Guid.Parse(HttpContext.User.Claims.Single(claim => claim.Type == "UserId").Value);
             KweetTimelineQuery kweetTimelineQuery = new()

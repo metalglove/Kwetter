@@ -38,6 +38,11 @@ namespace Kwetter.Services.TimelineService.API.Application.Queries
         public string Message { get; set; }
 
         /// <summary>
+        /// Gets and sets the user profile picture url.
+        /// </summary>
+        public string UserProfilePictureUrl { get; set; }
+
+        /// <summary>
         /// Gets and sets the created date time.
         /// </summary>
         public DateTime CreatedDateTime { get; set; }

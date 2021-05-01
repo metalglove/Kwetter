@@ -27,13 +27,4 @@ export default interface IKweetService {
      * @param userId The user id.
      */
     unlikeKweet(kweetId: string, userId: string): Promise<CommandResponse>;
-
-    /**
-     * Paginates the kweets by user id.
-     * @param pageNumber The page number.
-     * @param pageSize The page size.
-     * @param userId The user id.
-     * @returns A query response containing the paginated kweets.
-     */
-    paginateKweets(pageNumber: number, pageSize: number, userId: string): Promise<QueryResponse<Kweet[]>>;
 }

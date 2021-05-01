@@ -21,11 +21,11 @@ namespace Kwetter.Services.TimelineService.Domain
         /// <summary>
         /// Gets and sets the page number.
         /// </summary>
-        public int PageNumber { get; set; }
+        public uint PageNumber { get; set; }
 
         /// <summary>
         /// Gets and sets the page size.
         /// </summary>
-        public int PageSize { get; set; }
+        public uint PageSize { get; set; }
     }
 }

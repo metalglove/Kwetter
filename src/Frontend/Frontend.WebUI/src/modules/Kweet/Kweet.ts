@@ -4,8 +4,10 @@
 export type Kweet = {
     id: string,
     userId: string,
-    createdAt: string,
+    userDisplayName: string,
     liked: boolean,
+    likeCount: number,
     message: string,
-    avatar: string
+    userProfilePictureUrl: string,
+    createdDateTime: string
 };

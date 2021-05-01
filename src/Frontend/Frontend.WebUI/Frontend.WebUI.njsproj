@@ -101,7 +101,13 @@
       <SubType>Code</SubType>
     </TypeScriptCompile>
     <TypeScriptCompile Include="src\interfaces\IKweetService.ts" />
+    <TypeScriptCompile Include="src\interfaces\ITimelineService.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
     <TypeScriptCompile Include="src\models\cqrs\CommandResponse.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="src\models\cqrs\ServiceUnreachableResponse.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
     <TypeScriptCompile Include="src\models\cqrs\Kweet\CreateKweetCommand.ts" />
@@ -159,6 +165,9 @@
       <SubType>Code</SubType>
     </TypeScriptCompile>
     <TypeScriptCompile Include="src\services\KweetService.ts" />
+    <TypeScriptCompile Include="src\services\TimelineService.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
     <TypeScriptCompile Include="src\shims-tsx.d.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>

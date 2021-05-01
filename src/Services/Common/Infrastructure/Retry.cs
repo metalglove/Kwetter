@@ -28,8 +28,8 @@ namespace Kwetter.Services.Common.Infrastructure
             CancellationToken cancellationToken = default)
 
         {
-            ExponentialBackoff backoff = new ExponentialBackoff(delayMilliseconds, maxDelayMilliseconds);
-            List<Exception> exceptions = new List<Exception>();
+            ExponentialBackoff backoff = new(delayMilliseconds, maxDelayMilliseconds);
+            List<Exception> exceptions = new();
             for (int retry = 0; retry < maxRetries; retry++)
             {
                 try

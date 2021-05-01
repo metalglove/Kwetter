@@ -37,7 +37,7 @@ export default class KweetService implements IKweetService {
             Message: message
         };
 
-        return this._httpCommunicator.post<CreateKweetCommand, CommandResponse>(`${this._kweetPath}`, command);
+        return this._httpCommunicator.post<CreateKweetCommand, CommandResponse>(`${this._kweetPath}Post`, command);
     }
 
     public likeKweet(kweetId: string, userId: string): Promise<CommandResponse> {
@@ -66,9 +66,5 @@ export default class KweetService implements IKweetService {
         };
 
         return this._httpCommunicator.delete<LikeKweetCommand, CommandResponse>(`${this._kweetPath}Like`, command);
-    }
-
-    public async paginateKweets(pageNumber: number, pageSize: number, userId: string): Promise<QueryResponse<Kweet[]>> {
-        throw new Error('Method not implemented.');
     }
 }

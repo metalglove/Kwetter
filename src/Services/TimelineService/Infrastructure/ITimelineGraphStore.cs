@@ -48,7 +48,9 @@ namespace Kwetter.Services.TimelineService.Infrastructure
         /// Gets the timeline for a specific user id using pagination asynchronously.
         /// </summary>
         /// <param name="userId">The user id.</param>
+        /// <param name="pageNumber">The page number.</param>
+        /// <param name="pageSize">The page size.</param>
         /// <returns>Returns a timeline.</returns>
-        public Task<Timeline> GetPaginatedTimelineAsync(Guid userId, int pageNumber, int pageSize);
+        public Task<Timeline> GetPaginatedTimelineAsync(Guid userId, uint pageNumber, uint pageSize);
     }
 }

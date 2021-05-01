@@ -32,7 +32,7 @@ namespace Kwetter.Services.KweetService.API.Controllers
         /// </summary>
         /// <param name="command">The create kweet command.</param>
         /// <returns>Returns the command response.</returns>
-        [HttpPost("")]
+        [HttpPost("Post")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]

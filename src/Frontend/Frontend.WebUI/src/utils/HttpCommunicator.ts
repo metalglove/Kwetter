@@ -1,6 +1,8 @@
 import IHttpCommunicator from '@/interfaces/IHttpCommunicator';
 import firebase from 'firebase/app';
 import 'firebase/auth';
+import Response from '@/models/cqrs/Response';
+import serviceUnreachableResponse from '@/models/cqrs/ServiceUnreachableResponse';
 
 /**
  * Represents the HttpCommunicator class.
@@ -18,35 +20,38 @@ export default class HttpCommunicator implements IHttpCommunicator {
         this._firebaseApp = firebaseApp;
     }
 
-    get<TResponse>(path: string): Promise<TResponse> {
+    get<TResponse extends Response>(path: string): Promise<TResponse> {
         return this.fetchAsync('GET', path);
     }
 
-    getWithBody<TRequest, TResponse>(path: string, body: TRequest): Promise<TResponse> {
+    getWithBody<TRequest, TResponse extends Response>(path: string, body: TRequest): Promise<TResponse> {
         return this.fetchAsync('GET', path, body);
     }
 
-    post<TRequest, TResponse>(path: string, body: TRequest): Promise<TResponse> {
+    post<TRequest, TResponse extends Response>(path: string, body: TRequest): Promise<TResponse> {
         return this.fetchAsync('POST', path, body);
     }
 
-    put<TRequest, TResponse>(path: string, body: TRequest): Promise<TResponse> {
+    put<TRequest, TResponse extends Response>(path: string, body: TRequest): Promise<TResponse> {
         return this.fetchAsync('PUT', path, body);
     }
 
-    delete<TRequest, TResponse>(path: string, body: TRequest): Promise<TResponse> {
+    delete<TRequest, TResponse extends Response>(path: string, body: TRequest): Promise<TResponse> {
         return this.fetchAsync('DELETE', path, body);
     }
 
-    private async fetchAsync<TRequest, TResponse>(method: string, path: string, body?: TRequest | unknown): Promise<TResponse> {
+    private async fetchAsync<TRequest, TResponse extends Response>(method: string, path: string, body?: TRequest | unknown): Promise<TResponse> {
         const request: RequestInit = {
             method: method,
             headers: await this.getHeaders()
         };
         if (body)
             request.body = JSON.stringify(body);
-        const response = await fetch(`${this._gatewayUrl}${path}`, request);
-        return await response.json() as TResponse;
+        return fetch(`${this._gatewayUrl}${path}`, request).then(async (response) => {
+            return await response.json() as TResponse;
+        }, (error) => {
+            return serviceUnreachableResponse as TResponse;
+        });
     }
 
     private async getHeaders(): Promise<Headers> {

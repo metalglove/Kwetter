@@ -38,6 +38,11 @@ namespace Kwetter.Services.TimelineService.Domain
         public int LikeCount { get; set; }
 
         /// <summary>
+        /// Gets and sets the user profile picture url.
+        /// </summary>
+        public string UserProfilePictureUrl { get; set; }
+
+        /// <summary>
         /// Gets and sets the create date time of the kweet.
         /// </summary>
         public DateTime CreatedDateTime { get; set; }

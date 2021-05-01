@@ -1,10 +1,3 @@
-// export const authConfig = {
-//     apiKey: process.env.VUE_APP_GOOGLE_API_KEY,
-//     clientId: process.env.VUE_APP_GOOGLE_CLIENT_ID,
-//     discoveryDocs: ['https://people.googleapis.com/$discovery/rest?version=v1'],
-//     scope: 'openid profile email'
-// };
-
 export const firebaseConfig = {
     apiKey: process.env.VUE_APP_APIKEY,
     authDomain: process.env.VUE_APP_AUTH_DOMAIN,
