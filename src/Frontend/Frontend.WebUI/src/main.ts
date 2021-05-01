@@ -30,8 +30,8 @@ const routes: KwetterRoute[] = [
     { name: 'Timeline' }
 ];
 
-const authorizationService: IAuthorizationService = new AuthorizationService(`${GATEWAY_API_URL}/Authorization`);
-const httpCommunicator: IHttpCommunicator = new HttpCommunicator(GATEWAY_API_URL);
+const httpCommunicator: IHttpCommunicator = new HttpCommunicator(GATEWAY_API_URL, firebaseApp);
+const authorizationService: IAuthorizationService = new AuthorizationService(httpCommunicator);
 const kweetService: IKweetService = new KweetService(httpCommunicator);
 
 const app = createApp(App);

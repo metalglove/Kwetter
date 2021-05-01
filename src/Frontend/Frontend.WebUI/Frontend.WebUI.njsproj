@@ -46,6 +46,9 @@
       <SubType>Code</SubType>
     </Content>
     <Content Include="src\components\TopBar.vue" />
+    <Content Include="src\models\cqrs\Authorization\ClaimsCommand.ts">
+      <SubType>Code</SubType>
+    </Content>
     <Content Include="src\modules\App\App.actions.ts">
       <SubType>Code</SubType>
     </Content>
@@ -66,6 +69,7 @@
     <Folder Include="src\components\" />
     <Folder Include="src\models\cqrs\" />
     <Folder Include="src\models\cqrs\Kweet\" />
+    <Folder Include="src\models\cqrs\Authorization\" />
     <Folder Include="src\models\dtos\" />
     <Folder Include="src\modules\" />
     <Folder Include="src\interfaces\" />
@@ -97,6 +101,9 @@
       <SubType>Code</SubType>
     </TypeScriptCompile>
     <TypeScriptCompile Include="src\interfaces\IKweetService.ts" />
+    <TypeScriptCompile Include="src\models\cqrs\CommandResponse.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
     <TypeScriptCompile Include="src\models\cqrs\Kweet\CreateKweetCommand.ts" />
     <TypeScriptCompile Include="src\models\cqrs\Kweet\LikeKweetCommand.ts" />
     <TypeScriptCompile Include="src\models\cqrs\Kweet\UnlikeKweetCommand.ts" />
@@ -104,9 +111,6 @@
       <SubType>Code</SubType>
     </TypeScriptCompile>
     <TypeScriptCompile Include="src\models\cqrs\Response.ts">
-      <SubType>Code</SubType>
-    </TypeScriptCompile>
-    <TypeScriptCompile Include="src\models\dtos\AuthorizationDto.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
     <TypeScriptCompile Include="src\modules\App\App.getters.ts">

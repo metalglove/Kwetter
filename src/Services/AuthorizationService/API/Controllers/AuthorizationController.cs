@@ -1,6 +1,5 @@
 ﻿using Kwetter.Services.AuthorizationService.API.Application.Commands.ClaimsCommand;
 using MediatR;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading.Tasks;
@@ -30,7 +29,7 @@ namespace Kwetter.Services.AuthorizationService.API.Controllers
         /// </summary>
         /// <param name="claimsCommand">The claims command.</param>
         /// <returns>Returns the command response.</returns>
-        [AllowAnonymous, HttpPost("Claims")]
+        [HttpPost("Claims")]
         public async Task<IActionResult> ClaimsAsync([FromBody] ClaimsCommand claimsCommand)
         {
             return Ok(await _mediator.Send(claimsCommand));

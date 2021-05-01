@@ -1,6 +1,6 @@
-import IHttpCommunicator from "@/interfaces/IHttpCommunicator";
-import { User } from "@/modules/User/User";
-import { getItem } from "./LocalStorageUtilities";
+import IHttpCommunicator from '@/interfaces/IHttpCommunicator';
+import firebase from 'firebase/app';
+import 'firebase/auth';
 
 /**
  * Represents the HttpCommunicator class.
@@ -8,12 +8,14 @@ import { getItem } from "./LocalStorageUtilities";
  */
 export default class HttpCommunicator implements IHttpCommunicator {
     private _gatewayUrl: String;
+    private _firebaseApp: firebase.app.App;
 
     /**
      * Initializes a new instance of the HttpCommunicator class.
      */
-    constructor(gatewayUrl: string) {
+    constructor(gatewayUrl: string, firebaseApp: firebase.app.App) {
         this._gatewayUrl = gatewayUrl;
+        this._firebaseApp = firebaseApp;
     }
 
     get<TResponse>(path: string): Promise<TResponse> {
@@ -39,7 +41,7 @@ export default class HttpCommunicator implements IHttpCommunicator {
     private async fetchAsync<TRequest, TResponse>(method: string, path: string, body?: TRequest | unknown): Promise<TResponse> {
         const request: RequestInit = {
             method: method,
-            headers: this.getHeaders()
+            headers: await this.getHeaders()
         };
         if (body)
             request.body = JSON.stringify(body);
@@ -47,12 +49,12 @@ export default class HttpCommunicator implements IHttpCommunicator {
         return await response.json() as TResponse;
     }
 
-    private getHeaders(): Headers {
+    private async getHeaders(): Promise<Headers> {
         const headers: Headers = new Headers();
         headers.append('Content-Type', 'application/json');
-        const user: User | null = getItem<User>('user');
-        if (user)
-            headers.append('Authorization', `Bearer ${user.authentication.id_token}`);
+        const firebaseUser: firebase.User | null = this._firebaseApp.auth().currentUser;
+        if (firebaseUser)
+            headers.append('Authorization', `Bearer ${await firebaseUser.getIdToken()}`);
         return headers;
     }
 }

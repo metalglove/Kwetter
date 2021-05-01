@@ -1,37 +1,30 @@
 import IAuthorizationService from '@/interfaces/IAuthorizationService';
-import ClaimsResponse from '@/models/dtos/ClaimsResponse';
-import QueryResponse from '@/models/cqrs/QueryResponse';
+import IHttpCommunicator from '@/interfaces/IHttpCommunicator';
+import ClaimsCommand from '@/models/cqrs/Authorization/ClaimsCommand';
+import CommandResponse from '@/models/cqrs/CommandResponse';
 
 /**
  * Represents the AuthorizationService class.
  */
 export default class AuthorizationService implements IAuthorizationService {
-    private _authorizationServiceUri: String;
+    private _authorizationPath: string = '/Authorization/';
+    private _httpCommunicator: IHttpCommunicator;
 
     /**
      * Initializes a new instance of the AuthorizationService class.
      */
-    constructor(authorizationServiceUri: String) {
-        this._authorizationServiceUri = authorizationServiceUri;
+    constructor(httpCommunicator: IHttpCommunicator) {
+        this._httpCommunicator = httpCommunicator;
     }
 
-    public async RequestClaimsForNewUser(idToken: string): Promise<QueryResponse<ClaimsResponse>> {
-         const response = await fetch(
-            `${this._authorizationServiceUri}/Claims`,
-            {
-                method: 'POST',
-                cache: 'no-cache',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                redirect: 'follow',
-                body: JSON.stringify({ IdToken: idToken })
-            });
-        if (!response.ok) {
-            const message = `An error has occured: ${response.status}`;
-            throw new Error(message);
-        }
-        const queryResponse: QueryResponse<ClaimsResponse> = await response.json();
-        return queryResponse;
+    public async SetClaims(idToken: string): Promise<CommandResponse> {
+        if (idToken.length == 0)
+            throw new Error('The id token is empty.');
+
+        const claimsCommand: ClaimsCommand = {
+            IdToken: idToken
+        };
+
+        return await this._httpCommunicator.post<ClaimsCommand, CommandResponse>(`${this._authorizationPath}Claims`, claimsCommand);
     }
 }

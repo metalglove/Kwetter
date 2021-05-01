@@ -21,11 +21,10 @@
     import { UserGetterTypes } from '@/modules/User/User.getters';
     import { toUserFromIdToken, User } from '@/modules/User/User';
     import { UserActionTypes } from '@/modules/User/User.actions';
-    import QueryResponse from '@/models/cqrs/QueryResponse';
-    import ClaimsResponse from '@/models/dtos/ClaimsResponse';
     import firebase from 'firebase/app';
     import 'firebase/auth';
     import { ElMessage } from "element-plus";
+    import CommandResponse from '@/models/cqrs/CommandResponse';
 
     export default defineComponent({
         name: 'Profile',
@@ -50,7 +49,7 @@
                 .then(async (result) => {
                     let idToken = await result.user!.getIdToken();
                     if (result.additionalUserInfo?.isNewUser == true) {
-                        const claimsResponse: QueryResponse<ClaimsResponse> = await this.$authorizationService.RequestClaimsForNewUser(idToken);
+                        const claimsResponse: CommandResponse = await this.$authorizationService.SetClaims(idToken);
                         if (claimsResponse.success) {
                             // get new token with claims set!
                             idToken = await result.user!.getIdToken(true);
