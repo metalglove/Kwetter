@@ -61,7 +61,7 @@
                         liked: false,
                         message: message,
                         userId: userId,
-                        createdDateTime: '',
+                        createdDateTime: new Date().toLocaleString(),
                         userDisplayName: user.profile.name,
                         likeCount: 0
                     };

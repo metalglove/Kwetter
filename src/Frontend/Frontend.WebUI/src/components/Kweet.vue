@@ -16,7 +16,7 @@
                     {{ kweet.message }}
                 </div>
                 <div class="dateTime">
-                    {{ kweet.createdDateTime }}
+                    {{ new Date(kweet.createdDateTime).toLocaleString() }}
                 </div>
             </el-col>
             <el-col :span="2">
