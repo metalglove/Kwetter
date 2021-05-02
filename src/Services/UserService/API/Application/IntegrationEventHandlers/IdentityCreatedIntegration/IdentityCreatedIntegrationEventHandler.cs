@@ -17,7 +17,7 @@ namespace Kwetter.Services.UserService.API.Application.IntegrationEventHandlers.
         /// <summary>
         /// Initializes a new instance of the <see cref="IdentityCreatedIntegrationEventHandler"/> class.
         /// </summary>
-        /// <param name="serviceScopeFactory">The service scope factory..</param>
+        /// <param name="serviceScopeFactory">The service scope factory.</param>
         public IdentityCreatedIntegrationEventHandler(IServiceScopeFactory serviceScopeFactory)
         {
             _serviceScopeFactory = serviceScopeFactory;
