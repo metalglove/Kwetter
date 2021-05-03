@@ -16,7 +16,7 @@ namespace Kwetter.Services.UserService.Domain.AggregatesModel.UserAggregate.Even
         /// <summary>
         /// Gets and sets the user profile description.
         /// </summary>
-        public string ProfileDescription { get; }
+        public string UserProfileDescription { get; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="UserProfileDescriptionUpdatedDomainEvent"/> class.
@@ -26,7 +26,7 @@ namespace Kwetter.Services.UserService.Domain.AggregatesModel.UserAggregate.Even
         public UserProfileDescriptionUpdatedDomainEvent(Guid userId, string profileDescription)
         {
             UserId = userId;
-            ProfileDescription = profileDescription;
+            UserProfileDescription = profileDescription;
             EventVersion = 1;
         }
     }

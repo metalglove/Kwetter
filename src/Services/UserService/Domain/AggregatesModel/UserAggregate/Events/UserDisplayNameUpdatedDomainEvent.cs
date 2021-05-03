@@ -16,7 +16,7 @@ namespace Kwetter.Services.UserService.Domain.AggregatesModel.UserAggregate.Even
         /// <summary>
         /// Gets and sets the display name.
         /// </summary>
-        public string DisplayName { get; }
+        public string UserDisplayName { get; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="UserDisplayNameUpdatedDomainEvent"/> class.
@@ -26,7 +26,7 @@ namespace Kwetter.Services.UserService.Domain.AggregatesModel.UserAggregate.Even
         public UserDisplayNameUpdatedDomainEvent(Guid userId, string displayName)
         {
             UserId = userId;
-            DisplayName = displayName;
+            UserDisplayName = displayName;
             EventVersion = 1;
         }
     }
