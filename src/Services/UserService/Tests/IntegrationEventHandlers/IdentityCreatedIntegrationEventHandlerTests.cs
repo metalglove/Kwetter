@@ -20,7 +20,7 @@ namespace Kwetter.Services.UserService.Tests.IntegrationEventHandlers
         public IdentityCreatedIntegrationEventHandler IdentityCreatedIntegrationEventHandler { get; set; }
 
         [TestInitialize]
-        public async Task Initialize()
+        public void Initialize()
         {
             ServiceProvider = InitializeServices<UserDbContext, UserDatabaseFactory, UserRepository, UserAggregate>(typeof(Startup), typeof(CreateUserCommand), "UserService");
             IdentityCreatedIntegrationEventHandler = new IdentityCreatedIntegrationEventHandler(ServiceProvider.GetRequiredService<IServiceScopeFactory>());

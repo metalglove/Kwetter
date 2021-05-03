@@ -26,7 +26,7 @@ namespace Kwetter.Services.UserService.API.Application.IntegrationEventHandlers.
         /// <summary>
         /// Handles the identity created integration event from the authorization service asynchronously.
         /// </summary>
-        /// <param name="@event">The identity created integration event.</param>
+        /// <param name="event">The identity created integration event.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>Returns an awaitable task.</returns>
         public async override ValueTask HandleAsync(IdentityCreatedIntegrationEvent @event, CancellationToken cancellationToken)

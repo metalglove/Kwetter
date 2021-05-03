@@ -77,8 +77,10 @@ namespace Kwetter.Services.UserService.API
             }
 
             // Subscribe to integration events.
-            string identityCreatedIntegrationQueueName = $"AuthorizationService.Integration.{nameof(IdentityCreatedIntegrationEvent)}";
-            eventBus.Subscribe<IdentityCreatedIntegrationEvent, IdentityCreatedIntegrationEventHandler>(identityCreatedIntegrationQueueName, new IdentityCreatedIntegrationEventHandler(serviceScopeFactory));
+            eventBus.Subscribe<IdentityCreatedIntegrationEvent, IdentityCreatedIntegrationEventHandler>(
+                exchangeName: "AuthorizationExchange", 
+                queueName: $"AuthorizationService.Integration.IdentityCreatedIntegrationEvent", 
+                eventHandler: new IdentityCreatedIntegrationEventHandler(serviceScopeFactory));
 
             app.UseRouting();
             app.UseCors(x => x.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
