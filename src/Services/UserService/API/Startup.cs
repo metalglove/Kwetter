@@ -3,7 +3,7 @@ using Kwetter.Services.Common.Application.Eventing.Bus;
 using Kwetter.Services.Common.Infrastructure;
 using Kwetter.Services.Common.Infrastructure.Behaviours;
 using Kwetter.Services.UserService.API.Application.Commands.CreateUserCommand;
-using Kwetter.Services.UserService.API.Application.IntegrationEventHandlers.IdentityCreatedIntegration;
+using Kwetter.Services.UserService.API.Application.IntegrationEventHandlers.IdentityCreated;
 using Kwetter.Services.UserService.Domain.AggregatesModel.UserAggregate;
 using Kwetter.Services.UserService.Infrastructure;
 using Kwetter.Services.UserService.Infrastructure.Repositories;
@@ -75,6 +75,10 @@ namespace Kwetter.Services.UserService.API
                 string title = _configuration["Service:Title"];
                 app.UseSwaggerUI(c => c.SwaggerEndpoint($"/swagger/{version}/swagger.json", $"{title} {version}"));
             }
+
+            // Declare used exchanges!
+            eventBus.DeclareExchange("AuthorizationExchange", Common.Application.Eventing.ExchangeType.DIRECT);
+            eventBus.DeclareExchange("UserExchange", Common.Application.Eventing.ExchangeType.FANOUT);
 
             // Subscribe to integration events.
             eventBus.Subscribe<IdentityCreatedIntegrationEvent, IdentityCreatedIntegrationEventHandler>(

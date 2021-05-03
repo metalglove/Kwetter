@@ -1,4 +1,5 @@
 using Kwetter.Services.Common.API;
+using Kwetter.Services.Common.Application.Eventing.Bus;
 using Kwetter.Services.Common.Infrastructure;
 using Kwetter.Services.Common.Infrastructure.Behaviours;
 using Kwetter.Services.KweetService.API.Application.Commands.CreateKweetCommand;
@@ -61,7 +62,8 @@ namespace Kwetter.Services.KweetService.API
         /// </summary>
         /// <param name="app">The application builder.</param>
         /// <param name="env">The web host environment.</param>
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        /// <param name="eventBus">The event bus.</param>
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IEventBus eventBus)
         {
             if (env.IsDevelopment())
             {
@@ -71,6 +73,11 @@ namespace Kwetter.Services.KweetService.API
                 string title = _configuration["Service:Title"];
                 app.UseSwaggerUI(c => c.SwaggerEndpoint($"/swagger/{version}/swagger.json", $"{title} {version}"));
             }
+
+            // Declare used exchanges!
+            eventBus.DeclareExchange("UserExchange", Common.Application.Eventing.ExchangeType.FANOUT);
+            eventBus.DeclareExchange("KweetExchange", Common.Application.Eventing.ExchangeType.FANOUT);
+            
             app.UseRouting();
             app.UseCors(x => x.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
             app.UseAuthentication();

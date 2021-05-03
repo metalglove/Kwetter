@@ -49,7 +49,7 @@ namespace Kwetter.Services.Common.Infrastructure.Integration
         /// <inheritdoc cref="IIntegrationEventService.EnqueueEvent{TIntegrationEvent}(TIntegrationEvent)"/>
         public void EnqueueEvent<TIntegrationEvent>(TIntegrationEvent @event) where TIntegrationEvent : IntegrationEvent
         {
-            if (string.IsNullOrEmpty(@event.GetExchangeName()))
+            if (string.IsNullOrWhiteSpace(@event.GetExchangeName()))
                 throw new Exception("The exchange name must be set on the integration event.");
 
             _integrationEvents.Enqueue(@event);

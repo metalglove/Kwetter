@@ -1,7 +1,7 @@
 ﻿using Kwetter.Services.Common.Tests;
 using Kwetter.Services.UserService.API;
 using Kwetter.Services.UserService.API.Application.Commands.CreateUserCommand;
-using Kwetter.Services.UserService.API.Application.IntegrationEventHandlers.IdentityCreatedIntegration;
+using Kwetter.Services.UserService.API.Application.IntegrationEventHandlers.IdentityCreated;
 using Kwetter.Services.UserService.Domain.AggregatesModel.UserAggregate;
 using Kwetter.Services.UserService.Infrastructure;
 using Kwetter.Services.UserService.Infrastructure.Repositories;

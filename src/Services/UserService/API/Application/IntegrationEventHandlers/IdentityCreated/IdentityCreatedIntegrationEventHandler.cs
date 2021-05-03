@@ -2,10 +2,11 @@
 using Kwetter.Services.UserService.API.Application.Commands.CreateUserCommand;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Kwetter.Services.UserService.API.Application.IntegrationEventHandlers.IdentityCreatedIntegration
+namespace Kwetter.Services.UserService.API.Application.IntegrationEventHandlers.IdentityCreated
 {
     /// <summary>
     /// Represents the <see cref="IdentityCreatedIntegrationEventHandler"/> class.
@@ -20,7 +21,7 @@ namespace Kwetter.Services.UserService.API.Application.IntegrationEventHandlers.
         /// <param name="serviceScopeFactory">The service scope factory.</param>
         public IdentityCreatedIntegrationEventHandler(IServiceScopeFactory serviceScopeFactory)
         {
-            _serviceScopeFactory = serviceScopeFactory;
+            _serviceScopeFactory = serviceScopeFactory ?? throw new ArgumentNullException(nameof(serviceScopeFactory));
         }
 
         /// <summary>
@@ -37,7 +38,7 @@ namespace Kwetter.Services.UserService.API.Application.IntegrationEventHandlers.
             {
                 UserId = @event.UserId,
                 UserDisplayName = @event.GivenName,
-                UserProfileDescription = "",
+                UserProfileDescription = $"Hello! I am {@event.GivenName}!",
                 UserProfilePictureUrl = @event.ProfilePictureUrl
             }, cancellationToken);
         }

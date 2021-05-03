@@ -1,4 +1,6 @@
 using Kwetter.Services.Common.API;
+using Kwetter.Services.Common.Application.Eventing.Bus;
+using Kwetter.Services.TimelineService.API.Application.IntegrationEventHandlers.UserCreated;
 using Kwetter.Services.TimelineService.API.Application.Queries.KweetTimelineQuery;
 using Kwetter.Services.TimelineService.Infrastructure;
 using Microsoft.AspNetCore.Builder;
@@ -51,7 +53,9 @@ namespace Kwetter.Services.TimelineService.API
         /// </summary>
         /// <param name="app">The application builder.</param>
         /// <param name="env">The web host environment.</param>
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        /// <param name="eventBus">The event bus.</param>
+        /// <param name="serviceScopeFactory">The service scope factory.</param>
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IEventBus eventBus, IServiceScopeFactory serviceScopeFactory)
         {
             if (env.IsDevelopment())
             {
@@ -61,6 +65,18 @@ namespace Kwetter.Services.TimelineService.API
                 string title = _configuration["Service:Title"];
                 app.UseSwaggerUI(c => c.SwaggerEndpoint($"/swagger/{version}/swagger.json", $"{title} {version}"));
             }
+            
+            // Declare used exchanges!
+            eventBus.DeclareExchange("UserExchange", Common.Application.Eventing.ExchangeType.FANOUT);
+            eventBus.DeclareExchange("FollowExchange", Common.Application.Eventing.ExchangeType.FANOUT);
+            eventBus.DeclareExchange("KweetExchange", Common.Application.Eventing.ExchangeType.FANOUT);
+
+            // Subscribe to integration events.
+            eventBus.Subscribe<UserCreatedIntegrationEvent, UserCreatedIntegrationEventHandler>(
+                exchangeName: "UserExchange",
+                queueName: $"UserService.Integration.UserCreatedIntegrationEvent",
+                eventHandler: new UserCreatedIntegrationEventHandler(serviceScopeFactory));
+
             app.UseRouting();
             app.UseCors(x => x.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
             app.UseAuthentication();

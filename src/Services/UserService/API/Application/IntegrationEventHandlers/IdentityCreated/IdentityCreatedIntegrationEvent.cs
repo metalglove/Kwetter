@@ -1,7 +1,7 @@
 ﻿using Kwetter.Services.Common.Application.Eventing.Integration;
 using System;
 
-namespace Kwetter.Services.UserService.API.Application.IntegrationEventHandlers.IdentityCreatedIntegration
+namespace Kwetter.Services.UserService.API.Application.IntegrationEventHandlers.IdentityCreated
 {
     /// <summary>
     /// Represents the <see cref="IdentityCreatedIntegrationEvent"/> class.

@@ -70,9 +70,9 @@ namespace Kwetter.Services.Common.Infrastructure.Eventing.Bus
         {
             if (@event is null)
                 throw new ArgumentNullException(nameof(@event));
-            if (string.IsNullOrEmpty(exchangeName))
+            if (string.IsNullOrWhiteSpace(exchangeName))
                 throw new ArgumentNullException(nameof(exchangeName));
-            if (string.IsNullOrEmpty(queueName))
+            if (string.IsNullOrWhiteSpace(queueName))
                 throw new ArgumentNullException(nameof(queueName));
 
             string actualQueueName = $"{_serviceConfiguration.ShortTitle}.{queueName}";
@@ -92,9 +92,9 @@ namespace Kwetter.Services.Common.Infrastructure.Eventing.Bus
         {
             if (eventHandler is null)
                 throw new ArgumentNullException(nameof(eventHandler));
-            if (string.IsNullOrEmpty(exchangeName))
+            if (string.IsNullOrWhiteSpace(exchangeName))
                 throw new ArgumentNullException(nameof(exchangeName));
-            if (string.IsNullOrEmpty(queueName))
+            if (string.IsNullOrWhiteSpace(queueName))
                 throw new ArgumentNullException(nameof(queueName));
 
             IModel channel = GetChannel(exchangeName, queueName);

@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 
 namespace Kwetter.Services.Common.Tests.Mocks
 {
+    // TODO: IGNORES EXCHANGE CURRENTLY!
     public class EventBusMock : IEventBus
     {
         private readonly ILogger<EventBusMock> _logger;
@@ -27,9 +28,16 @@ namespace Kwetter.Services.Common.Tests.Mocks
             _unknownQueue = new ConcurrentBag<string>();
             _eventHandlerMap = new ConcurrentDictionary<string, Dictionary<string, List<IEventHandler<Event>>>>();
         }
-        
-        public void Publish<TEvent>(TEvent @event, string queueName) where TEvent : Event
+
+        public void DeclareExchange(string exchangeName, ExchangeType exchangeType)
         {
+            // TODO: declare exchange mock
+            _logger.LogWarning($"DeclareExchange({exchangeName}) called on EventBusMock; Exchanges are currently ignored!");
+        }
+
+        public void Publish<TEvent>(TEvent @event, string exchangeName, string queueName) where TEvent : Event
+        {
+            // TODO: mock exchange Publish stuff
             _logger.LogInformation(_eventSerializer.SerializeToString(@event));
             if (!_eventHandlerMap.ContainsKey(nameof(TEvent)))
             {
@@ -49,10 +57,11 @@ namespace Kwetter.Services.Common.Tests.Mocks
             }
         }
 
-        public void Subscribe<TEvent, TEventHandler>(string queueName, TEventHandler eventHandler) 
+        public void Subscribe<TEvent, TEventHandler>(string exchangeName, string queueName, TEventHandler eventHandler) 
             where TEvent : Event 
             where TEventHandler : IEventHandler<TEvent>
         {
+            // TODO: mock exchange Subscribe stuff
             IEventHandler<Event> handler = eventHandler as IEventHandler<Event>;
             _eventHandlerMap.AddOrUpdate(
                 queueName, 
