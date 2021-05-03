@@ -1,10 +1,10 @@
-﻿using System.Threading.Tasks;
-using Kwetter.Services.Common.API.CQRS;
+﻿using Kwetter.Services.Common.API.CQRS;
 using Kwetter.Services.FollowService.API.Application.Commands.CreateFollowCommand;
 using Kwetter.Services.FollowService.API.Application.Commands.DeleteFollowCommand;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
 
 namespace Kwetter.Services.FollowService.API.Controllers
 {
