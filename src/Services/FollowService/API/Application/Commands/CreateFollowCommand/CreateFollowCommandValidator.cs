@@ -1,6 +1,7 @@
 ﻿using FluentValidation;
-using Kwetter.Services.FollowService.Domain.AggregatesModel.FollowAggregate;
+using Kwetter.Services.FollowService.Domain.AggregatesModel.UserAggregate;
 using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -11,15 +12,15 @@ namespace Kwetter.Services.FollowService.API.Application.Commands.CreateFollowCo
     /// </summary>
     public sealed class CreateFollowCommandValidator : AbstractValidator<CreateFollowCommand>
     {
-        private readonly IFollowRepository _followRepository;
+        private readonly IUserRepository _userRepository;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CreateFollowCommandValidator"/> class.
         /// </summary>
-        /// <param name="followRepository">The follow repository.</param>
-        public CreateFollowCommandValidator(IFollowRepository followRepository)
+        /// <param name="userRepository">The user repository.</param>
+        public CreateFollowCommandValidator(IUserRepository userRepository)
         {
-            _followRepository = followRepository ?? throw new ArgumentNullException(nameof(followRepository));
+            _userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
             
             RuleFor(createFollowCommand => createFollowCommand)
                 .CustomAsync(ValidateFollowAsync);
@@ -42,8 +43,8 @@ namespace Kwetter.Services.FollowService.API.Application.Commands.CreateFollowCo
                 context.AddFailure("The follow and following id are the same. One can not follow themself.");
                 return;
             }
-            FollowAggregate follow = await _followRepository.FindAsync(createFollowCommand.FollowingId, createFollowCommand.FollowerId, cancellationToken);
-            if (follow != null) 
+            UserAggregate userAggregate = await _userRepository.FindAsync(createFollowCommand.FollowerId, cancellationToken);
+            if (userAggregate.Followings.Any(follow => follow.FollowingId == createFollowCommand.FollowingId)) 
                 context.AddFailure("The follow already exists.");
         }
     }

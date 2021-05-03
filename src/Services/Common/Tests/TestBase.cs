@@ -13,12 +13,18 @@ using Kwetter.Services.Common.Infrastructure.EventSerializers;
 using Kwetter.Services.Common.Infrastructure.Integration;
 using Kwetter.Services.Common.Tests.Mocks;
 using MediatR;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
+using System.Runtime.Serialization;
+using System.Security.Claims;
+using System.Security.Principal;
 
 namespace Kwetter.Services.Common.Tests
 {
@@ -100,6 +106,31 @@ namespace Kwetter.Services.Common.Tests
             Type repositoryImplementationType = typeof(TRepository);
             serviceCollection.AddTransient(repositoryImplementationType.GetInterfaces()[0], repositoryImplementationType);
             return serviceCollection.BuildServiceProvider();
+        }
+
+        /// <summary>
+        /// Creates an authorized controller instance.
+        /// </summary>
+        /// <typeparam name="TController">The controller type.</typeparam>
+        /// <param name="mediator">The mediator.</param>
+        /// <param name="userId">The user id.</param>
+        /// <returns>Returns the authorized controller instance.</returns>
+        protected static TController CreateAuthorizedController<TController>(IMediator mediator, Guid userId) where TController : ControllerBase
+        {
+            ClaimsIdentity id = new(new List<Claim>() { new Claim("UserId", userId.ToString()) });
+            Type controllerType = typeof(TController);
+            ConstructorInfo constructor = controllerType.GetConstructor(new Type[] { typeof(IMediator) });
+            object emptyInstance = FormatterServices.GetUninitializedObject(controllerType);
+            constructor.Invoke(emptyInstance, new object[] { mediator });
+            TController controller = emptyInstance as TController;
+            controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = new DefaultHttpContext()
+                {
+                    User = new GenericPrincipal(id, null)
+                }
+            };
+            return controller;
         }
 
         /// <summary>

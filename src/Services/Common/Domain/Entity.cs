@@ -10,7 +10,7 @@ namespace Kwetter.Services.Common.Domain
     /// </summary>
     public abstract class Entity
     {
-        private List<DomainEvent> _domainEvents;
+        private List<DomainEvent> _domainEvents = new();
         private int? _requestedHashCode;
 
         /// <summary>
@@ -21,7 +21,7 @@ namespace Kwetter.Services.Common.Domain
         /// <summary>
         /// Gets the domain events.
         /// </summary>
-        public IReadOnlyCollection<DomainEvent> DomainEvents => _domainEvents?.AsReadOnly();
+        public IReadOnlyCollection<DomainEvent> DomainEvents => _domainEvents.AsReadOnly();
 
         /// <summary>
         /// Adds a domain event.
@@ -29,7 +29,6 @@ namespace Kwetter.Services.Common.Domain
         /// <param name="domainEvent">The domain event.</param>
         public void AddDomainEvent(DomainEvent domainEvent)
         {
-            _domainEvents ??= new List<DomainEvent>();
             _domainEvents.Add(domainEvent);
         }
 
@@ -39,7 +38,7 @@ namespace Kwetter.Services.Common.Domain
         /// <param name="domainEvent">The domain event.</param>
         public void RemoveDomainEvent(DomainEvent domainEvent)
         {
-            _domainEvents?.Remove(domainEvent);
+            _domainEvents.Remove(domainEvent);
         }
 
         /// <summary>
@@ -47,7 +46,7 @@ namespace Kwetter.Services.Common.Domain
         /// </summary>
         public void ClearDomainEvents()
         {
-            _domainEvents?.Clear();
+            _domainEvents.Clear();
         }
 
         /// <summary>

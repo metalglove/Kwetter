@@ -4,7 +4,7 @@ using Kwetter.Services.FollowService.API;
 using Kwetter.Services.FollowService.API.Application.Commands.CreateFollowCommand;
 using Kwetter.Services.FollowService.API.Application.Commands.DeleteFollowCommand;
 using Kwetter.Services.FollowService.API.Controllers;
-using Kwetter.Services.FollowService.Domain.AggregatesModel.FollowAggregate;
+using Kwetter.Services.FollowService.Domain.AggregatesModel.UserAggregate;
 using Kwetter.Services.FollowService.Infrastructure;
 using Kwetter.Services.FollowService.Infrastructure.Repositories;
 using MediatR;
@@ -29,12 +29,21 @@ namespace Kwetter.Services.FollowService.Tests.Commands
         [TestInitialize]
         public async Task Initialize()
         {
-            ServiceProvider = InitializeServices<FollowDbContext, FollowDatabaseFactory, FollowRepository, FollowAggregate>(typeof(Startup), typeof(CreateFollowCommand), "FollowService");
+            ServiceProvider = InitializeServices<FollowDbContext, FollowDatabaseFactory, UserRepository, UserAggregate>(typeof(Startup), typeof(CreateFollowCommand), "FollowService");
             Mediator = ServiceProvider.GetRequiredService<IMediator>();
-            FollowController = new FollowController(Mediator);
-            
             FollowerId = Guid.NewGuid();
             FollowingId = Guid.NewGuid();
+
+            FollowController = CreateAuthorizedController<FollowController>(Mediator, FollowerId);
+
+            IUserRepository userRepository = ServiceProvider.GetRequiredService<IUserRepository>();
+            UserAggregate follower = new(FollowerId, "SuperMario", "https://icon-library.net/images/default-user-icon/default-user-icon-8.jpg");
+            userRepository.Create(follower);
+
+            UserAggregate following = new(FollowingId, "candyman67", "https://icon-library.net/images/default-user-icon/default-user-icon-8.jpg");
+            userRepository.Create(following);
+            await userRepository.UnitOfWork.SaveEntitiesAsync();
+
             CreateFollowCommand createFollowCommand = new()
             {
                 FollowingId = FollowingId,
@@ -87,14 +96,13 @@ namespace Kwetter.Services.FollowService.Tests.Commands
         }
         
         [TestMethod]
-        public async Task Should_Fail_To_Delete_Follow_Through_DeleteFollowCommand_Due_To_Empty_FollowerId()
+        public async Task Should_Fail_To_Delete_Follow_Through_DeleteFollowCommand_Due_To_Unauthorized_UserId()
         {
             // Arrange
-            Guid followerId = Guid.Empty;
-            Guid followingId = Guid.NewGuid();
+            Guid followerId = Guid.NewGuid();
             DeleteFollowCommand deleteFollowCommand = new()
             {
-                FollowingId = followingId,
+                FollowingId = FollowingId,
                 FollowerId = followerId
             };
             
@@ -102,22 +110,22 @@ namespace Kwetter.Services.FollowService.Tests.Commands
             IActionResult actionResult = await FollowController.DeleteAsync(deleteFollowCommand);
             
             // Assert
-            BadRequestObjectResult badRequestObjectResult = XAssert.IsType<BadRequestObjectResult>(actionResult);
-            CommandResponse commandResponse = XAssert.IsType<CommandResponse>(badRequestObjectResult.Value);
+            UnauthorizedObjectResult unauthorizedObjectResult = XAssert.IsType<UnauthorizedObjectResult>(actionResult);
+            CommandResponse commandResponse = XAssert.IsType<CommandResponse>(unauthorizedObjectResult.Value);
             XAssert.False(commandResponse.Success);
-            XAssert.Contains("The follower id can not be empty.", commandResponse.Errors);
+            XAssert.Contains("The user id and follower id are not the same.", commandResponse.Errors);
         }
-        
+        //FollowController = CreateAuthorizedController<FollowController>(Mediator, FollowerId);
+
         [TestMethod]
         public async Task Should_Fail_To_Delete_Follow_Through_DeleteFollowCommand_Due_To_Empty_FollowingId()
         {
             // Arrange
-            Guid followerId = Guid.NewGuid();
             Guid followingId = Guid.Empty;
             DeleteFollowCommand deleteFollowCommand = new()
             {
                 FollowingId = followingId,
-                FollowerId = followerId
+                FollowerId = FollowerId
             };
             
             // Act
@@ -134,12 +142,11 @@ namespace Kwetter.Services.FollowService.Tests.Commands
         public async Task Should_Fail_To_Delete_Follow_Through_DeleteFollowCommand_Due_To_Follow_Not_Existing()
         {
             // Arrange
-            Guid followerId = Guid.NewGuid();
             Guid followingId = Guid.NewGuid();
             DeleteFollowCommand deleteFollowCommand = new()
             {
                 FollowingId = followingId,
-                FollowerId = followerId
+                FollowerId = FollowerId
             };
             
             // Act

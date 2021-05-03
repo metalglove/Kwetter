@@ -4,6 +4,9 @@ using Kwetter.Services.FollowService.API.Application.Commands.DeleteFollowComman
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Kwetter.Services.FollowService.API.Controllers
@@ -37,12 +40,16 @@ namespace Kwetter.Services.FollowService.API.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> CreateAsync(CreateFollowCommand command)
         {
+            Guid userId = Guid.Parse(HttpContext.User.Claims.Single(claim => claim.Type == "UserId").Value);
+            if (command.FollowerId != userId)
+                return UnauthorizedCommand();
+
             CommandResponse commandResponse = await _mediator.Send(command);
             return commandResponse.Success
                 ? new CreatedAtRouteResult(new {command.FollowingId, command.FollowerId}, commandResponse)
                 : BadRequest(commandResponse);
         }
-        
+
         /// <summary>
         /// Deletes a follow asynchronously through the delete follow command.
         /// </summary>
@@ -54,10 +61,23 @@ namespace Kwetter.Services.FollowService.API.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> DeleteAsync(DeleteFollowCommand command)
         {
+            Guid userId = Guid.Parse(HttpContext.User.Claims.Single(claim => claim.Type == "UserId").Value);
+            if (command.FollowerId != userId)
+                return UnauthorizedCommand();
+
             CommandResponse commandResponse = await _mediator.Send(command);
             return commandResponse.Success
                 ? new OkObjectResult(commandResponse)
                 : BadRequest(commandResponse);
+        }
+
+        private IActionResult UnauthorizedCommand()
+        {
+            return Unauthorized(new CommandResponse()
+            {
+                Errors = new List<string>() { "The user id and follower id are not the same." },
+                Success = false
+            });
         }
     }
 }

@@ -1,7 +1,7 @@
-﻿using System;
-using Kwetter.Services.Common.Domain.Events;
+﻿using Kwetter.Services.Common.Domain.Events;
+using System;
 
-namespace Kwetter.Services.FollowService.Domain.AggregatesModel.FollowAggregate.Events
+namespace Kwetter.Services.FollowService.Domain.AggregatesModel.UserAggregate.Events
 {
     /// <summary>
     /// Represents the <see cref="FollowDomainEvent"/> class.

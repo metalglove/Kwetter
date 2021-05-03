@@ -1,5 +1,5 @@
 ﻿using Kwetter.Services.Common.Application.Eventing.Integration;
-using Kwetter.Services.FollowService.Domain.AggregatesModel.FollowAggregate.Events;
+using Kwetter.Services.FollowService.Domain.AggregatesModel.UserAggregate.Events;
 using MediatR;
 using System;
 using System.Threading;

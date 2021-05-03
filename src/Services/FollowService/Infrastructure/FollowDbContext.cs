@@ -1,5 +1,5 @@
 ﻿using Kwetter.Services.Common.Infrastructure;
-using Kwetter.Services.FollowService.Domain.AggregatesModel.FollowAggregate;
+using Kwetter.Services.FollowService.Domain.AggregatesModel.UserAggregate;
 using Kwetter.Services.FollowService.Infrastructure.EntityConfigurations;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -15,7 +15,7 @@ namespace Kwetter.Services.FollowService.Infrastructure
         /// <summary>
         /// Gets and sets the follows database set.
         /// </summary>
-        public DbSet<FollowAggregate> Follows { get; set; }
+        public DbSet<UserAggregate> UserAggregates { get; set; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FollowDbContext"/> class.
@@ -43,7 +43,8 @@ namespace Kwetter.Services.FollowService.Infrastructure
         /// <param name="modelBuilder">The model builder.</param>
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.ApplyConfiguration(new FollowAggregateConfiguration());
+            modelBuilder.ApplyConfiguration(new UserAggregateConfiguration());
+            modelBuilder.ApplyConfiguration(new FollowConfiguration());
             base.OnModelCreating(modelBuilder);
         }
     }

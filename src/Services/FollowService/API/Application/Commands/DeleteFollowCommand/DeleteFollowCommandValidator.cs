@@ -1,6 +1,7 @@
 ﻿using FluentValidation;
-using Kwetter.Services.FollowService.Domain.AggregatesModel.FollowAggregate;
+using Kwetter.Services.FollowService.Domain.AggregatesModel.UserAggregate;
 using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -11,15 +12,15 @@ namespace Kwetter.Services.FollowService.API.Application.Commands.DeleteFollowCo
     /// </summary>
     public sealed class DeleteFollowCommandValidator : AbstractValidator<DeleteFollowCommand>
     {
-        private readonly IFollowRepository _followRepository;
+        private readonly IUserRepository _userRepository;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DeleteFollowCommandValidator"/> class.
         /// </summary>
-        /// <param name="followRepository">The follow repository.</param>
-        public DeleteFollowCommandValidator(IFollowRepository followRepository)
+        /// <param name="userRepository">The user repository.</param>
+        public DeleteFollowCommandValidator(IUserRepository userRepository)
         {
-            _followRepository = followRepository ?? throw new ArgumentNullException(nameof(followRepository));
+            _userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
             
             RuleFor(deleteFollowCommand => deleteFollowCommand)
                 .CustomAsync(ValidateUnfollowAsync);
@@ -37,8 +38,9 @@ namespace Kwetter.Services.FollowService.API.Application.Commands.DeleteFollowCo
                 context.AddFailure("The following id can not be empty.");
                 return;
             }
-            FollowAggregate follow = await _followRepository.FindAsync(deleteFollowCommand.FollowingId, deleteFollowCommand.FollowerId, cancellationToken);
-            if (follow == null) 
+            UserAggregate userAggregate = await _userRepository.FindAsync(deleteFollowCommand.FollowerId, cancellationToken);
+            bool hasFollow = userAggregate.Followings.Any(follow => follow.FollowingId == deleteFollowCommand.FollowingId);
+            if (!hasFollow)
                 context.AddFailure("The follow does not exist.");
         }
     }

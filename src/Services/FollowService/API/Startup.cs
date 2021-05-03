@@ -3,7 +3,7 @@ using Kwetter.Services.Common.Application.Eventing.Bus;
 using Kwetter.Services.Common.Infrastructure;
 using Kwetter.Services.Common.Infrastructure.Behaviours;
 using Kwetter.Services.FollowService.API.Application.Commands.CreateFollowCommand;
-using Kwetter.Services.FollowService.Domain.AggregatesModel.FollowAggregate;
+using Kwetter.Services.FollowService.Domain.AggregatesModel.UserAggregate;
 using Kwetter.Services.FollowService.Infrastructure;
 using Kwetter.Services.FollowService.Infrastructure.Repositories;
 using MediatR;
@@ -51,7 +51,7 @@ namespace Kwetter.Services.FollowService.API
             services.AddScoped<IFactory<FollowDbContext>, FollowDatabaseFactory>();
             services.AddScoped<FollowDbContext>(p => p.GetRequiredService<IFactory<FollowDbContext>>().Create());
             services.AddScoped<IAggregateUnitOfWork>(p => p.GetRequiredService<IFactory<FollowDbContext>>().Create());
-            services.AddScoped<IFollowRepository, FollowRepository>();
+            services.AddScoped<IUserRepository, UserRepository>();
             services.AddControllers();
             services.AddSwagger(_configuration);
             services.VerifyDatabaseConnection<FollowDbContext>();
