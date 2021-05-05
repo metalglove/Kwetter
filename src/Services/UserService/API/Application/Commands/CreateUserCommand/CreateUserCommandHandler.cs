@@ -33,7 +33,7 @@ namespace Kwetter.Services.UserService.API.Application.Commands.CreateUserComman
         {
             // Only the aggregate root can be created.
             // The user profile will be created by the aggregate root.
-            UserAggregate userAggregate = new(request.UserId, request.UserDisplayName, request.UserProfileDescription, request.UserProfilePictureUrl);
+            UserAggregate userAggregate = new(request.UserId, request.UserDisplayName, request.UserName, request.UserProfileDescription, request.UserProfilePictureUrl);
 
             // Creates the user aggregate.
             _userRepository.Create(userAggregate);

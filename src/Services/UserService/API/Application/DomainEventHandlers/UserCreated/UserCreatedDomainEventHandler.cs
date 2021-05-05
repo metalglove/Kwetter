@@ -34,6 +34,7 @@ namespace Kwetter.Services.UserService.API.Application.DomainEventHandlers.UserC
             UserCreatedIntegrationEvent userCreatedIntegrationEvent = new(
                 notification.UserId,
                 notification.UserDisplayName,
+                notification.UserName,
                 notification.UserProfileDescription,
                 notification.UserProfilePictureUrl);
             userCreatedIntegrationEvent.SetExchangeName("UserExchange");

@@ -1,6 +1,7 @@
 ﻿using FluentValidation;
 using Kwetter.Services.UserService.Domain.AggregatesModel.UserAggregate;
 using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -24,8 +25,15 @@ namespace Kwetter.Services.UserService.API.Application.Commands.CreateUserComman
             RuleFor(createUserCommand => createUserCommand.UserDisplayName)
                 .Custom(ValidateUserDisplayName);
 
+            RuleFor(createUserCommand => createUserCommand.UserName)
+                .Custom(ValidateUserName);
+
             RuleFor(createUserCommand => createUserCommand.UserId)
                 .CustomAsync(CheckUserIdUniquenessAsync);
+
+            RuleFor(createUserCommand => createUserCommand.UserProfileDescription)
+                .NotNull()
+                .WithMessage("The profile description is null.");
 
             RuleFor(createUserCommand => createUserCommand.UserProfilePictureUrl)
                 .NotEmpty()
@@ -47,7 +55,30 @@ namespace Kwetter.Services.UserService.API.Application.Commands.CreateUserComman
                 context.AddFailure("The display name must not exceed 64 characters.");
                 return;
             }
-            // TODO: Do we want users to have the same display name?
+        }
+
+        private void ValidateUserName(string userName, ValidationContext<CreateUserCommand> context)
+        {
+            // Checks whether the user name is not null, empty or contains only white spaces.
+            if (string.IsNullOrWhiteSpace(userName))
+            {
+                context.AddFailure("The user name must not be null, empty or only contain whitespaces.");
+                return;
+            }
+
+            // Checks whether the user name does not exceed 64 characters.
+            if (userName.Length > 32)
+            {
+                context.AddFailure("The user name must not exceed 32 characters.");
+                return;
+            }
+
+            // Checks whether the user name is alphanumeric.
+            if (!userName.All(char.IsLetterOrDigit))
+            {
+                context.AddFailure("The user name must be alphanumeric.");
+                return;
+            }
         }
 
         private async Task CheckUserIdUniquenessAsync(Guid proposedUserId, ValidationContext<CreateUserCommand> context, CancellationToken cancellationToken)

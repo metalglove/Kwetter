@@ -27,7 +27,7 @@ namespace Kwetter.Services.UserService.Tests.Commands
         [TestInitialize]
         public async Task Initialize()
         {
-            ServiceProvider = InitializeServices<UserDbContext, UserDatabaseFactory, UserRepository, UserAggregate>(typeof(Startup), typeof(CreateUserCommand), "UserService");
+            ServiceProvider = InitializeServiceProvider<UserDbContext, UserDatabaseFactory, UserRepository, UserAggregate>(typeof(Startup), typeof(CreateUserCommand), "UserService");
             Mediator = ServiceProvider.GetRequiredService<IMediator>();
             UserController = new UserController(Mediator);
             UserId = Guid.NewGuid();
@@ -35,6 +35,7 @@ namespace Kwetter.Services.UserService.Tests.Commands
             {
                 UserId = UserId,
                 UserDisplayName = "AlreadyExistingUser",
+                UserName = "helloman2",
                 UserProfileDescription = "My profile description!",
                 UserProfilePictureUrl = "https://icon-library.net/images/default-user-icon/default-user-icon-8.jpg"
             };
@@ -57,6 +58,7 @@ namespace Kwetter.Services.UserService.Tests.Commands
             {
                 UserId = Guid.NewGuid(),
                 UserDisplayName = "Glovali",
+                UserName = "supermario",
                 UserProfileDescription = "My profile description!",
                 UserProfilePictureUrl = "https://icon-library.net/images/default-user-icon/default-user-icon-8.jpg"
             };
@@ -77,12 +79,14 @@ namespace Kwetter.Services.UserService.Tests.Commands
             // Arrange
             Guid userId = Guid.Empty;
             const string userDisplayName = "Glovali";
+            const string userName = "supermario";
             const string userProfileDescription = "Hello world!";
             const string userProfilePictureUrl = "https://icon-library.net/images/default-user-icon/default-user-icon-8.jpg";
             CreateUserCommand createUserCommand = new()
             {
                 UserId = userId,
                 UserDisplayName = userDisplayName,
+                UserName = userName,
                 UserProfileDescription = userProfileDescription,
                 UserProfilePictureUrl = userProfilePictureUrl
             };
@@ -103,12 +107,14 @@ namespace Kwetter.Services.UserService.Tests.Commands
             // Arrange
             Guid userId = Guid.NewGuid();
             const string userDisplayName = "";
+            const string userName = "supermario";
             const string userProfileDescription = "Hello world!";
             const string userProfilePictureUrl = "https://icon-library.net/images/default-user-icon/default-user-icon-8.jpg";
             CreateUserCommand createUserCommand = new()
             {
                 UserId = userId,
                 UserDisplayName = userDisplayName,
+                UserName = userName,
                 UserProfileDescription = userProfileDescription,
                 UserProfilePictureUrl = userProfilePictureUrl
             };
@@ -129,12 +135,14 @@ namespace Kwetter.Services.UserService.Tests.Commands
             // Arrange
             Guid userId = Guid.NewGuid();
             const string userDisplayName = "sdfdsfsfsdfdsfdsfdfdsfdsfdsfdsfdsfdsfdsfdfdfdfdfdfdfdfddfdfdfdfdfdfdfdfdfdfdfdfdfdfdfdfdfdfdfdfdfdfdfdfdfdfdfdfdfdfdfdfdfdfdfdffdfdfdff";
+            const string userName = "supermario";
             const string userProfileDescription = "Hello world!";
             const string userProfilePictureUrl = "https://icon-library.net/images/default-user-icon/default-user-icon-8.jpg";
             CreateUserCommand createUserCommand = new()
             {
                 UserId = userId,
                 UserDisplayName = userDisplayName,
+                UserName = userName,
                 UserProfileDescription = userProfileDescription,
                 UserProfilePictureUrl = userProfilePictureUrl
             };
@@ -154,12 +162,14 @@ namespace Kwetter.Services.UserService.Tests.Commands
         {
             // Arrange
             const string userDisplayName = "AlreadyExistingUser";
+            const string userName = "supermario";
             const string userProfileDescription = "Hello world!";
             const string userProfilePictureUrl = "https://icon-library.net/images/default-user-icon/default-user-icon-8.jpg";
             CreateUserCommand createUserCommand = new()
             {
                 UserId = UserId,
                 UserDisplayName = userDisplayName,
+                UserName = userName,
                 UserProfileDescription = userProfileDescription,
                 UserProfilePictureUrl = userProfilePictureUrl
             };

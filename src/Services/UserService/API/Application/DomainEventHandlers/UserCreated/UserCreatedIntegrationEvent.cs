@@ -19,6 +19,11 @@ namespace Kwetter.Services.UserService.API.Application.DomainEventHandlers.UserC
         public string UserDisplayName { get; private set; }
 
         /// <summary>
+        /// Gets and sets the user name.
+        /// </summary>
+        public string UserName { get; private set; }
+
+        /// <summary>
         /// Gets and sets the user profile description.
         /// </summary>
         public string UserProfileDescription { get; private set; }
@@ -33,12 +38,14 @@ namespace Kwetter.Services.UserService.API.Application.DomainEventHandlers.UserC
         /// </summary>
         /// <param name="userId">The user id.</param>
         /// <param name="displayName">The user display name.</param>
+        /// <param name="userName">The user name.</param>
         /// <param name="description">The user profile description.</param>
         /// <param name="pictureUrl">The user profile picture url.</param>
-        public UserCreatedIntegrationEvent(Guid userId, string displayName, string description, string pictureUrl)
+        public UserCreatedIntegrationEvent(Guid userId, string displayName, string userName, string description, string pictureUrl)
         {
             UserId = userId;
             UserDisplayName = displayName;
+            UserName = userName;
             UserProfileDescription = description;
             UserProfilePictureUrl = pictureUrl;
             EventVersion = 1;

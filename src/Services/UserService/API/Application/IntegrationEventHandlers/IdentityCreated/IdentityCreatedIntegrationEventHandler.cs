@@ -38,6 +38,7 @@ namespace Kwetter.Services.UserService.API.Application.IntegrationEventHandlers.
             {
                 UserId = @event.UserId,
                 UserDisplayName = @event.GivenName,
+                UserName = @event.UserName,
                 UserProfileDescription = $"Hello! I am {@event.GivenName}!",
                 UserProfilePictureUrl = @event.ProfilePictureUrl
             }, cancellationToken);

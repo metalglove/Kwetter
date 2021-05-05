@@ -22,7 +22,7 @@ namespace Kwetter.Services.UserService.Tests.IntegrationEventHandlers
         [TestInitialize]
         public void Initialize()
         {
-            ServiceProvider = InitializeServices<UserDbContext, UserDatabaseFactory, UserRepository, UserAggregate>(typeof(Startup), typeof(CreateUserCommand), "UserService");
+            ServiceProvider = InitializeServiceProvider<UserDbContext, UserDatabaseFactory, UserRepository, UserAggregate>(typeof(Startup), typeof(CreateUserCommand), "UserService");
             IdentityCreatedIntegrationEventHandler = new IdentityCreatedIntegrationEventHandler(ServiceProvider.GetRequiredService<IServiceScopeFactory>());
         }
 
@@ -39,8 +39,9 @@ namespace Kwetter.Services.UserService.Tests.IntegrationEventHandlers
             // Arrange
             Guid userId = Guid.NewGuid();
             const string userDisplayName = "Glovali";
+            const string userName = "supermario";
             const string userProfilePictureUrl = "https://icon-library.net/images/default-user-icon/default-user-icon-8.jpg";
-            IdentityCreatedIntegrationEvent identityCreatedIntegrationEvent = new(userId, userDisplayName, userProfilePictureUrl);
+            IdentityCreatedIntegrationEvent identityCreatedIntegrationEvent = new(userId, userDisplayName, userName, userProfilePictureUrl);
 
             // Act
             await IdentityCreatedIntegrationEventHandler.HandleAsync(identityCreatedIntegrationEvent, CancellationToken.None);
@@ -57,8 +58,9 @@ namespace Kwetter.Services.UserService.Tests.IntegrationEventHandlers
             // Arrange
             Guid userId = Guid.NewGuid();
             const string userDisplayName = "";
+            const string userName = "supermario";
             const string userProfilePictureUrl = "https://icon-library.net/images/default-user-icon/default-user-icon-8.jpg";
-            IdentityCreatedIntegrationEvent identityCreatedIntegrationEvent = new(userId, userDisplayName, userProfilePictureUrl);
+            IdentityCreatedIntegrationEvent identityCreatedIntegrationEvent = new(userId, userDisplayName, userName, userProfilePictureUrl);
 
             // Act
             await IdentityCreatedIntegrationEventHandler.HandleAsync(identityCreatedIntegrationEvent, CancellationToken.None);

@@ -13,6 +13,7 @@ namespace Kwetter.Services.UserService.Infrastructure.Migrations
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     DisplayName = table.Column<string>(type: "nvarchar(64)", maxLength: 64, nullable: false),
+                    UserName = table.Column<string>(type: "nvarchar(32)", maxLength: 32, nullable: false),
                     Profile_Description = table.Column<string>(type: "nvarchar(512)", maxLength: 512, nullable: true),
                     Profile_PictureUrl = table.Column<string>(type: "nvarchar(512)", maxLength: 512, nullable: true)
                 },
