@@ -3,4 +3,5 @@
  */
 export default interface ClaimsCommand {
     IdToken: string;
+    UserName: string;
 }

@@ -29,6 +29,7 @@ const firebaseApp: firebase.app.App = firebase.initializeApp(firebaseConfig);
 
 const routes: KwetterRoute[] = [
     { name: 'Home', props: { msg: 'Welcome to Home!' } },
+    { name: 'Register' },
     { name: 'Timeline' }
 ];
 

@@ -49,11 +49,13 @@
     <Content Include="src\models\cqrs\Authorization\ClaimsCommand.ts">
       <SubType>Code</SubType>
     </Content>
+    <Content Include="src\models\dtos\VerifyUserNameUniquenessDto.ts" />
     <Content Include="src\modules\App\App.actions.ts">
       <SubType>Code</SubType>
     </Content>
     <Content Include="src\views\Alias.vue" />
     <Content Include="src\views\Home.vue" />
+    <Content Include="src\views\Register.vue" />
     <Content Include="src\views\Timeline.vue">
       <SubType>Code</SubType>
     </Content>
@@ -104,6 +106,7 @@
     <TypeScriptCompile Include="src\interfaces\ITimelineService.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
+    <TypeScriptCompile Include="src\models\cqrs\Authorization\VerifyUserNameUniquenessQuery.ts" />
     <TypeScriptCompile Include="src\models\cqrs\CommandResponse.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
