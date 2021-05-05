@@ -28,14 +28,14 @@ namespace Kwetter.Services.FollowService.Infrastructure.Repositories
         /// <inheritdoc cref="IUserRepository.Create(UserAggregate)" />
         public UserAggregate Create(UserAggregate user)
         {
-            return _followDbContext.UserAggregates
+            return _followDbContext.Users
                 .Add(user).Entity;
         }
 
         /// <inheritdoc cref="IUserRepository.FindAsync(Guid, CancellationToken)" />
         public async ValueTask<UserAggregate> FindAsync(Guid userId, CancellationToken cancellationToken)
         {
-            return await _followDbContext.UserAggregates
+            return await _followDbContext.Users
                 .FindAsync(new object[] { userId }, cancellationToken);
         }
     }

@@ -13,9 +13,9 @@ namespace Kwetter.Services.FollowService.Infrastructure
     public sealed class FollowDbContext : UnitOfWork<FollowDbContext>
     {
         /// <summary>
-        /// Gets and sets the follows database set.
+        /// Gets and sets the users database set.
         /// </summary>
-        public DbSet<UserAggregate> UserAggregates { get; set; }
+        public DbSet<UserAggregate> Users { get; set; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FollowDbContext"/> class.

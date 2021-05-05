@@ -28,12 +28,12 @@ namespace Kwetter.Services.FollowService.Tests.Commands
         [TestInitialize]
         public async Task Initialize()
         {
-            ServiceProvider = InitializeServices<FollowDbContext, FollowDatabaseFactory, UserRepository, UserAggregate>(typeof(Startup), typeof(CreateFollowCommand), "FollowService");
+            ServiceProvider = InitializeServiceProvider<FollowDbContext, FollowDatabaseFactory, UserRepository, UserAggregate>(typeof(Startup), typeof(CreateFollowCommand), "FollowService");
             Mediator = ServiceProvider.GetRequiredService<IMediator>();
-            FollowerId = Guid.NewGuid();
+            FollowerId = AuthorizedUserId;
             FollowingId = Guid.NewGuid();
 
-            FollowController = CreateAuthorizedController<FollowController>(Mediator, FollowerId);
+            FollowController = CreateAuthorizedController<FollowController>(Mediator);
 
             IUserRepository userRepository = ServiceProvider.GetRequiredService<IUserRepository>();
             UserAggregate follower = new(FollowerId, "SuperMario", "https://icon-library.net/images/default-user-icon/default-user-icon-8.jpg");
@@ -45,7 +45,6 @@ namespace Kwetter.Services.FollowService.Tests.Commands
         }
         
         [TestCleanup]
-
         public void Cleanup()
         {
             Cleanup(ServiceProvider);    
