@@ -55,11 +55,12 @@ namespace Kwetter.Services.AuthorizationService.API.Application.Commands.ClaimsC
                 string givenName = claimsDto.Claims["name"].Value;
                 string email = claimsDto.Claims["email"].Value;
                 string profilePictureUrl = claimsDto.Claims["picture"].Value;
-                IdentityAggregate newIdentity = new(Guid.NewGuid(), openId, givenName, email, profilePictureUrl);
+                IdentityAggregate newIdentity = new(Guid.NewGuid(), openId, givenName, request.UserName, email, profilePictureUrl);
                 string uid = newIdentity.Id.ToString();
                 Dictionary<string, object> claims = new()
                 {
                     { "UserId", uid },
+                    { "UserName", newIdentity.UserName },
                     { "User", true }
                 };
                 await _authorizationService.SetUserClaimsAsync(openId, claims, cancellationToken);

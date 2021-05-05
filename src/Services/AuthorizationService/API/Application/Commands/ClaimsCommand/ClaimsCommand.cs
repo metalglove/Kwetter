@@ -9,6 +9,11 @@ namespace Kwetter.Services.AuthorizationService.API.Application.Commands.ClaimsC
     public record ClaimsCommand : IRequest<CommandResponse>
     {
         /// <summary>
+        /// Gets and sets the user name.
+        /// </summary>
+        public string UserName { get; set; }
+
+        /// <summary>
         /// Gets and sets the id token.
         /// </summary>
         public string IdToken { get; set; }

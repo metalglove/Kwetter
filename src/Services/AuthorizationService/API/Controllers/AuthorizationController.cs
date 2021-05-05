@@ -1,5 +1,7 @@
 ﻿using Kwetter.Services.AuthorizationService.API.Application.Commands.ClaimsCommand;
+using Kwetter.Services.AuthorizationService.API.Application.Queries.VerifyUserNameUniquenessQuery;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading.Tasks;
@@ -33,6 +35,17 @@ namespace Kwetter.Services.AuthorizationService.API.Controllers
         public async Task<IActionResult> ClaimsAsync([FromBody] ClaimsCommand claimsCommand)
         {
             return Ok(await _mediator.Send(claimsCommand));
+        }
+
+        /// <summary>
+        /// Verifies the user name uniqueness.
+        /// </summary>
+        /// <param name="verifyUserNameUniquenessQuery">The verify user name uniqueness query.</param>
+        /// <returns>Returns the query response.</returns>
+        [AllowAnonymous, HttpPost("VerifyUserNameUniqueness")]
+        public async Task<IActionResult> VerifyUserNameUniquenessAsync([FromBody] VerifyUserNameUniquenessQuery verifyUserNameUniquenessQuery)
+        {
+            return Ok(await _mediator.Send(verifyUserNameUniquenessQuery));
         }
     }
 }

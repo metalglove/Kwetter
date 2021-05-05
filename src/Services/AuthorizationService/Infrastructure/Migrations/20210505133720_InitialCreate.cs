@@ -14,6 +14,7 @@ namespace Kwetter.Services.AuthorizationService.Infrastructure.Migrations
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     OpenId = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     GivenName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    UserName = table.Column<string>(type: "nvarchar(32)", maxLength: 32, nullable: false),
                     Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ProfilePictureUrl = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
@@ -21,6 +22,12 @@ namespace Kwetter.Services.AuthorizationService.Infrastructure.Migrations
                 {
                     table.PrimaryKey("PK_Identities", x => x.Id);
                 });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Identities_UserName",
+                table: "Identities",
+                column: "UserName",
+                unique: true);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

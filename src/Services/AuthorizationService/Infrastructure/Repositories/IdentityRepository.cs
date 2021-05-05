@@ -2,6 +2,7 @@
 using Kwetter.Services.Common.Domain.Persistence;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -44,7 +45,17 @@ namespace Kwetter.Services.AuthorizationService.Infrastructure.Repositories
         public async Task<IdentityAggregate> FindIdentityByOpenIdAsync(string openId, CancellationToken cancellationToken)
         {
             return await _identityDbContext.Identities
+                .AsQueryable()
                 .SingleOrDefaultAsync(identity => identity.OpenId == openId, cancellationToken);
+        }
+
+        /// <inheritdoc cref="IIdentityRepository.FindByUserNameAsync(string, CancellationToken)"/>
+        public async Task<IdentityAggregate> FindByUserNameAsync(string userName, CancellationToken cancellationToken)
+        {
+            string loweredUserName = userName.ToLower();
+            return await _identityDbContext.Identities
+                .AsQueryable()
+                .SingleOrDefaultAsync(identity => identity.UserName == loweredUserName, cancellationToken);
         }
     }
 }

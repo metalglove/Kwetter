@@ -35,6 +35,7 @@ namespace Kwetter.Services.AuthorizationService.API.Application.DomainEventHandl
             IdentityCreatedIntegrationEvent identityCreatedIntegrationEvent = new(
                 userId: notification.UserId,
                 givenName: notification.GivenName,
+                userName: notification.UserName,
                 profilePictureUrl: notification.ProfilePictureUrl
             );
             identityCreatedIntegrationEvent.SetExchangeName("AuthorizationExchange");

@@ -16,8 +16,4 @@
     <ProjectReference Include="..\Infrastructure\Kwetter.Services.AuthorizationService.Infrastructure.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Application\Queries\" />
-  </ItemGroup>
-
 </Project>

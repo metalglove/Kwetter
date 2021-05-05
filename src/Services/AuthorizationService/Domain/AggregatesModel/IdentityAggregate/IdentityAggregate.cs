@@ -3,6 +3,7 @@ using Kwetter.Services.AuthorizationService.Domain.Exceptions;
 using Kwetter.Services.Common.Domain;
 using System;
 using System.Globalization;
+using System.Linq;
 using System.Text.RegularExpressions;
 
 namespace Kwetter.Services.AuthorizationService.Domain.AggregatesModel.IdentityAggregate
@@ -15,6 +16,7 @@ namespace Kwetter.Services.AuthorizationService.Domain.AggregatesModel.IdentityA
     {
         private string openId;
         private string givenName;
+        private string userName;
         private string email;
         private string profilePictureUrl;
 
@@ -43,6 +45,24 @@ namespace Kwetter.Services.AuthorizationService.Domain.AggregatesModel.IdentityA
                 if (string.IsNullOrWhiteSpace(value))
                     throw new AuthorizationDomainException("The given name is null, empty or contains only whitespaces.");
                 givenName = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets and sets the user name.
+        /// </summary>
+        public string UserName
+        {
+            get => userName;
+            private set
+            {
+                if (string.IsNullOrWhiteSpace(value))
+                    throw new AuthorizationDomainException("The user name is null, empty or contains only whitespaces.");
+                if (value.Length > 32)
+                    throw new AuthorizationDomainException("The user name length exceeded the maximum length of 32.");
+                if (!value.All(char.IsLetterOrDigit))
+                    throw new AuthorizationDomainException("The user name is not alphanumeric.");
+                userName = value;
             }
         }
 
@@ -112,18 +132,20 @@ namespace Kwetter.Services.AuthorizationService.Domain.AggregatesModel.IdentityA
         /// <param name="userId">The user id.</param>
         /// <param name="openId">The open id.</param>
         /// <param name="givenName">The given name.</param>
+        /// <param name="userName">The user name.</param>
         /// <param name="email">The email.</param>
         /// <param name="profilePictureUrl">The profile picture url.</param>
-        public IdentityAggregate(Guid userId, string openId, string givenName, string email, string profilePictureUrl)
+        public IdentityAggregate(Guid userId, string openId, string givenName, string userName, string email, string profilePictureUrl)
         {
             if (userId == Guid.Empty)
                 throw new AuthorizationDomainException("The user id is empty.");
             Id = userId;
             OpenId = openId;
             GivenName = givenName;
+            UserName = userName.ToLower();
             Email = email;
             ProfilePictureUrl = profilePictureUrl;
-            AddDomainEvent(new IdentityCreatedDomainEvent(Id, OpenId, GivenName, Email, ProfilePictureUrl));
+            AddDomainEvent(new IdentityCreatedDomainEvent(Id, OpenId, GivenName, UserName, Email, ProfilePictureUrl));
         }
     }
 }
