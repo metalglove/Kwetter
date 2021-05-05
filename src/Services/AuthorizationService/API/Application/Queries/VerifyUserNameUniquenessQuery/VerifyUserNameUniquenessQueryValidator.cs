@@ -21,7 +21,7 @@ namespace Kwetter.Services.AuthorizationService.API.Application.Queries.VerifyUs
         {
             if (string.IsNullOrWhiteSpace(userName))
             {
-                context.AddFailure("The user name cannot be empty.");
+                context.AddFailure("The user name can not be empty.");
                 return;
             }
             if (userName.Length > 32)

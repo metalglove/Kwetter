@@ -63,10 +63,10 @@ namespace Kwetter.Services.Common.Infrastructure.Authorization
             try
             {
                 ClaimsDto claimsDto = await _tokenVerifier.VerifyIdTokenAsync(token);
-                if (Request.Path.Value != "/api/Authorization/Claims")
-                {
+                if (claimsDto.Claims.ContainsKey("UserId"))
                     claims.Add(claimsDto.Claims["UserId"].ToClaim());
-                }
+                if (claimsDto.Claims.ContainsKey("UserName"))
+                    claims.Add(claimsDto.Claims["UserName"].ToClaim());
             }
             catch (Exception ex)
             {
