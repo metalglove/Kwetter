@@ -1,5 +1,5 @@
 ﻿using FluentValidation;
-using Kwetter.Services.KweetService.Domain.AggregatesModel.KweetAggregate;
+using Kwetter.Services.KweetService.Domain.AggregatesModel.UserAggregate;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -11,15 +11,15 @@ namespace Kwetter.Services.KweetService.API.Application.Commands.CreateKweetComm
     /// </summary>
     public sealed class CreateKweetCommandValidator : AbstractValidator<CreateKweetCommand>
     {
-        private readonly IKweetRepository _kweetRepository;
+        private readonly IUserRepository _userRepository;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CreateKweetCommandValidator"/> class.
         /// </summary>
-        /// <param name="kweetRepository">The kweet repository.</param>
-        public CreateKweetCommandValidator(IKweetRepository kweetRepository)
+        /// <param name="userRepository">The user repository.</param>
+        public CreateKweetCommandValidator(IUserRepository userRepository)
         {
-            _kweetRepository = kweetRepository;
+            _userRepository = userRepository;
             
             RuleFor(command => command)
                 .CustomAsync(KweetValidationAsync);
@@ -51,8 +51,8 @@ namespace Kwetter.Services.KweetService.API.Application.Commands.CreateKweetComm
                 context.AddFailure("The kweet id can not be empty.");
                 return;
             }
-            KweetAggregate kweetAggregate = await _kweetRepository.FindAsync(createKweetCommand.KweetId, cancellationToken);
-            if (kweetAggregate != default)
+            Kweet kweet = await _userRepository.FindKweetAsync(createKweetCommand.KweetId, cancellationToken);
+            if (kweet != default)
                 context.AddFailure("The kweet id already exists.");
         }
     }

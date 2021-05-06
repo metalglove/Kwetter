@@ -1,5 +1,5 @@
 ﻿using Kwetter.Services.Common.Infrastructure;
-using Kwetter.Services.KweetService.Domain.AggregatesModel.KweetAggregate;
+using Kwetter.Services.KweetService.Domain.AggregatesModel.UserAggregate;
 using Kwetter.Services.KweetService.Infrastructure.EntityConfigurations;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -13,9 +13,14 @@ namespace Kwetter.Services.KweetService.Infrastructure
     public sealed class KweetDbContext : UnitOfWork<KweetDbContext>
     {
         /// <summary>
+        /// Gets and sets the users database set.
+        /// </summary>
+        public DbSet<UserAggregate> Users { get; set; }
+
+        /// <summary>
         /// Gets and sets the kweets database set.
         /// </summary>
-        public DbSet<KweetAggregate> Kweets { get; set; }
+        public DbSet<Kweet> Kweets { get; set; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="KweetDbContext"/> class.
@@ -43,7 +48,9 @@ namespace Kwetter.Services.KweetService.Infrastructure
         /// <param name="modelBuilder">The model builder.</param>
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.ApplyConfiguration(new KweetAggregateConfiguration());
+            modelBuilder.ApplyConfiguration(new KweetLikeConfiguration());
+            modelBuilder.ApplyConfiguration(new KweetConfiguration());
+            modelBuilder.ApplyConfiguration(new UserAggregateConfiguration());
             base.OnModelCreating(modelBuilder);
         }
     }

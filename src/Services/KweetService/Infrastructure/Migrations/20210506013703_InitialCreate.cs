@@ -8,6 +8,19 @@ namespace Kwetter.Services.KweetService.Infrastructure.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
+                name: "Users",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    UserDisplayName = table.Column<string>(type: "nvarchar(64)", maxLength: 64, nullable: false),
+                    UserName = table.Column<string>(type: "nvarchar(32)", maxLength: 32, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Users", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Kweets",
                 columns: table => new
                 {
@@ -19,6 +32,12 @@ namespace Kwetter.Services.KweetService.Infrastructure.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Kweets", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Kweets_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -27,24 +46,34 @@ namespace Kwetter.Services.KweetService.Infrastructure.Migrations
                 {
                     KweetId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    LikedDateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    KweetAggregateId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    LikedDateTime = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_KweetLike", x => new { x.KweetId, x.UserId });
                     table.ForeignKey(
-                        name: "FK_KweetLike_Kweets_KweetAggregateId",
-                        column: x => x.KweetAggregateId,
+                        name: "FK_KweetLike_Kweets_KweetId",
+                        column: x => x.KweetId,
                         principalTable: "Kweets",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_KweetLike_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_KweetLike_KweetAggregateId",
+                name: "IX_KweetLike_UserId",
                 table: "KweetLike",
-                column: "KweetAggregateId");
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Kweets_UserId",
+                table: "Kweets",
+                column: "UserId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -54,6 +83,9 @@ namespace Kwetter.Services.KweetService.Infrastructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "Kweets");
+
+            migrationBuilder.DropTable(
+                name: "Users");
         }
     }
 }

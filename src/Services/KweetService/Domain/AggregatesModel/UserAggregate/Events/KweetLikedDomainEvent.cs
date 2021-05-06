@@ -1,7 +1,7 @@
 ﻿using Kwetter.Services.Common.Domain.Events;
 using System;
 
-namespace Kwetter.Services.KweetService.Domain.AggregatesModel.KweetAggregate.Events
+namespace Kwetter.Services.KweetService.Domain.AggregatesModel.UserAggregate.Events
 {
     /// <summary>
     /// Represents the <see cref="KweetLikedDomainEvent"/> class.

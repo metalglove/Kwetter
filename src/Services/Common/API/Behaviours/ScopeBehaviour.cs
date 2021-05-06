@@ -41,7 +41,6 @@ namespace Kwetter.Services.Common.API.Behaviours
         public async Task<TResponse> Handle(TRequest request, CancellationToken cancellationToken, RequestHandlerDelegate<TResponse> next)
         {
             TResponse response = await next();
-            //_scope.Dispose();
             _logger.LogInformation($"----- Scope end {request.GetGenericTypeName()}");
             return response;
         }

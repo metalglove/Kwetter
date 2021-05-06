@@ -3,7 +3,7 @@ using Kwetter.Services.Common.Application.Eventing.Bus;
 using Kwetter.Services.Common.Infrastructure;
 using Kwetter.Services.Common.Infrastructure.Behaviours;
 using Kwetter.Services.KweetService.API.Application.Commands.CreateKweetCommand;
-using Kwetter.Services.KweetService.Domain.AggregatesModel.KweetAggregate;
+using Kwetter.Services.KweetService.Domain.AggregatesModel.UserAggregate;
 using Kwetter.Services.KweetService.Infrastructure;
 using Kwetter.Services.KweetService.Infrastructure.Repositories;
 using MediatR;
@@ -51,7 +51,7 @@ namespace Kwetter.Services.KweetService.API
             services.AddScoped<IFactory<KweetDbContext>, KweetDatabaseFactory>();
             services.AddScoped<KweetDbContext>(p => p.GetRequiredService<IFactory<KweetDbContext>>().Create());
             services.AddScoped<IAggregateUnitOfWork>(p => p.GetRequiredService<IFactory<KweetDbContext>>().Create());
-            services.AddScoped<IKweetRepository, KweetRepository>();
+            services.AddScoped<IUserRepository, UserRepository>();
             services.AddControllers();
             services.AddSwagger(_configuration);
             services.VerifyDatabaseConnection<KweetDbContext>();

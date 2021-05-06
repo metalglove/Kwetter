@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using Kwetter.Services.KweetService.Domain.AggregatesModel.KweetAggregate;
+using Kwetter.Services.KweetService.Domain.AggregatesModel.UserAggregate;
 
 namespace Kwetter.Services.KweetService.API.Application.Commands.UnlikeKweetCommand
 {
@@ -13,15 +13,15 @@ namespace Kwetter.Services.KweetService.API.Application.Commands.UnlikeKweetComm
     /// </summary>
     public sealed class UnlikeKweetCommandHandler : IRequestHandler<UnlikeKweetCommand, CommandResponse>
     {
-        private readonly IKweetRepository _kweetRepository;
+        private readonly IUserRepository _userRepository;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="UnlikeKweetCommandHandler"/> class.
         /// </summary>
-        /// <param name="kweetRepository">The kweet repository.</param>
-        public UnlikeKweetCommandHandler(IKweetRepository kweetRepository)
+        /// <param name="userRepository">The user repository.</param>
+        public UnlikeKweetCommandHandler(IUserRepository userRepository)
         {
-            _kweetRepository = kweetRepository ?? throw new ArgumentNullException(nameof(kweetRepository));
+            _userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
         }
 
         /// <summary>
@@ -32,9 +32,10 @@ namespace Kwetter.Services.KweetService.API.Application.Commands.UnlikeKweetComm
         /// <returns>Returns the command response.</returns>
         public async Task<CommandResponse> Handle(UnlikeKweetCommand request, CancellationToken cancellationToken)
         {
-            KweetAggregate kweetAggregate = await _kweetRepository.FindAsync(request.KweetId, cancellationToken);
-            bool unliked = kweetAggregate.RemoveLike(request.UserId);
-            bool success = await _kweetRepository.UnitOfWork.SaveEntitiesAsync(cancellationToken);
+            UserAggregate user = await _userRepository.FindAsync(request.UserId, cancellationToken);
+            Kweet kweet = await _userRepository.FindKweetAsync(request.KweetId, cancellationToken);
+            bool unliked = user.UnlikeKweet(kweet);
+            bool success = await _userRepository.UnitOfWork.SaveEntitiesAsync(cancellationToken);
             CommandResponse commandResponse = new()
             {
                 Success = unliked && success,

@@ -1,9 +1,10 @@
 ﻿using Kwetter.Services.Common.API.CQRS;
+using Kwetter.Services.KweetService.Domain.AggregatesModel.UserAggregate;
 using MediatR;
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using Kwetter.Services.KweetService.Domain.AggregatesModel.KweetAggregate;
 
 namespace Kwetter.Services.KweetService.API.Application.Commands.CreateKweetCommand
 {
@@ -12,15 +13,15 @@ namespace Kwetter.Services.KweetService.API.Application.Commands.CreateKweetComm
     /// </summary>
     public sealed class CreateKweetCommandHandler : IRequestHandler<CreateKweetCommand, CommandResponse>
     {
-        private readonly IKweetRepository _kweetRepository;
+        private readonly IUserRepository _userRepository;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CreateKweetCommandHandler"/> class.
         /// </summary>
-        /// <param name="kweetRepository">The kweet repository.</param>
-        public CreateKweetCommandHandler(IKweetRepository kweetRepository)
+        /// <param name="userRepository">The user repository.</param>
+        public CreateKweetCommandHandler(IUserRepository userRepository)
         {
-            _kweetRepository = kweetRepository ?? throw new ArgumentNullException(nameof(kweetRepository));
+            _userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
         }
 
         /// <summary>
@@ -31,12 +32,13 @@ namespace Kwetter.Services.KweetService.API.Application.Commands.CreateKweetComm
         /// <returns>Returns the command response.</returns>
         public async Task<CommandResponse> Handle(CreateKweetCommand request, CancellationToken cancellationToken)
         {
-            KweetAggregate kweetAggregate = new(request.KweetId, request.UserId, request.Message);
-            KweetAggregate trackedKweetAggregate = _kweetRepository.Create(kweetAggregate);
-            bool success = await _kweetRepository.UnitOfWork.SaveEntitiesAsync(cancellationToken);
+            UserAggregate user = await _userRepository.FindAsync(request.UserId, cancellationToken);
+            Kweet kweet = user.CreateKweet(request.KweetId, request.Message);
+            kweet = _userRepository.TrackKweet(kweet);
+            bool success = await _userRepository.UnitOfWork.SaveEntitiesAsync(cancellationToken);
             CommandResponse commandResponse = new()
             {
-                Success = trackedKweetAggregate != default && success
+                Success = kweet != default && success
             };
             return commandResponse;
         }

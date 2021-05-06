@@ -1,10 +1,10 @@
 ﻿using Kwetter.Services.Common.API.CQRS;
+using Kwetter.Services.KweetService.Domain.AggregatesModel.UserAggregate;
 using MediatR;
 using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using Kwetter.Services.KweetService.Domain.AggregatesModel.KweetAggregate;
 
 namespace Kwetter.Services.KweetService.API.Application.Commands.LikeKweetCommand
 {
@@ -13,15 +13,15 @@ namespace Kwetter.Services.KweetService.API.Application.Commands.LikeKweetComman
     /// </summary>
     public sealed class LikeKweetCommandHandler : IRequestHandler<LikeKweetCommand, CommandResponse>
     {
-        private readonly IKweetRepository _kweetRepository;
+        private readonly IUserRepository _userRepository;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="LikeKweetCommandHandler"/> class.
         /// </summary>
-        /// <param name="kweetRepository">The kweet repository.</param>
-        public LikeKweetCommandHandler(IKweetRepository kweetRepository)
+        /// <param name="userRepository">The user repository.</param>
+        public LikeKweetCommandHandler(IUserRepository userRepository)
         {
-            _kweetRepository = kweetRepository ?? throw new ArgumentNullException(nameof(kweetRepository));
+            _userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
         }
 
         /// <summary>
@@ -32,9 +32,10 @@ namespace Kwetter.Services.KweetService.API.Application.Commands.LikeKweetComman
         /// <returns>Returns the command response.</returns>
         public async Task<CommandResponse> Handle(LikeKweetCommand request, CancellationToken cancellationToken)
         {
-            KweetAggregate kweetAggregate = await _kweetRepository.FindAsync(request.KweetId, cancellationToken);
-            bool liked = kweetAggregate.AddLike(request.UserId);
-            bool success = await _kweetRepository.UnitOfWork.SaveEntitiesAsync(cancellationToken);
+            UserAggregate user = await _userRepository.FindAsync(request.UserId, cancellationToken);
+            Kweet kweet = await _userRepository.FindKweetAsync(request.KweetId, cancellationToken);
+            bool liked = user.LikeKweet(kweet);
+            bool success = await _userRepository.UnitOfWork.SaveEntitiesAsync(cancellationToken);
             CommandResponse commandResponse = new()
             {
                 Success = liked && success,

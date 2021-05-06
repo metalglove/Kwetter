@@ -1,12 +1,12 @@
-﻿using Kwetter.Services.Common.Domain.Events;
+﻿using Kwetter.Services.Common.Application.Eventing.Integration;
 using System;
 
-namespace Kwetter.Services.KweetService.Domain.AggregatesModel.KweetAggregate.Events
+namespace Kwetter.Services.KweetService.API.Application.DomainEventHandlers.KweetCreated
 {
     /// <summary>
-    /// Represents the <see cref="KweetCreatedDomainEvent"/> class.
+    /// Represents the <see cref="KweetCreatedIntegrationEvent"/> class.
     /// </summary>
-    public sealed class KweetCreatedDomainEvent : DomainEvent
+    public sealed class KweetCreatedIntegrationEvent : IntegrationEvent
     {
         /// <summary>
         /// Gets and sets the kweet id.
@@ -29,13 +29,13 @@ namespace Kwetter.Services.KweetService.Domain.AggregatesModel.KweetAggregate.Ev
         public DateTime CreatedDateTime { get; }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="KweetCreatedDomainEvent"/> class.
+        /// Initializes a new instance of the <see cref="KweetCreatedIntegrationEvent"/> class.
         /// </summary>
         /// <param name="kweetId">The kweet id.</param>
         /// <param name="userId">The user id.</param>
         /// <param name="message">The message.</param>
         /// <param name="createdDateTime">The created date time.</param>
-        public KweetCreatedDomainEvent(Guid kweetId, Guid userId, string message, DateTime createdDateTime)
+        public KweetCreatedIntegrationEvent(Guid kweetId, Guid userId, string message, DateTime createdDateTime)
         {
             KweetId = kweetId;
             UserId = userId;
