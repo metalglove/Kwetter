@@ -41,7 +41,7 @@ namespace Kwetter.Services.Common.Infrastructure.Integration
             while (!_integrationEvents.IsEmpty)
             {
                 _integrationEvents.TryDequeue(out IntegrationEvent @event);
-                _eventBus.Publish(@event, $"Integration.{@event.EventName}");
+                _eventBus.Publish(@event: @event, exchangeName: @event.GetExchangeName(), @event.GetRoutingKey());
                 _logger.LogInformation($"Dequeued & published integration event: {@event.EventName}:{@event.EventId}");
             }
         }
@@ -49,6 +49,9 @@ namespace Kwetter.Services.Common.Infrastructure.Integration
         /// <inheritdoc cref="IIntegrationEventService.EnqueueEvent{TIntegrationEvent}(TIntegrationEvent)"/>
         public void EnqueueEvent<TIntegrationEvent>(TIntegrationEvent @event) where TIntegrationEvent : IntegrationEvent
         {
+            if (string.IsNullOrWhiteSpace(@event.GetExchangeName()))
+                throw new Exception("The exchange name must be set on the integration event.");
+
             _integrationEvents.Enqueue(@event);
             _logger.LogInformation($"Enqueued integration event: {@event.EventName}:{@event.EventId}");
         }

@@ -1,5 +1,4 @@
-﻿using System;
-using Kwetter.Services.UserService.Domain.AggregatesModel.UserAggregate;
+﻿using Kwetter.Services.UserService.Domain.AggregatesModel.UserAggregate;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -27,6 +26,18 @@ namespace Kwetter.Services.UserService.Infrastructure.EntityConfigurations
             // The display name has a maximum length of 64.
             builder.Property(p => p.DisplayName)
                 .HasMaxLength(64);
+
+            // The user name is required.
+            builder.Property(p => p.UserName)
+                .IsRequired(true);
+
+            // The user name has a maximum length of 32.
+            builder.Property(p => p.UserName)
+                .HasMaxLength(32);
+
+            // The user name is unique.
+            builder.HasIndex(p => p.UserName)
+                .IsUnique(true);
 
             // Configures the navigation property for the UserAggregate.
             builder.OwnsOne(p => p.Profile, navigationBuilder =>

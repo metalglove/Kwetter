@@ -352,3 +352,5 @@ MigrationBackup/
 K8s/secrets
 /src/Frontend/Frontend.WebUI/.env*
 /src/docfx_project
+**/appsettings.Development.json
+**/s64-1-vetis-3c3cc8596eec.json

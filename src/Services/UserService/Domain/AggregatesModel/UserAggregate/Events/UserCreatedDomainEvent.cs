@@ -9,17 +9,45 @@ namespace Kwetter.Services.UserService.Domain.AggregatesModel.UserAggregate.Even
     public sealed class UserCreatedDomainEvent : DomainEvent
     {
         /// <summary>
-        /// Gets and sets the user id.
+        /// Gets the user id.
         /// </summary>
-        public Guid UserId { get; init; }
+        public Guid UserId { get; }
+
+        /// <summary>
+        /// Gets the user display name.
+        /// </summary>
+        public string UserDisplayName { get; }
+
+        /// <summary>
+        /// Gets the user name.
+        /// </summary>
+        public string UserName { get; }
+
+        /// <summary>
+        /// Gets the user profile description.
+        /// </summary>
+        public string UserProfileDescription { get; }
+
+        /// <summary>
+        /// Gets the user profile picture url.
+        /// </summary>
+        public string UserProfilePictureUrl { get; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="UserCreatedDomainEvent"/> class.
         /// </summary>
         /// <param name="userId">The user id.</param>
-        public UserCreatedDomainEvent(Guid userId)
+        /// <param name="displayName">The user display name.</param>
+        /// <param name="userName">The user name.</param>
+        /// <param name="description">The user profile description.</param>
+        /// <param name="pictureUrl">The user profile picture url.</param>
+        public UserCreatedDomainEvent(Guid userId, string displayName, string userName, string description, string pictureUrl)
         {
             UserId = userId;
+            UserDisplayName = displayName;
+            UserName = userName;
+            UserProfileDescription = description;
+            UserProfilePictureUrl = pictureUrl;
             EventVersion = 1;
         }
     }

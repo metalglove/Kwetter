@@ -24,22 +24,24 @@
     import KweetComposer from '@/components/KweetComposer.vue';
     import Kweet from '@/components/Kweet.vue';
     import { Kweet as KweetType } from '@/modules/Kweet/Kweet';
+    import QueryResponse from '@/models/cqrs/QueryResponse';
+    import { ElMessage } from 'element-plus';
 
     export default defineComponent({
         name: 'Timeline',
-        data(): { kweets: KweetType[], counter: number, loading: boolean } {
+        data(): { kweets: KweetType[], counter: number, loading: boolean, pageSize: number, pageNumber: number, noMore: boolean } {
             return {
                 kweets: [],
+                pageNumber: 0,
+                pageSize: 10,
                 counter: 0,
-                loading: false
+                loading: false,
+                noMore: false
             };
         },
         computed: {
-            noMore(): boolean {
-                return false;
-            },
             disabled(): boolean {
-                return this.$data.loading || this.noMore;
+                return this.$data.loading || this.$data.noMore;
             }
         },
         components: {
@@ -50,16 +52,30 @@
             addKweet(event: KweetType): void {
                 this.$data.kweets.unshift(event);
             },
-            load(): void {
-                const kweet: KweetType = {
-                    id: `${this.$data.counter += 1}`,
-                    avatar: 'https://avatars.githubusercontent.com/u/24389604?v=4',
-                    createdAt: '0',
-                    liked: false,
-                    message: 'Kwetterwette rHelloKwette rHelloKwetter HelloKwetterHe lloKwetterHel loKwetterHelloKwe tterHelloKwetter HelloKwetter Hello!',
-                    userId: 'some id'
-                };
-                this.$data.kweets.push(kweet);
+            async load(): Promise<void> {
+                if (this.$data.loading == true)
+                    return;
+                this.$data.loading = true;
+                const queryResponse: QueryResponse<KweetType[]> = await this.$timelineService.paginateKweets(this.$data.pageNumber, this.$data.pageSize);
+                if (queryResponse.success) {
+                    if (queryResponse.data.length == 0) {
+                        this.$data.noMore = true;
+                        ElMessage({
+                            message: 'You have reached the end of your timeline!',
+                            type: 'info'
+                        });
+                    } else {
+                        this.$data.kweets.push(...queryResponse.data);
+                        this.$data.pageNumber += 1;
+                    }
+                } else if (queryResponse.errors.includes('Service unreachable.')) {
+                    this.$data.noMore = true;
+                    ElMessage({
+                        message: 'The timeline service is currently unreachable. Try again later.',
+                        type: 'warning'
+                    });
+                }
+                this.$data.loading = false;
             }
         }
     });
@@ -105,6 +121,6 @@
     }
     .infinite-list-item {
         padding: 5px!important;
-        max-height: 100px!important;
+        max-height: 160px!important;
     }
 </style>

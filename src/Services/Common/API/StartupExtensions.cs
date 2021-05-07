@@ -1,13 +1,16 @@
 ﻿using EventStore.Client;
+using FirebaseAdmin;
 using FluentValidation;
+using Google.Apis.Auth.OAuth2;
 using Kwetter.Services.Common.API.Behaviours;
 using Kwetter.Services.Common.Application.Configurations;
+using Kwetter.Services.Common.Application.CQRS;
 using Kwetter.Services.Common.Application.Eventing;
 using Kwetter.Services.Common.Application.Eventing.Bus;
 using Kwetter.Services.Common.Application.Eventing.Integration;
 using Kwetter.Services.Common.Application.Eventing.Store;
+using Kwetter.Services.Common.Application.Interfaces;
 using Kwetter.Services.Common.Infrastructure.Authorization;
-using Kwetter.Services.Common.Infrastructure.Behaviours;
 using Kwetter.Services.Common.Infrastructure.Eventing;
 using Kwetter.Services.Common.Infrastructure.Eventing.Bus;
 using Kwetter.Services.Common.Infrastructure.EventSerializers;
@@ -19,9 +22,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.ObjectPool;
 using Microsoft.Extensions.Options;
-using Microsoft.IdentityModel.Protocols;
-using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Neo4j.Driver;
 using RabbitMQ.Client;
 using System;
 using System.Reflection;
@@ -107,11 +109,10 @@ namespace Kwetter.Services.Common.API
         {
             serviceCollection.AddAutoMapper(mappingAssembly, Assembly.GetAssembly(typeof(StartupExtensions)));
             serviceCollection.AddValidatorsFromAssembly(applicationAssembly);
-            serviceCollection.AddMediatR(c => c.AsScoped(), applicationAssembly, Assembly.GetAssembly(typeof(AnyDomainEventHandler<>)));
+            serviceCollection.AddMediatR(c => c.AsScoped(), applicationAssembly);
             serviceCollection.AddScoped(typeof(IPipelineBehavior<,>), typeof(ScopeBehaviour<,>));
             serviceCollection.AddScoped(typeof(IPipelineBehavior<,>), typeof(ExceptionBehaviour<,>));
             serviceCollection.AddScoped(typeof(IPipelineBehavior<,>), typeof(ValidationBehaviour<,>));
-            serviceCollection.AddScoped(typeof(IPipelineBehavior<,>), typeof(TransactionBehaviour<,>));
             return serviceCollection;
         }
 
@@ -125,7 +126,19 @@ namespace Kwetter.Services.Common.API
             serviceCollection.AddTransient<IEventSerializer, JsonEventSerializer>();
             serviceCollection.AddSingleton<ObjectPoolProvider, DefaultObjectPoolProvider>();
             serviceCollection.AddSingleton<IPooledObjectPolicy<IModel>, RabbitModelPooledObjectPolicy>();
+            serviceCollection.AddSingleton<RabbitConfiguration>();
             serviceCollection.AddSingleton<IEventBus, EventBus>();
+            serviceCollection.AddScoped<IIntegrationEventService, IntegrationEventService>();
+            return serviceCollection;
+        }
+
+        /// <summary>
+        /// Adds the event store to the service collection.
+        /// </summary>
+        /// <param name="serviceCollection">The service collection.</param>
+        /// <returns>Returns the service collection to chain further upon.</returns>
+        public static IServiceCollection AddEventStore(this IServiceCollection serviceCollection)
+        {
             serviceCollection.AddSingleton<EventStoreClient>((serviceProvider) =>
             {
                 EventStoreConfiguration eventStoreConfiguration = serviceProvider.GetRequiredService<IOptions<EventStoreConfiguration>>().Value;
@@ -133,7 +146,25 @@ namespace Kwetter.Services.Common.API
                 return new EventStoreClient(settings);
             });
             serviceCollection.AddScoped<IEventStore, Infrastructure.Eventing.Store.EventStore>();
-            serviceCollection.AddScoped<IIntegrationEventService, IntegrationEventService>();
+            serviceCollection.AddScoped(typeof(INotificationHandler<>), typeof(AnyDomainEventHandler<>));
+            return serviceCollection;
+        }
+
+        /// <summary>
+        /// Adds theNeo4j driver to the service collection.
+        /// </summary>
+        /// <param name="serviceCollection">The service collection.</param>
+        /// <param name="configuration">The configuration.</param>
+        /// <returns>Returns the service collection to chain further upon.</returns>
+        public static IServiceCollection AddNeo4jDriver(this IServiceCollection serviceCollection, IConfiguration configuration)
+        {
+            serviceCollection.AddSingleton(GraphDatabase.Driver(
+                configuration["NEO4J:Host"],
+                AuthTokens.Basic(
+                    configuration["NEO4J:User"],
+                    configuration["NEO4J:Password"]
+                )
+            ));
             return serviceCollection;
         }
 
@@ -145,17 +176,31 @@ namespace Kwetter.Services.Common.API
         /// <returns>Returns the service collection to chain further upon.</returns>
         public static IServiceCollection AddDefaultAuthentication(this IServiceCollection serviceCollection, IConfiguration configuration)
         {
-            serviceCollection.AddTransient<IConfigurationRetriever<JsonWebKeySet>, JsonWebKeySetRetriever>();
-            serviceCollection.AddSingleton<IConfigurationManager<JsonWebKeySet>>((a) =>
+            FirebaseApp firebaseApp = FirebaseApp.Create(new AppOptions()
             {
-                IConfigurationRetriever<JsonWebKeySet> retriever = a.GetRequiredService<IConfigurationRetriever<JsonWebKeySet>>();
-                return new ConfigurationManager<JsonWebKeySet>($"{configuration["Authorization:JwksUri"]}", retriever); ;
+                Credential = GoogleCredential.FromFile(configuration["Authorization:Credential"])
             });
-
+            serviceCollection.AddSingleton(firebaseApp);
+            serviceCollection.AddSingleton<ITokenVerifier, GoogleTokenVerifier>();
             serviceCollection
                 .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddScheme<JwtBearerOptions, JwtTokenAuthenticationHandler>(JwtBearerDefaults.AuthenticationScheme, o => { });
+            return serviceCollection;
+        }
 
+        /// <summary>
+        /// Adds the integration event handler as scoped to the service collection.
+        /// </summary>
+        /// <typeparam name="TEventHandler">The event handler type.</typeparam>
+        /// <typeparam name="TEvent">The event type.</typeparam>
+        /// <param name="serviceCollection">The service collection.</param>
+        /// <returns>Returns the service collection to chain further upon.</returns>
+        public static IServiceCollection AddIntegrationEventHandler<TEventHandler, TEvent>(this IServiceCollection serviceCollection)
+            where TEventHandler : KwetterEventHandler<TEvent>
+            where TEvent : IncomingIntegrationEvent
+        {
+            serviceCollection.AddScoped<TEventHandler>();
+            serviceCollection.AddScoped<IRequestHandler<TEvent,CommandResponse>, IntegrationEventHandler<TEventHandler, TEvent>>();
             return serviceCollection;
         }
     }

@@ -1,0 +1,27 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+    <Configurations>Debug;Release;Services Build;Services Release</Configurations>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="StackExchange.Redis.Extensions.AspNetCore" Version="7.0.0" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.1.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Common\API\Kwetter.Services.Common.API.csproj" />
+    <ProjectReference Include="..\Infrastructure\Kwetter.Services.TimelineService.Infrastructure.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Application\Commands\" />
+    <Folder Include="Application\IntegrationEventHandlers\KweetLiked\" />
+    <Folder Include="Application\IntegrationEventHandlers\KweetUnliked\" />
+    <Folder Include="Application\IntegrationEventHandlers\KweetCreated\" />
+    <Folder Include="Application\IntegrationEventHandlers\UserUnfollowed\" />
+    <Folder Include="Application\IntegrationEventHandlers\UserFollowed\" />
+  </ItemGroup>
+
+</Project>

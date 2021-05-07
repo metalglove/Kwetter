@@ -9,12 +9,12 @@ namespace Kwetter.Services.UserService.Domain.AggregatesModel.UserAggregate.Even
     public sealed class UserProfilePictureUrlUpdatedDomainEvent : DomainEvent
     {
         /// <summary>
-        /// Gets and sets the user id.
+        /// Gets the user id.
         /// </summary>
         public Guid UserId { get; }
 
         /// <summary>
-        /// Gets and sets the user profile picture url.
+        /// Gets the user profile picture url.
         /// </summary>
         public string ProfilePictureUrl { get; }
 

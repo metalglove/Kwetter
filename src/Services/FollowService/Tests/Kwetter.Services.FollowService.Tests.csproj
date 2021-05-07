@@ -22,6 +22,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\AuthorizationService\Infrastructure\Kwetter.Services.AuthorizationService.Infrastructure.csproj" />
     <ProjectReference Include="..\..\Common\API\Kwetter.Services.Common.API.csproj" />
     <ProjectReference Include="..\..\Common\Tests\Kwetter.Services.Common.Tests.csproj" />
     <ProjectReference Include="..\API\Kwetter.Services.FollowService.API.csproj" />

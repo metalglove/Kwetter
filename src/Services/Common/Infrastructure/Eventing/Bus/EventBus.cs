@@ -1,9 +1,11 @@
-﻿using Kwetter.Services.Common.Application.Configurations;
+﻿using Kwetter.Services.Common.Application.CQRS;
 using Kwetter.Services.Common.Application.Eventing;
 using Kwetter.Services.Common.Application.Eventing.Bus;
 using Kwetter.Services.Common.Domain.Events;
-using Microsoft.Extensions.ObjectPool;
-using Microsoft.Extensions.Options;
+using Kwetter.Services.Common.Infrastructure.RabbitMq;
+using MediatR;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using System;
@@ -17,100 +19,97 @@ namespace Kwetter.Services.Common.Infrastructure.Eventing.Bus
     /// </summary>
     public sealed class EventBus : IEventBus
     {
-        private readonly ObjectPool<IModel> _channelPool;
-        private readonly ServiceConfiguration _serviceConfiguration;
+        private readonly ILogger<EventBus> _logger;
+        private readonly RabbitConfiguration _rabbitConfiguration;
         private readonly IEventSerializer _eventSerializer;
-        private const string KwetterExchange = "KwetterExchange";
-        private const string DeadLetterExchange = "DeadLetterExchange";
-        private const string DeadLetterQueue = "DeadLetterQueue";
+        private readonly IServiceScopeFactory _serviceScopeFactory;
+        private readonly Dictionary<string, Action> _unsubscribeDictionary;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="EventBus"/> class.
         /// </summary>
-        /// <param name="serviceConfigurationOptions">The service configuration options.</param>
-        /// <param name="objectPolicy">The object pooling policy.</param>
+        /// <param name="logger">The logger.</param>
+        /// <param name="rabbitConfiguration">The rabbit configuration.</param>
         /// <param name="eventSerializer">The event serializer.</param>
+        /// <param name="serviceScopeFactory">The service scope factory.</param>
         public EventBus(
-            IOptions<ServiceConfiguration> serviceConfigurationOptions,
-            IPooledObjectPolicy<IModel> objectPolicy, 
-            IEventSerializer eventSerializer)
+            ILogger<EventBus> logger,
+            RabbitConfiguration rabbitConfiguration, 
+            IEventSerializer eventSerializer,
+            IServiceScopeFactory serviceScopeFactory)
         {
-            _channelPool = new DefaultObjectPool<IModel>(objectPolicy ?? throw new ArgumentNullException(nameof(objectPolicy)), Environment.ProcessorCount * 2);
-            _serviceConfiguration = serviceConfigurationOptions.Value ?? throw new ArgumentNullException(nameof(serviceConfigurationOptions));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _rabbitConfiguration = rabbitConfiguration ?? throw new ArgumentNullException(nameof(rabbitConfiguration));
             _eventSerializer = eventSerializer ?? throw new ArgumentNullException(nameof(eventSerializer));
-
-            // Declares the dead letter exchange and queue, for when events fail to successfully get processed.
-            IModel channel = _channelPool.Get();
-            channel.ExchangeDeclare(DeadLetterExchange, ExchangeType.Fanout, durable: true);
-            channel.ExchangeDeclare(KwetterExchange, ExchangeType.Direct, durable: true);
-            channel.QueueDeclare(DeadLetterQueue, durable: true, exclusive: false, autoDelete: false, arguments: null);
-            channel.QueueBind(DeadLetterQueue, DeadLetterExchange, "");
-            _channelPool.Return(channel);
+            _serviceScopeFactory = serviceScopeFactory ?? throw new ArgumentNullException(nameof(serviceScopeFactory));
+            _unsubscribeDictionary = new Dictionary<string, Action>();
         }
 
-        /// <inheritdoc cref="IEventPublisher.Publish{TEvent}(TEvent,string)"/>
-        public void Publish<TEvent>(TEvent @event, string queueName) where TEvent : Event
+        /// <inheritdoc cref="IEventPublisher.Publish{TEvent}(TEvent, string, string)"/>
+        public void Publish<TEvent>(TEvent @event, string exchangeName, string routingKey) where TEvent : Event
         {
             if (@event is null)
                 throw new ArgumentNullException(nameof(@event));
-            string actualQueueName = $"{_serviceConfiguration.ShortTitle}.{queueName}";
-            IModel channel = GetChannel(actualQueueName);
+            if (routingKey is null)
+                throw new ArgumentNullException(nameof(routingKey));
+            if (string.IsNullOrWhiteSpace(exchangeName))
+                throw new ArgumentNullException(nameof(exchangeName));
+
+            IModel channel = _rabbitConfiguration.GetChannel();
             // NOTE: type casted to object to ensure no type issues when serializing.
             ReadOnlyMemory<byte> message = _eventSerializer.Serialize<object>(@event);
             IBasicProperties basicProperties = channel.CreateBasicProperties();
             basicProperties.DeliveryMode = 2;
-            channel.BasicPublish(KwetterExchange, actualQueueName, basicProperties: basicProperties, body: message);
-            _channelPool.Return(channel);
+            channel.BasicPublish(exchangeName, routingKey: routingKey, basicProperties: basicProperties, body: message);
+            _rabbitConfiguration.ReturnChannel(channel);
         }
 
-        /// <inheritdoc cref="IEventBus.Subscribe{TEvent,TEventHandler}(string,TEventHandler)"/>
-        public void Subscribe<TEvent, TEventHandler>(string queueName, TEventHandler eventHandler) 
+        /// <inheritdoc cref="IEventBus.Subscribe{TEvent,TEventHandler}(string)"/>
+        public void Subscribe<TEvent, TEventHandler>(string queueName) 
             where TEvent : Event 
             where TEventHandler : IEventHandler<TEvent>
         {
-            if (eventHandler is null)
-                throw new ArgumentNullException(nameof(eventHandler));
-            IModel channel = GetChannel(queueName);
+            if (string.IsNullOrWhiteSpace(queueName))
+                throw new ArgumentNullException(nameof(queueName));
+
+            IModel channel = _rabbitConfiguration.GetChannel();
             AsyncEventingBasicConsumer eventingBasicConsumer = new(channel);
             eventingBasicConsumer.Received += async (sender, eventArgs) =>
             {
                 try
                 {
                     TEvent @event = _eventSerializer.Deserialize<TEvent>(eventArgs.Body);
-                    await eventHandler.HandleAsync(@event, CancellationToken.None);
-                    channel.BasicAck(eventArgs.DeliveryTag, false);
+                    using (var scope = _serviceScopeFactory.CreateScope())
+                    {
+                        IMediator mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
+                        CommandResponse response = await mediator.Send(@event, CancellationToken.None).ConfigureAwait(true) as CommandResponse;
+                        if (response.Success)
+                            channel.BasicAck(eventArgs.DeliveryTag, false);
+                        else
+                            channel.BasicNack(eventArgs.DeliveryTag, false, false);
+                    }
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
+                    if (ex is InvalidOperationException)
+                    {
+                        _logger.LogError($"Queue: [{queueName}]-[{typeof(TEvent).Name}] failed to deserialize.\n{ex.Message}");
+                    }
                     channel.BasicNack(eventArgs.DeliveryTag, false, false);
                 }
             };
             string tag = channel.BasicConsume(queueName, false, eventingBasicConsumer);
-            eventHandler.UnsubscribeEventHandler += (sender, eventArgs) =>
-            {
-                channel.BasicCancel(tag);
-            };
-            _channelPool.Return(channel);
+            _unsubscribeDictionary.Add(queueName, () => channel.BasicCancel(tag));
+            _rabbitConfiguration.ReturnChannel(channel);
         }
 
-        /// <inheritdoc cref="IEventBus.Unsubscribe{TEvent,TEventHandler}(TEventHandler)"/>
-        public void Unsubscribe<TEvent, TEventHandler>(TEventHandler eventHandler)
-            where TEvent : Event
-            where TEventHandler : IEventHandler<TEvent>
+        /// <inheritdoc cref="IEventBus.Unsubscribe(string)"/>
+        public void Unsubscribe(string queueName)
         {
-            eventHandler.Unsubscribe();
-        }
-
-        private IModel GetChannel(string queueName)
-        {
-            IModel channel = _channelPool.Get();
-            Dictionary<string, object> arguments = new()
+            if (_unsubscribeDictionary.TryGetValue(queueName, out Action unsubscribeAction))
             {
-                {"x-dead-letter-exchange", DeadLetterExchange}
-            };
-            channel.QueueDeclare(queue: queueName, durable: true, exclusive: false, autoDelete: false, arguments: arguments);
-            channel.QueueBind(queueName, KwetterExchange, queueName);
-            return channel;
+                unsubscribeAction();
+            }
         }
     }
 }

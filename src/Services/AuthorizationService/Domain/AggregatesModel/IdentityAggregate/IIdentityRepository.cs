@@ -26,6 +26,14 @@ namespace Kwetter.Services.AuthorizationService.Domain.AggregatesModel.IdentityA
         ValueTask<IdentityAggregate> FindAsync(Guid userId, CancellationToken cancellationToken);
 
         /// <summary>
+        /// Finds the identity aggregate with the given user name asynchronously.
+        /// </summary>
+        /// <param name="userName">The user name.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns>Returns the identity with the given user name.</returns>
+        Task<IdentityAggregate> FindByUserNameAsync(string userName, CancellationToken cancellationToken);
+
+        /// <summary>
         /// Finds the identity aggregate with the given open id asynchronously.
         /// </summary>
         /// <param name="openId">The open id.</param>

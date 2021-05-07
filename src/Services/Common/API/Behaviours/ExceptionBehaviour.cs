@@ -1,5 +1,5 @@
 ﻿using FluentValidation;
-using Kwetter.Services.Common.API.CQRS;
+using Kwetter.Services.Common.Application.CQRS;
 using MediatR;
 using Microsoft.Extensions.Logging;
 using System;

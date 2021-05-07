@@ -1,13 +1,21 @@
-import QueryResponse from "@/models/cqrs/QueryResponse";
-import AuthorizationDto from "@/models/dtos/AuthorizationDto";
+import CommandResponse from '@/models/cqrs/CommandResponse';
+import QueryResponse from '@/models/cqrs/QueryResponse';
+import VerifyUserNameUniquenessDto from '@/models/dtos/VerifyUserNameUniquenessDto';
 
 /**
  * Represents the IAuthorizationService interface.
  */
 export default interface IAuthorizationService {
     /**
-     * Authorizes the client using the authorization_code flow.
-     * @param code The authorization code.
+     * Request claims for a new user from the authorization service.
+     * @param idToken The id token.
+     * @param userName The user name.
      */
-    AuthorizeCode(code: string): Promise<QueryResponse<AuthorizationDto>>;
+    SetClaims(idToken: string, userName: string): Promise<CommandResponse>;
+
+    /**
+     * Verifies the user name uniqueness from the authorization service.
+     * @param userName The user name.
+     */
+    VerifyUserNameUniqueness(userName: string): Promise<QueryResponse<VerifyUserNameUniquenessDto>>
 }

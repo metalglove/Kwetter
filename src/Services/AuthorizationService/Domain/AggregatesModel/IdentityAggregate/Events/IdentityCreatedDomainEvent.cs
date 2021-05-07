@@ -24,6 +24,11 @@ namespace Kwetter.Services.AuthorizationService.Domain.AggregatesModel.IdentityA
         public string GivenName { get; }
 
         /// <summary>
+        /// Gets and sets the user name.
+        /// </summary>
+        public string UserName { get; }
+
+        /// <summary>
         /// Gets and sets the email.
         /// </summary>
         public string Email { get; }
@@ -39,13 +44,15 @@ namespace Kwetter.Services.AuthorizationService.Domain.AggregatesModel.IdentityA
         /// <param name="userId">The user id.</param>
         /// <param name="openId">The OpenId identifier.</param>
         /// <param name="givenName">The given name.</param>
+        /// <param name="userName">The user name.</param>
         /// <param name="email">The email.</param>
         /// <param name="profilePictureUrl">The profile picture url.</param>
-        public IdentityCreatedDomainEvent(Guid userId, string openId, string givenName, string email, string profilePictureUrl)
+        public IdentityCreatedDomainEvent(Guid userId, string openId, string givenName, string userName, string email, string profilePictureUrl)
         {
             UserId = userId;
             OpenId = openId;
             GivenName = givenName;
+            UserName = userName;
             Email = email;
             ProfilePictureUrl = profilePictureUrl;
             EventVersion = 1;

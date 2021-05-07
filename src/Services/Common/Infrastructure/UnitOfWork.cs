@@ -1,9 +1,14 @@
-﻿using Kwetter.Services.Common.Domain.Persistence;
+﻿using Kwetter.Services.Common.Domain;
+using Kwetter.Services.Common.Domain.Events;
+using Kwetter.Services.Common.Domain.Persistence;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -53,7 +58,19 @@ namespace Kwetter.Services.Common.Infrastructure
             //    side effects from the domain event handlers which are using the same DbContext with "InstancePerLifetimeScope" or "scoped" lifetime
             // B) Right AFTER committing data (EF SaveChanges) into the DB will make multiple transactions. 
             // You will need to handle eventual consistency and compensatory actions in case of failures in any of the Handlers. 
-            await _mediator.DispatchDomainEventsAsync(this, cancellationToken);
+            IEnumerable<EntityEntry<Entity>> domainEntities = ChangeTracker
+                .Entries<Entity>()
+                .Where(x => x.Entity.DomainEvents != null && x.Entity.DomainEvents.Any());
+
+            List<DomainEvent> domainEvents = domainEntities
+                .SelectMany(x => x.Entity.DomainEvents)
+                .ToList();
+
+            domainEntities.ToList()
+                .ForEach(entity => entity.Entity.ClearDomainEvents());
+
+            foreach (DomainEvent domainEvent in domainEvents)
+                await _mediator.Publish(domainEvent, cancellationToken);
 
             // After executing this line all the changes (from the Command Handler and Domain Event Handlers) 
             // performed through the DbContext will be committed
@@ -65,10 +82,8 @@ namespace Kwetter.Services.Common.Infrastructure
         /// <inheritdoc cref="IAggregateUnitOfWork.BeginTransactionAsync(CancellationToken)"/>
         public async Task<Guid> StartTransactionAsync(CancellationToken cancellationToken = default)
         {
-            // TODO: Check whether this is good... should be scoped service lifetime, but still..
-            if (CurrentTransaction != null) 
-                return CurrentTransaction.TransactionId;
-
+            if (CurrentTransaction is not null)
+                throw new InvalidOperationException($"Attempted to start a transaction while another is active.");
             CurrentTransaction = await Database.BeginTransactionAsync(cancellationToken);
             _logger.LogInformation($"Started the database transaction {CurrentTransaction.TransactionId} for {GetType().Name}");
             return CurrentTransaction.TransactionId;
@@ -78,7 +93,7 @@ namespace Kwetter.Services.Common.Infrastructure
         public async Task CommitTransactionAsync(CancellationToken cancellationToken = default)
         {
             if (CurrentTransaction is null)
-                throw new InvalidOperationException($"Transaction is null.");
+                throw new InvalidOperationException($"Attempted to commit a transaction while there is no active transaction.");
             try
             {
                 await SaveChangesAsync(cancellationToken);

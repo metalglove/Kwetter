@@ -15,11 +15,11 @@ namespace Kwetter.Services.FollowService.Infrastructure.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .UseIdentityColumns()
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
-                .HasAnnotation("ProductVersion", "5.0.4");
+                .HasAnnotation("ProductVersion", "5.0.5")
+                .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("Kwetter.Services.FollowService.Domain.AggregatesModel.FollowAggregate.FollowAggregate", b =>
+            modelBuilder.Entity("Kwetter.Services.FollowService.Domain.AggregatesModel.UserAggregate.Follow", b =>
                 {
                     b.Property<Guid>("FollowingId")
                         .HasColumnType("uniqueidentifier");
@@ -32,7 +32,59 @@ namespace Kwetter.Services.FollowService.Infrastructure.Migrations
 
                     b.HasKey("FollowingId", "FollowerId");
 
-                    b.ToTable("Follows");
+                    b.HasIndex("FollowerId");
+
+                    b.ToTable("Follow");
+                });
+
+            modelBuilder.Entity("Kwetter.Services.FollowService.Domain.AggregatesModel.UserAggregate.UserAggregate", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("UserDisplayName")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("nvarchar(64)");
+
+                    b.Property<string>("UserName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserProfilePictureUrl")
+                        .IsRequired()
+                        .HasMaxLength(512)
+                        .HasColumnType("nvarchar(512)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("Kwetter.Services.FollowService.Domain.AggregatesModel.UserAggregate.Follow", b =>
+                {
+                    b.HasOne("Kwetter.Services.FollowService.Domain.AggregatesModel.UserAggregate.UserAggregate", "Follower")
+                        .WithMany("Followings")
+                        .HasForeignKey("FollowerId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Kwetter.Services.FollowService.Domain.AggregatesModel.UserAggregate.UserAggregate", "Following")
+                        .WithMany("Followers")
+                        .HasForeignKey("FollowingId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Follower");
+
+                    b.Navigation("Following");
+                });
+
+            modelBuilder.Entity("Kwetter.Services.FollowService.Domain.AggregatesModel.UserAggregate.UserAggregate", b =>
+                {
+                    b.Navigation("Followers");
+
+                    b.Navigation("Followings");
                 });
 #pragma warning restore 612, 618
         }

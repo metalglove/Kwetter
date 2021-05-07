@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Kwetter.Services.Common.API.CQRS;
-using Kwetter.Services.FollowService.Domain.AggregatesModel.FollowAggregate;
+using Kwetter.Services.Common.Application.CQRS;
+using Kwetter.Services.FollowService.Domain.AggregatesModel.UserAggregate;
 using MediatR;
 
 namespace Kwetter.Services.FollowService.API.Application.Commands.CreateFollowCommand
@@ -12,15 +12,15 @@ namespace Kwetter.Services.FollowService.API.Application.Commands.CreateFollowCo
     /// </summary>
     public sealed class CreateFollowCommandHandler : IRequestHandler<CreateFollowCommand, CommandResponse>
     {
-        private readonly IFollowRepository _followRepository;
+        private readonly IUserRepository _userRepository;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CreateFollowCommandHandler"/> class.
         /// </summary>
-        /// <param name="followRepository">The follow repository.</param>
-        public CreateFollowCommandHandler(IFollowRepository followRepository)
+        /// <param name="userRepository">The user repository.</param>
+        public CreateFollowCommandHandler(IUserRepository userRepository)
         {
-            _followRepository = followRepository ?? throw new ArgumentNullException(nameof(followRepository));
+            _userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
         }
 
         /// <summary>
@@ -31,14 +31,14 @@ namespace Kwetter.Services.FollowService.API.Application.Commands.CreateFollowCo
         /// <returns>Returns the command response.</returns>
         public async Task<CommandResponse> Handle(CreateFollowCommand request, CancellationToken cancellationToken)
         {
-            FollowAggregate followAggregate = new(request.FollowingId, request.FollowerId);
-            FollowAggregate trackedFollowerAggregate = _followRepository.Create(followAggregate);
-            bool success = await _followRepository.UnitOfWork.SaveEntitiesAsync(cancellationToken);
-            CommandResponse commandResponse = new()
+            UserAggregate userAggregate = await _userRepository.FindAsync(request.FollowerId, cancellationToken);
+            UserAggregate otherUserAggregate = await _userRepository.FindAsync(request.FollowingId, cancellationToken);
+            bool followed = userAggregate.Follow(otherUserAggregate);
+            bool success = await _userRepository.UnitOfWork.SaveEntitiesAsync(cancellationToken);
+            return new CommandResponse()
             {
-                Success = trackedFollowerAggregate != default && success
+                Success = followed && success
             };
-            return commandResponse;
         }
     }
 }

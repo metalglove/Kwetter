@@ -32,11 +32,15 @@ namespace Kwetter.Services.AuthorizationService.API.Application.DomainEventHandl
         /// <returns>Returns an awaitable task.</returns>
         public Task Handle(IdentityCreatedDomainEvent notification, CancellationToken cancellationToken)
         {
-            _integrationEventService.EnqueueEvent(new IdentityCreatedIntegrationEvent(
+            IdentityCreatedIntegrationEvent identityCreatedIntegrationEvent = new(
                 userId: notification.UserId,
                 givenName: notification.GivenName,
+                userName: notification.UserName,
                 profilePictureUrl: notification.ProfilePictureUrl
-                ));
+            );
+            identityCreatedIntegrationEvent.SetExchangeName("AuthorizationExchange");
+            identityCreatedIntegrationEvent.SetRoutingKey("IdentityCreatedIntegrationEvent");
+            _integrationEventService.EnqueueEvent(identityCreatedIntegrationEvent);
             return Task.CompletedTask;
         }
     }

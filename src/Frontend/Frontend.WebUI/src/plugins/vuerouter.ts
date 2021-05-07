@@ -1,10 +1,34 @@
 import { createRouter, createWebHashHistory, Router, RouteRecordRaw } from 'vue-router';
-import { User } from '@/modules/User/User';
-import { getItem } from '@/utils/LocalStorageUtilities';
+import { User, toUserFromIdToken } from '@/modules/User/User';
+import firebase from 'firebase/app';
+import 'firebase/auth';
 
 export type KwetterRoute = {
     name: string,
     props?: Record<string, any>
+}
+
+async function isLoggedIn(): Promise<boolean> {
+    try {
+        await new Promise((resolve, reject) =>
+            firebase.auth().onAuthStateChanged(
+                user => {
+                    if (user) {
+                        // User is signed in.
+                        resolve(user);
+                    } else {
+                        // No user is signed in.
+                        reject('no user logged in');
+                    }
+                },
+                // Prevent console error
+                error => reject(error)
+            )
+        )
+        return true;
+    } catch (error) {
+        return false;
+    }
 }
 
 export function createKwetterRouter(routes: KwetterRoute[]): Router {
@@ -17,13 +41,20 @@ export function createKwetterRouter(routes: KwetterRoute[]): Router {
         routes: []
     });
 
-    router.beforeEach((to, from, next) => {
-        const publicViews = ['/', '/Home'];
+    router.beforeEach(async (to, from, next) => {
+        const publicViews = ['/', '/Home', '/Register'];
         const authRequired = !publicViews.includes(to.path);
-        const loggedIn = getItem<User | null>('user');
-        // If not, redirect the user to the home view.
-        if (authRequired && loggedIn == null) {
+        if (!authRequired)
+            return next();
+        const loggedIn = await isLoggedIn();
+        // If not logged in, redirect the user to the home view.
+        if (!loggedIn) {
             return next('/Home');
+        }
+        const token = await firebase.auth().currentUser!.getIdToken();
+        const user: User = toUserFromIdToken(token);
+        if (user.userId == null) {
+            return next('/Register');
         }
         return next();
     });

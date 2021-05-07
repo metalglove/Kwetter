@@ -31,6 +31,15 @@ namespace Kwetter.Services.AuthorizationService.Infrastructure.EntityConfigurati
             builder.Property(p => p.GivenName)
                 .IsRequired(true);
 
+            // The given name is required.
+            builder.Property(p => p.UserName)
+                .HasMaxLength(32)
+                .IsRequired(true);
+
+            // Ensures that the user name is unqiue.
+            builder.HasIndex(p => p.UserName)
+                .IsUnique(true);
+
             // The profi.e picture url is required.
             builder.Property(p => p.ProfilePictureUrl)
                 .IsRequired(true);

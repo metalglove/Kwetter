@@ -1,10 +1,10 @@
-﻿using Kwetter.Services.Common.API.CQRS;
+﻿using Kwetter.Services.Common.Application.CQRS;
 using Kwetter.Services.Common.Tests;
 using Kwetter.Services.KweetService.API;
 using Kwetter.Services.KweetService.API.Application.Commands.CreateKweetCommand;
 using Kwetter.Services.KweetService.API.Application.Commands.LikeKweetCommand;
 using Kwetter.Services.KweetService.API.Controllers;
-using Kwetter.Services.KweetService.Domain.AggregatesModel.KweetAggregate;
+using Kwetter.Services.KweetService.Domain.AggregatesModel.UserAggregate;
 using Kwetter.Services.KweetService.Infrastructure;
 using Kwetter.Services.KweetService.Infrastructure.Repositories;
 using MediatR;
@@ -22,22 +22,23 @@ namespace Kwetter.Services.KweetService.Tests.Commands
     {
         public ServiceProvider ServiceProvider { get; set; }
         public IMediator Mediator { get; set; }
-        public Guid UserId { get; set; }
         public Guid KweetId { get; set; }
         public KweetController KweetController { get; set; }
         
         [TestInitialize]
         public async Task Initialize()
         {
-            ServiceProvider = InitializeServices<KweetDbContext, KweetDatabaseFactory, KweetRepository, KweetAggregate>(typeof(Startup), typeof(CreateKweetCommand), "KweetService");
+            ServiceProvider = InitializeServiceProvider<KweetDbContext, KweetDatabaseFactory, UserRepository, UserAggregate>(typeof(Startup), typeof(CreateKweetCommand), "KweetService");
             Mediator = ServiceProvider.GetRequiredService<IMediator>();
-            KweetController = new KweetController(Mediator);
-            
-            UserId = Guid.NewGuid();
+            KweetController = CreateAuthorizedController<KweetController>(Mediator);
+            IUserRepository userRepository = ServiceProvider.GetRequiredService<IUserRepository>();
+            UserAggregate user = new(AuthorizedUserId, "kwetter user", AuthorizedUserName, "https://icon-library.net/images/default-user-icon/default-user-icon-8.jpg");
+            userRepository.Create(user);
+            await userRepository.UnitOfWork.SaveChangesAsync();
             KweetId = Guid.NewGuid();
             CreateKweetCommand createKweetCommand = new()
             {
-                UserId = UserId,
+                UserId = AuthorizedUserId,
                 KweetId = KweetId,
                 Message = "Hello world!"
             };
@@ -57,7 +58,7 @@ namespace Kwetter.Services.KweetService.Tests.Commands
             // Arrange
             LikeKweetCommand likeKweetCommand = new()
             {
-                UserId = UserId,
+                UserId = AuthorizedUserId,
                 KweetId = KweetId
             };
             
@@ -69,7 +70,7 @@ namespace Kwetter.Services.KweetService.Tests.Commands
         }
         
         [TestMethod]
-        public async Task Should_Fail_To_Like_Kweet_Through_LikeKweetCommand_Due_To_Empty_UserId()
+        public async Task Should_Fail_To_Like_Kweet_Through_LikeKweetCommand_Due_To_Unauthorized()
         {
             // Arrange
             LikeKweetCommand likeKweetCommand = new()
@@ -80,12 +81,12 @@ namespace Kwetter.Services.KweetService.Tests.Commands
                 
             // Act
             IActionResult actionResult = await KweetController.LikeAsync(likeKweetCommand);
-            
+
             // Assert
-            BadRequestObjectResult badRequestObjectResult = XAssert.IsType<BadRequestObjectResult>(actionResult);
-            CommandResponse commandResponse = XAssert.IsType<CommandResponse>(badRequestObjectResult.Value);
+            UnauthorizedObjectResult unauthorizedObjectResult = XAssert.IsType<UnauthorizedObjectResult>(actionResult);
+            CommandResponse commandResponse = XAssert.IsType<CommandResponse>(unauthorizedObjectResult.Value);
             XAssert.False(commandResponse.Success);
-            XAssert.Contains("The user id can not be empty.", commandResponse.Errors);
+            XAssert.Contains("The user id claim and provided user id are not the same.", commandResponse.Errors);
         }
         
         [TestMethod]
@@ -94,7 +95,7 @@ namespace Kwetter.Services.KweetService.Tests.Commands
             // Arrange
             LikeKweetCommand likeKweetCommand = new()
             {
-                UserId = UserId,
+                UserId = AuthorizedUserId,
                 KweetId = Guid.Empty
             };
             
@@ -114,7 +115,7 @@ namespace Kwetter.Services.KweetService.Tests.Commands
             // Arrange
             LikeKweetCommand likeKweetCommand = new()
             {
-                UserId = UserId,
+                UserId = AuthorizedUserId,
                 KweetId = Guid.NewGuid()
             };
             
@@ -134,7 +135,7 @@ namespace Kwetter.Services.KweetService.Tests.Commands
             // Arrange
             LikeKweetCommand likeKweetCommand = new()
             {
-                UserId = UserId,
+                UserId = AuthorizedUserId,
                 KweetId = KweetId
             };
             CommandResponse _ = await Mediator.Send(likeKweetCommand);

@@ -1,6 +1,8 @@
-import IHttpCommunicator from "@/interfaces/IHttpCommunicator";
-import { User } from "@/modules/User/User";
-import { getItem } from "./LocalStorageUtilities";
+import IHttpCommunicator from '@/interfaces/IHttpCommunicator';
+import firebase from 'firebase/app';
+import 'firebase/auth';
+import Response from '@/models/cqrs/Response';
+import serviceUnreachableResponse from '@/models/cqrs/ServiceUnreachableResponse';
 
 /**
  * Represents the HttpCommunicator class.
@@ -8,51 +10,56 @@ import { getItem } from "./LocalStorageUtilities";
  */
 export default class HttpCommunicator implements IHttpCommunicator {
     private _gatewayUrl: String;
+    private _firebaseApp: firebase.app.App;
 
     /**
      * Initializes a new instance of the HttpCommunicator class.
      */
-    constructor(gatewayUrl: string) {
+    constructor(gatewayUrl: string, firebaseApp: firebase.app.App) {
         this._gatewayUrl = gatewayUrl;
+        this._firebaseApp = firebaseApp;
     }
 
-    get<TResponse>(path: string): Promise<TResponse> {
+    get<TResponse extends Response>(path: string): Promise<TResponse> {
         return this.fetchAsync('GET', path);
     }
 
-    getWithBody<TRequest, TResponse>(path: string, body: TRequest): Promise<TResponse> {
+    getWithBody<TRequest, TResponse extends Response>(path: string, body: TRequest): Promise<TResponse> {
         return this.fetchAsync('GET', path, body);
     }
 
-    post<TRequest, TResponse>(path: string, body: TRequest): Promise<TResponse> {
+    post<TRequest, TResponse extends Response>(path: string, body: TRequest): Promise<TResponse> {
         return this.fetchAsync('POST', path, body);
     }
 
-    put<TRequest, TResponse>(path: string, body: TRequest): Promise<TResponse> {
+    put<TRequest, TResponse extends Response>(path: string, body: TRequest): Promise<TResponse> {
         return this.fetchAsync('PUT', path, body);
     }
 
-    delete<TRequest, TResponse>(path: string, body: TRequest): Promise<TResponse> {
+    delete<TRequest, TResponse extends Response>(path: string, body: TRequest): Promise<TResponse> {
         return this.fetchAsync('DELETE', path, body);
     }
 
-    private async fetchAsync<TRequest, TResponse>(method: string, path: string, body?: TRequest | unknown): Promise<TResponse> {
+    private async fetchAsync<TRequest, TResponse extends Response>(method: string, path: string, body?: TRequest | unknown): Promise<TResponse> {
         const request: RequestInit = {
             method: method,
-            headers: this.getHeaders()
+            headers: await this.getHeaders()
         };
         if (body)
             request.body = JSON.stringify(body);
-        const response = await fetch(`${this._gatewayUrl}${path}`, request);
-        return await response.json() as TResponse;
+        return fetch(`${this._gatewayUrl}${path}`, request).then(async (response) => {
+            return await response.json() as TResponse;
+        }, (error) => {
+            return serviceUnreachableResponse as TResponse;
+        });
     }
 
-    private getHeaders(): Headers {
+    private async getHeaders(): Promise<Headers> {
         const headers: Headers = new Headers();
         headers.append('Content-Type', 'application/json');
-        const user: User | null = getItem<User>('user');
-        if (user)
-            headers.append('Authorization', `Bearer ${user.authentication.access_token}`);
+        const firebaseUser: firebase.User | null = this._firebaseApp.auth().currentUser;
+        if (firebaseUser)
+            headers.append('Authorization', `Bearer ${await firebaseUser.getIdToken()}`);
         return headers;
     }
 }

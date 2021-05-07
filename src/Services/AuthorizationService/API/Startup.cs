@@ -1,16 +1,22 @@
-using Kwetter.Services.AuthorizationService.API.Application.Queries.AuthorizationQuery;
+using Kwetter.Services.AuthorizationService.API.Application.Commands.ClaimsCommand;
 using Kwetter.Services.AuthorizationService.Domain.AggregatesModel.IdentityAggregate;
 using Kwetter.Services.AuthorizationService.Infrastructure;
 using Kwetter.Services.AuthorizationService.Infrastructure.Interfaces;
 using Kwetter.Services.AuthorizationService.Infrastructure.Repositories;
+using Kwetter.Services.AuthorizationService.Infrastructure.Services;
 using Kwetter.Services.Common.API;
+using Kwetter.Services.Common.Application.Eventing.Bus;
 using Kwetter.Services.Common.Infrastructure;
+using Kwetter.Services.Common.Infrastructure.Behaviours;
+using Kwetter.Services.Common.Infrastructure.RabbitMq;
+using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using RabbitMQ.Client;
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 
@@ -40,11 +46,13 @@ namespace Kwetter.Services.AuthorizationService.API
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddConfigurations(_configuration);
-            services.AddDefaultApplicationServices(Assembly.GetAssembly(typeof(Startup)), Assembly.GetAssembly(typeof(AuthorizationQuery)));
+            services.AddDefaultApplicationServices(Assembly.GetAssembly(typeof(Startup)), Assembly.GetAssembly(typeof(ClaimsCommand)));
+            services.AddScoped(typeof(IPipelineBehavior<,>), typeof(TransactionBehaviour<,>));
             services.AddLogging(p => p.AddConsole());
             services.AddDefaultInfrastructureServices();
+            services.AddEventStore();
             services.AddDefaultAuthentication(_configuration);
-            services.AddHttpClient<IAuthorizationService, Infrastructure.Services.AuthorizationService>();
+            services.AddSingleton<IAuthorizationService, GoogleAuthorizationService>();
             services.AddScoped<IFactory<IdentityDbContext>, IdentityDatabaseFactory>();
             services.AddScoped<IdentityDbContext>(p => p.GetRequiredService<IFactory<IdentityDbContext>>().Create());
             services.AddScoped<IAggregateUnitOfWork>(p => p.GetRequiredService<IFactory<IdentityDbContext>>().Create());
@@ -59,7 +67,9 @@ namespace Kwetter.Services.AuthorizationService.API
         /// </summary>
         /// <param name="app">The application builder.</param>
         /// <param name="env">The web host environment.</param>
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        /// <param name="eventBus">The event bus.</param>
+        /// <param name="rabbitConfiguration">The rabbit configuration.</param>
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IEventBus eventBus, RabbitConfiguration rabbitConfiguration)
         {
             if (env.IsDevelopment())
             {
@@ -69,6 +79,8 @@ namespace Kwetter.Services.AuthorizationService.API
                 string title = _configuration["Service:Title"];
                 app.UseSwaggerUI(c => c.SwaggerEndpoint($"/swagger/{version}/swagger.json", $"{title} {version}"));
             }
+
+            rabbitConfiguration.DeclareExchange("AuthorizationExchange", ExchangeType.Direct);
 
             app.UseRouting();
             app.UseCors(x => x.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());

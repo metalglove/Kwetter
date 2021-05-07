@@ -1,87 +1,59 @@
 ﻿using Kwetter.Services.Common.Application.Eventing;
 using Kwetter.Services.Common.Application.Eventing.Bus;
+using Kwetter.Services.Common.Application.Eventing.Integration;
 using Kwetter.Services.Common.Domain.Events;
+using MediatR;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace Kwetter.Services.Common.Tests.Mocks
 {
+    // TODO: IGNORES EXCHANGE CURRENTLY!
     public class EventBusMock : IEventBus
     {
         private readonly ILogger<EventBusMock> _logger;
         private readonly IEventSerializer _eventSerializer;
+        private readonly IServiceScopeFactory _serviceScopeFactory;
         private readonly ConcurrentBag<Event> _unknownEvents;
         private readonly ConcurrentBag<string> _unknownQueue;
         private readonly ConcurrentDictionary<string, Dictionary<string, List<IEventHandler<Event>>>> _eventHandlerMap;
-        
+
         public EventBusMock(
             ILogger<EventBusMock> logger,
-            IEventSerializer messageSerializer)
+            IEventSerializer messageSerializer,
+            IServiceScopeFactory serviceScopeFactory)
         {
             _logger = logger;
             _eventSerializer = messageSerializer;
+            _serviceScopeFactory = serviceScopeFactory;
             _unknownEvents = new ConcurrentBag<Event>();
             _unknownQueue = new ConcurrentBag<string>();
             _eventHandlerMap = new ConcurrentDictionary<string, Dictionary<string, List<IEventHandler<Event>>>>();
         }
-        
-        public void Publish<TEvent>(TEvent @event, string queueName) where TEvent : Event
-        {
-            _logger.LogInformation(_eventSerializer.SerializeToString(@event));
-            if (!_eventHandlerMap.ContainsKey(nameof(TEvent)))
-            {
-                _unknownQueue.Add(queueName);
-                _unknownEvents.Add(@event);
-                return;
-            }
-            if (!_eventHandlerMap.ContainsKey(nameof(TEvent)))
-            {
-                _unknownEvents.Add(@event);
-                return;
-            }
 
-            foreach (IEventHandler<Event> eventHandler in _eventHandlerMap[queueName][nameof(TEvent)])
-            {
-                Task.Run(() => eventHandler.HandleAsync(@event, CancellationToken.None));
-            }
+        public void Publish<TEvent>(TEvent @event, string exchangeName, string routingKey) where TEvent : Event
+        {
+            // TODO: mock exchange Publish stuff
+            _logger.LogInformation(_eventSerializer.SerializeToString(@event));
+            using var scope = _serviceScopeFactory.CreateScope();
+            IMediator mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
+            if (@event is IncomingIntegrationEvent)
+                mediator.Send(@event, CancellationToken.None).GetAwaiter().GetResult();
         }
 
-        public void Subscribe<TEvent, TEventHandler>(string queueName, TEventHandler eventHandler) 
+        public void Subscribe<TEvent, TEventHandler>(string queueName) 
             where TEvent : Event 
             where TEventHandler : IEventHandler<TEvent>
         {
-            IEventHandler<Event> handler = eventHandler as IEventHandler<Event>;
-            _eventHandlerMap.AddOrUpdate(
-                queueName, 
-                new Dictionary<string, List<IEventHandler<Event>>>() {{queueName, new List<IEventHandler<Event>>
-                    {
-                        handler
-                    }}},
-                (key, oldValue) =>
-                {
-                    if (oldValue.TryGetValue(nameof(TEvent), out List<IEventHandler<Event>> eventHandlers))
-                    {
-                        eventHandler.UnsubscribeEventHandler += (_, _) => eventHandlers.Remove(handler);
-                        eventHandlers.Add(handler);
-                    }
-                    else
-                    {
-                        List<IEventHandler<Event>> eventHandlers2 = new() {handler};
-                        eventHandler.UnsubscribeEventHandler += (_, _) => eventHandlers2.Remove(handler);
-                        oldValue.Add(nameof(TEvent), eventHandlers2);
-                    }
-                    return oldValue;
-                });
+            // TODO: sub
         }
 
-        public void Unsubscribe<TEvent, TEventHandler>(TEventHandler eventHandler) 
-            where TEvent : Event
-            where TEventHandler : IEventHandler<TEvent>
+        public void Unsubscribe(string queueName) 
         {
-            eventHandler.Unsubscribe();
+            // TODO: unsub
         }
     }
 }

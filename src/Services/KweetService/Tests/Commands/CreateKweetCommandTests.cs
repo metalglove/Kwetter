@@ -1,9 +1,9 @@
-﻿using Kwetter.Services.Common.API.CQRS;
+﻿using Kwetter.Services.Common.Application.CQRS;
 using Kwetter.Services.Common.Tests;
 using Kwetter.Services.KweetService.API;
 using Kwetter.Services.KweetService.API.Application.Commands.CreateKweetCommand;
 using Kwetter.Services.KweetService.API.Controllers;
-using Kwetter.Services.KweetService.Domain.AggregatesModel.KweetAggregate;
+using Kwetter.Services.KweetService.Domain.AggregatesModel.UserAggregate;
 using Kwetter.Services.KweetService.Infrastructure;
 using Kwetter.Services.KweetService.Infrastructure.Repositories;
 using MediatR;
@@ -24,11 +24,15 @@ namespace Kwetter.Services.KweetService.Tests.Commands
         public KweetController KweetController { get; set; }
         
         [TestInitialize]
-        public void Initialize()
+        public async Task Initialize()
         {
-            ServiceProvider = InitializeServices<KweetDbContext, KweetDatabaseFactory, KweetRepository, KweetAggregate>(typeof(Startup), typeof(CreateKweetCommand), "KweetService");
+            ServiceProvider = InitializeServiceProvider<KweetDbContext, KweetDatabaseFactory, UserRepository, UserAggregate>(typeof(Startup), typeof(CreateKweetCommand), "KweetService");
             Mediator = ServiceProvider.GetRequiredService<IMediator>();
-            KweetController = new KweetController(Mediator);
+            KweetController = CreateAuthorizedController<KweetController>(Mediator);
+            IUserRepository userRepository = ServiceProvider.GetRequiredService<IUserRepository>();
+            UserAggregate user = new(AuthorizedUserId, "Glovali", AuthorizedUserName, "https://icon-library.net/images/default-user-icon/default-user-icon-8.jpg");
+            userRepository.Create(user);
+            await userRepository.UnitOfWork.SaveChangesAsync();
         }
         
         [TestCleanup]
@@ -41,12 +45,11 @@ namespace Kwetter.Services.KweetService.Tests.Commands
         public async Task Should_Create_Kweet_Through_CreateKweetCommand()
         {
             // Arrange
-            Guid userId = Guid.NewGuid();
             Guid kweetId = Guid.NewGuid();
             const string message = "Hello world!";
             CreateKweetCommand createKweetCommand = new()
             {
-                UserId = userId,
+                UserId = AuthorizedUserId,
                 KweetId = kweetId,
                 Message = message
             };
@@ -62,7 +65,7 @@ namespace Kwetter.Services.KweetService.Tests.Commands
         }
         
         [TestMethod]
-        public async Task Should_Fail_To_Create_Kweet_Through_CreateKweetCommand_Due_To_Empty_UserId()
+        public async Task Should_Fail_To_Create_Kweet_Through_CreateKweetCommand_Due_To_Unauthorized()
         {
             // Arrange
             Guid userId = Guid.Empty;
@@ -77,24 +80,23 @@ namespace Kwetter.Services.KweetService.Tests.Commands
 
             // Act
             IActionResult actionResult = await KweetController.CreateAsync(createKweetCommand);
-            
+
             // Assert
-            BadRequestObjectResult badRequestObjectResult = XAssert.IsType<BadRequestObjectResult>(actionResult);
-            CommandResponse commandResponse = XAssert.IsType<CommandResponse>(badRequestObjectResult.Value);
+            UnauthorizedObjectResult unauthorizedObjectResult = XAssert.IsType<UnauthorizedObjectResult>(actionResult);
+            CommandResponse commandResponse = XAssert.IsType<CommandResponse>(unauthorizedObjectResult.Value);
             XAssert.False(commandResponse.Success);
-            XAssert.Contains("The user id can not be empty.", commandResponse.Errors);
+            XAssert.Contains("The user id claim and provided user id are not the same.", commandResponse.Errors);
         }
         
         [TestMethod]
         public async Task Should_Fail_To_Create_Kweet_Through_CreateKweetCommand_Due_To_Empty_KweetId()
         {
             // Arrange
-            Guid userId = Guid.NewGuid();
             Guid kweetId = Guid.Empty;
             const string message = "Hello world!";
             CreateKweetCommand createKweetCommand = new()
             {
-                UserId = userId,
+                UserId = AuthorizedUserId,
                 KweetId = kweetId,
                 Message = message
             };
@@ -113,12 +115,11 @@ namespace Kwetter.Services.KweetService.Tests.Commands
         public async Task Should_Fail_To_Create_Kweet_Through_CreateKweetCommand_Due_To_Message_Being_Empty()
         {
             // Arrange
-            Guid userId = Guid.NewGuid();
             Guid kweetId = Guid.NewGuid();
             const string message = "";
             CreateKweetCommand createKweetCommand = new()
             {
-                UserId = userId,
+                UserId = AuthorizedUserId,
                 KweetId = kweetId,
                 Message = message
             };
@@ -137,12 +138,11 @@ namespace Kwetter.Services.KweetService.Tests.Commands
         public async Task Should_Fail_To_Create_Kweet_Through_CreateKweetCommand_Due_To_Message_Exceeding_140_Length()
         {
             // Arrange
-            Guid userId = Guid.NewGuid();
             Guid kweetId = Guid.NewGuid();
             const string message = "sfafdsafadsffsaddsfasdfdsfdsfsfafdsafadsffsaddsfasdfdsfdsfsfafdsafadsffsaddsfasdfdsfdsfsfafdsafadsffsaddsfasdfdsfdddsfsdsfdssddssddsdsdsdsdsf";
             CreateKweetCommand createKweetCommand = new()
             {
-                UserId = userId,
+                UserId = AuthorizedUserId,
                 KweetId = kweetId,
                 Message = message
             };
@@ -158,16 +158,14 @@ namespace Kwetter.Services.KweetService.Tests.Commands
         }
         
         [TestMethod]
-        public async Task Should_Fail_To_Create_Kweet_Through_CreateKweetCommand_Due_To_MessageId_Already_Existing()
+        public async Task Should_Fail_To_Create_Kweet_Through_CreateKweetCommand_Due_To_KweetId_Already_Existing()
         {
             // Arrange
-            // Arrange
-            Guid userId = Guid.NewGuid();
             Guid kweetId = Guid.NewGuid();
             const string message = "Hello world!";
             CreateKweetCommand createKweetCommand = new()
             {
-                UserId = userId,
+                UserId = AuthorizedUserId,
                 KweetId = kweetId,
                 Message = message
             };

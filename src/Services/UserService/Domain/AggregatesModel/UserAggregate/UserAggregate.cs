@@ -2,6 +2,7 @@
 using Kwetter.Services.UserService.Domain.AggregatesModel.UserAggregate.Events;
 using Kwetter.Services.UserService.Domain.Exceptions;
 using System;
+using System.Linq;
 
 namespace Kwetter.Services.UserService.Domain.AggregatesModel.UserAggregate
 {
@@ -11,10 +12,42 @@ namespace Kwetter.Services.UserService.Domain.AggregatesModel.UserAggregate
     /// </summary>
     public class UserAggregate : Entity, IAggregateRoot
     {
+        private string displayName;
+        private string userName;
+
         /// <summary>
         /// Gets and sets the display name of the user.
         /// </summary>
-        public string DisplayName { get; private set; }
+        public string DisplayName
+        {
+            get => displayName;
+            private set
+            {
+                if (string.IsNullOrWhiteSpace(value))
+                    throw new UserDomainException("The display name is null, empty or contains only whitespaces.");
+                if (value.Length > 64)
+                    throw new UserDomainException("The length of the display name exceeded 64 characters.");
+                displayName = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets and sets the user name.
+        /// </summary>
+        public string UserName
+        {
+            get => userName;
+            private set
+            {
+                if (string.IsNullOrWhiteSpace(value))
+                    throw new UserDomainException("The user name is null, empty or contains only whitespaces.");
+                if (value.Length > 32)
+                    throw new UserDomainException("The length of the user name exceeded 32 characters.");
+                if (!value.All(char.IsLetterOrDigit))
+                    throw new UserDomainException("The user name is not alphanumeric.");
+                userName = value;
+            }
+        }
 
         /// <summary>
         /// Gets and sets the user profile.
@@ -31,41 +64,29 @@ namespace Kwetter.Services.UserService.Domain.AggregatesModel.UserAggregate
         /// </summary>
         /// <param name="userId">The user id.</param>
         /// <param name="displayName">The display name.</param>
+        /// <param name="userName">The user name.</param>
         /// <param name="description">The profile description.</param>
         /// <param name="pictureUrl">The profile picture url.</param>
-        public UserAggregate(Guid userId, string displayName, string description, string pictureUrl)
-        {
-            SetId(userId);
-            AddDomainEvent(new UserCreatedDomainEvent(Id));
-            SetDisplayName(displayName);
-            Profile = new UserProfile(Id, description, pictureUrl);
-        }
-
-        /// <summary>
-        /// Sets the display name.
-        /// </summary>
-        /// <param name="displayName">The display name.</param>
-        /// <exception cref="UserDomainException">Thrown when the provided display name exceeds 64 characters or is empty.</exception>
-        public void SetDisplayName(string displayName)
-        {
-            if (string.IsNullOrWhiteSpace(displayName))
-                throw new UserDomainException("The display name is null, empty or contains only whitespaces.");
-            if (displayName?.Length > 64)
-                throw new UserDomainException("The length of the display name exceeded 64 characters.");
-            DisplayName = displayName;
-            AddDomainEvent(new UserDisplayNameUpdatedDomainEvent(Id, DisplayName));
-        }
-        
-        /// <summary>
-        /// Sets the id of the user.
-        /// </summary>
-        /// <param name="userId">The user id.</param>
-        /// <exception cref="UserDomainException">Thrown when the provided user id is empty or malformed.</exception>
-        private void SetId(Guid userId)
+        public UserAggregate(Guid userId, string displayName, string userName, string description, string pictureUrl)
         {
             if (userId == Guid.Empty)
                 throw new UserDomainException("The user id is empty.");
             Id = userId;
+            DisplayName = displayName;
+            UserName = userName;
+            Profile = new UserProfile(Id, description, pictureUrl);
+            AddDomainEvent(new UserCreatedDomainEvent(Id, DisplayName, UserName, Profile.Description, Profile.PictureUrl));
+        }
+
+        /// <summary>
+        /// Updates the display name.
+        /// </summary>
+        /// <param name="displayName">The display name.</param>
+        /// <exception cref="UserDomainException">Thrown when the provided display name exceeds 64 characters or is empty.</exception>
+        public void UpdateDisplayName(string displayName)
+        {
+            DisplayName = displayName;
+            AddDomainEvent(new UserDisplayNameUpdatedDomainEvent(Id, DisplayName));
         }
     }
 }
