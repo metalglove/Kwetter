@@ -41,7 +41,7 @@ namespace Kwetter.Services.Common.Infrastructure.Integration
             while (!_integrationEvents.IsEmpty)
             {
                 _integrationEvents.TryDequeue(out IntegrationEvent @event);
-                _eventBus.Publish(@event: @event, exchangeName: @event.GetExchangeName(), queueName: $"Integration.{@event.EventName}");
+                _eventBus.Publish(@event: @event, exchangeName: @event.GetExchangeName(), @event.GetRoutingKey());
                 _logger.LogInformation($"Dequeued & published integration event: {@event.EventName}:{@event.EventId}");
             }
         }

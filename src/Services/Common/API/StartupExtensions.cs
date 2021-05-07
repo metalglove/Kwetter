@@ -4,6 +4,7 @@ using FluentValidation;
 using Google.Apis.Auth.OAuth2;
 using Kwetter.Services.Common.API.Behaviours;
 using Kwetter.Services.Common.Application.Configurations;
+using Kwetter.Services.Common.Application.CQRS;
 using Kwetter.Services.Common.Application.Eventing;
 using Kwetter.Services.Common.Application.Eventing.Bus;
 using Kwetter.Services.Common.Application.Eventing.Integration;
@@ -125,6 +126,7 @@ namespace Kwetter.Services.Common.API
             serviceCollection.AddTransient<IEventSerializer, JsonEventSerializer>();
             serviceCollection.AddSingleton<ObjectPoolProvider, DefaultObjectPoolProvider>();
             serviceCollection.AddSingleton<IPooledObjectPolicy<IModel>, RabbitModelPooledObjectPolicy>();
+            serviceCollection.AddSingleton<RabbitConfiguration>();
             serviceCollection.AddSingleton<IEventBus, EventBus>();
             serviceCollection.AddScoped<IIntegrationEventService, IntegrationEventService>();
             return serviceCollection;
@@ -183,6 +185,22 @@ namespace Kwetter.Services.Common.API
             serviceCollection
                 .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddScheme<JwtBearerOptions, JwtTokenAuthenticationHandler>(JwtBearerDefaults.AuthenticationScheme, o => { });
+            return serviceCollection;
+        }
+
+        /// <summary>
+        /// Adds the integration event handler as scoped to the service collection.
+        /// </summary>
+        /// <typeparam name="TEventHandler">The event handler type.</typeparam>
+        /// <typeparam name="TEvent">The event type.</typeparam>
+        /// <param name="serviceCollection">The service collection.</param>
+        /// <returns>Returns the service collection to chain further upon.</returns>
+        public static IServiceCollection AddIntegrationEventHandler<TEventHandler, TEvent>(this IServiceCollection serviceCollection)
+            where TEventHandler : KwetterEventHandler<TEvent>
+            where TEvent : IncomingIntegrationEvent
+        {
+            serviceCollection.AddScoped<TEventHandler>();
+            serviceCollection.AddScoped<IRequestHandler<TEvent,CommandResponse>, IntegrationEventHandler<TEventHandler, TEvent>>();
             return serviceCollection;
         }
     }

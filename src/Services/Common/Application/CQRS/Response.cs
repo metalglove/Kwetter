@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Kwetter.Services.Common.API.CQRS
+namespace Kwetter.Services.Common.Application.CQRS
 {
     /// <summary>
     /// Represents the <see cref="Response"/> record.

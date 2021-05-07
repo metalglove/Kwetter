@@ -9,6 +9,7 @@ namespace Kwetter.Services.Common.Application.Eventing.Integration
     public abstract class IntegrationEvent : Event
     {
         private string exchangeName;
+        private string routingKey;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="IntegrationEvent"/> class.
@@ -19,6 +20,18 @@ namespace Kwetter.Services.Common.Application.Eventing.Integration
             EventName = GetType().Name;
             EventCreationDateTime = DateTime.UtcNow;
         }
+
+        /// <summary>
+        /// Gets the routing key.
+        /// </summary>
+        /// <returns>Returns the routing key.</returns>
+        public string GetRoutingKey() => routingKey;
+
+        /// <summary>
+        /// Sets the routing key.
+        /// </summary>
+        /// <param name="routingKey">The routing key.</param>
+        public void SetRoutingKey(string routingKey) => this.routingKey = routingKey;
 
         /// <summary>
         /// Gets the exchange name.

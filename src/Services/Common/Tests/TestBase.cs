@@ -43,7 +43,10 @@ namespace Kwetter.Services.Common.Tests
         public Guid AuthorizedUserId { get; }
         public string AuthorizedUserName { get; }
 
-        public TestBase()
+        /// <summary>
+        /// Initializes a new instance of the <see cref="TestBase"/> class.
+        /// </summary>
+        protected TestBase()
         {
             AuthorizedUserId = Guid.NewGuid();
             AuthorizedUserName = "kwetterman";
@@ -127,8 +130,8 @@ namespace Kwetter.Services.Common.Tests
             serviceCollection.AddSingleton<IEventStore, EventStoreMock>();
             serviceCollection.AddScoped(typeof(INotificationHandler<>), typeof(AnyDomainEventHandler<>));
             serviceCollection.AddScoped<IIntegrationEventService, IntegrationEventService>();
-            serviceCollection.AddScoped<IFactory<TDbContext>, TDatabaseFactory>();
-            serviceCollection.AddScoped<TDbContext>(p =>
+            serviceCollection.AddSingleton<IFactory<TDbContext>, TDatabaseFactory>();
+            serviceCollection.AddSingleton<TDbContext>(p =>
             {
                 TDbContext followDbContext = p.GetRequiredService<IFactory<TDbContext>>().Create();
                 followDbContext.Database.EnsureCreated();
