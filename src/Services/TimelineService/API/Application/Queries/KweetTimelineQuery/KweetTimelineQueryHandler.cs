@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using Kwetter.Services.Common.API.CQRS;
+using Kwetter.Services.Common.Application.CQRS;
 using Kwetter.Services.TimelineService.Domain;
 using Kwetter.Services.TimelineService.Infrastructure;
 using MediatR;

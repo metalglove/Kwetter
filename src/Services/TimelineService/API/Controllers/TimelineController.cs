@@ -1,4 +1,4 @@
-﻿using Kwetter.Services.Common.API.CQRS;
+﻿using Kwetter.Services.Common.Application.CQRS;
 using Kwetter.Services.TimelineService.API.Application.Queries;
 using Kwetter.Services.TimelineService.API.Application.Queries.KweetTimelineQuery;
 using MediatR;

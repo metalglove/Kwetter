@@ -23,6 +23,11 @@ namespace Kwetter.Services.TimelineService.API.Application.Queries
         public string UserDisplayName { get; set; }
 
         /// <summary>
+        /// Gets and sets the user name.
+        /// </summary>
+        public string UserName { get; set; }
+
+        /// <summary>
         /// Gets and sets whether the user has liked the kweet.
         /// </summary>
         public bool Liked { get; set; }

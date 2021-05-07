@@ -28,6 +28,11 @@ namespace Kwetter.Services.TimelineService.Domain
         public string UserDisplayName { get; set; }
 
         /// <summary>
+        /// Gets and sets the user name.
+        /// </summary>
+        public string UserName { get; set; }
+
+        /// <summary>
         /// Gets and sets a value indicating whether the kweet is liked by the user.
         /// </summary>
         public bool Liked { get; set; }

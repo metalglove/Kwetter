@@ -1,16 +1,17 @@
-﻿using System;
+﻿using Kwetter.Services.Common.Application.Eventing.Integration;
+using System;
 
-namespace Kwetter.Services.TimelineService.Domain
+namespace Kwetter.Services.TimelineService.API.Application.IntegrationEventHandlers.UserCreated
 {
     /// <summary>
-    /// Represents the <see cref="User"/> class.
+    /// Represents the <see cref="UserCreatedIntegrationEvent"/> class.
     /// </summary>
-    public class User
+    public sealed class UserCreatedIntegrationEvent : IncomingIntegrationEvent
     {
         /// <summary>
         /// Gets and sets the user id.
         /// </summary>
-        public Guid Id { get; set; }
+        public Guid UserId { get; set; }
 
         /// <summary>
         /// Gets and sets the user display name.

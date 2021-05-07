@@ -15,4 +15,13 @@
     <ProjectReference Include="..\Infrastructure\Kwetter.Services.TimelineService.Infrastructure.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Application\Commands\" />
+    <Folder Include="Application\IntegrationEventHandlers\KweetLiked\" />
+    <Folder Include="Application\IntegrationEventHandlers\KweetUnliked\" />
+    <Folder Include="Application\IntegrationEventHandlers\KweetCreated\" />
+    <Folder Include="Application\IntegrationEventHandlers\UserUnfollowed\" />
+    <Folder Include="Application\IntegrationEventHandlers\UserFollowed\" />
+  </ItemGroup>
+
 </Project>

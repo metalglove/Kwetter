@@ -38,13 +38,6 @@ namespace Kwetter.Services.TimelineService.Infrastructure
         public Task<bool> CreateUserAsync(User user);
 
         /// <summary>
-        /// Creates the user profile asynchronously.
-        /// </summary>
-        /// <param name="userProfile">The user profile.</param>
-        /// <returns>Returns a boolean indicating whether the user profile is created.</returns>
-        public Task<bool> CreateUserProfileAsync(UserProfile userProfile);
-
-        /// <summary>
         /// Gets the timeline for a specific user id using pagination asynchronously.
         /// </summary>
         /// <param name="userId">The user id.</param>
