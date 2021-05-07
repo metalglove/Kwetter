@@ -8,16 +8,17 @@ namespace Kwetter.Services.FollowService.Infrastructure.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "UserAggregates",
+                name: "Users",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     UserDisplayName = table.Column<string>(type: "nvarchar(64)", maxLength: 64, nullable: false),
+                    UserName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     UserProfilePictureUrl = table.Column<string>(type: "nvarchar(512)", maxLength: 512, nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_UserAggregates", x => x.Id);
+                    table.PrimaryKey("PK_Users", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -32,17 +33,17 @@ namespace Kwetter.Services.FollowService.Infrastructure.Migrations
                 {
                     table.PrimaryKey("PK_Follow", x => new { x.FollowingId, x.FollowerId });
                     table.ForeignKey(
-                        name: "FK_Follow_UserAggregates_FollowerId",
+                        name: "FK_Follow_Users_FollowerId",
                         column: x => x.FollowerId,
-                        principalTable: "UserAggregates",
+                        principalTable: "Users",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_Follow_UserAggregates_FollowingId",
+                        name: "FK_Follow_Users_FollowingId",
                         column: x => x.FollowingId,
-                        principalTable: "UserAggregates",
+                        principalTable: "Users",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateIndex(
@@ -57,7 +58,7 @@ namespace Kwetter.Services.FollowService.Infrastructure.Migrations
                 name: "Follow");
 
             migrationBuilder.DropTable(
-                name: "UserAggregates");
+                name: "Users");
         }
     }
 }

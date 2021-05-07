@@ -33,6 +33,7 @@ namespace Kwetter.Services.FollowService.API.Application.DomainEventHandlers.Use
         {
             UserUnfollowedIntegrationEvent userUnfollowedIntegrationEvent = new(notification.FollowingId, notification.FollowerId, notification.UnfollowedDateTime);
             userUnfollowedIntegrationEvent.SetExchangeName("FollowExchange");
+            userUnfollowedIntegrationEvent.SetExchangeName("FollowService.UserUnfollowedIntegrationEvent");
             _integrationEventService.EnqueueEvent(userUnfollowedIntegrationEvent);
             return Task.CompletedTask;
         }

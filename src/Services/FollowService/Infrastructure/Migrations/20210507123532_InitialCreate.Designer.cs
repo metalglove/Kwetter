@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Kwetter.Services.FollowService.Infrastructure.Migrations
 {
     [DbContext(typeof(FollowDbContext))]
-    [Migration("20210503224929_InitialCreate")]
+    [Migration("20210507123532_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -50,6 +50,9 @@ namespace Kwetter.Services.FollowService.Infrastructure.Migrations
                         .HasMaxLength(64)
                         .HasColumnType("nvarchar(64)");
 
+                    b.Property<string>("UserName")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("UserProfilePictureUrl")
                         .IsRequired()
                         .HasMaxLength(512)
@@ -57,7 +60,7 @@ namespace Kwetter.Services.FollowService.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("UserAggregates");
+                    b.ToTable("Users");
                 });
 
             modelBuilder.Entity("Kwetter.Services.FollowService.Domain.AggregatesModel.UserAggregate.Follow", b =>
@@ -65,13 +68,13 @@ namespace Kwetter.Services.FollowService.Infrastructure.Migrations
                     b.HasOne("Kwetter.Services.FollowService.Domain.AggregatesModel.UserAggregate.UserAggregate", "Follower")
                         .WithMany("Followings")
                         .HasForeignKey("FollowerId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("Kwetter.Services.FollowService.Domain.AggregatesModel.UserAggregate.UserAggregate", "Following")
                         .WithMany("Followers")
                         .HasForeignKey("FollowingId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Follower");

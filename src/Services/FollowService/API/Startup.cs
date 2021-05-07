@@ -2,6 +2,7 @@ using Kwetter.Services.Common.API;
 using Kwetter.Services.Common.Application.Eventing.Bus;
 using Kwetter.Services.Common.Infrastructure;
 using Kwetter.Services.Common.Infrastructure.Behaviours;
+using Kwetter.Services.Common.Infrastructure.RabbitMq;
 using Kwetter.Services.FollowService.API.Application.Commands.CreateFollowCommand;
 using Kwetter.Services.FollowService.API.Application.IntegrationEventHandlers.UserCreated;
 using Kwetter.Services.FollowService.API.Application.IntegrationEventHandlers.UserDisplayNameUpdated;
@@ -16,6 +17,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using RabbitMQ.Client;
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 
@@ -55,6 +57,11 @@ namespace Kwetter.Services.FollowService.API
             services.AddScoped<FollowDbContext>(p => p.GetRequiredService<IFactory<FollowDbContext>>().Create());
             services.AddScoped<IAggregateUnitOfWork>(p => p.GetRequiredService<IFactory<FollowDbContext>>().Create());
             services.AddScoped<IUserRepository, UserRepository>();
+
+            services.AddIntegrationEventHandler<UserCreatedIntegrationEventHandler, UserCreatedIntegrationEvent>();
+            services.AddIntegrationEventHandler<UserDisplayNameUpdatedIntegrationEventHandler, UserDisplayNameUpdatedIntegrationEvent>();
+            services.AddIntegrationEventHandler<UserProfilePictureUrlUpdatedIntegrationEventHandler, UserProfilePictureUrlUpdatedIntegrationEvent>();
+
             services.AddControllers();
             services.AddSwagger(_configuration);
             services.VerifyDatabaseConnection<FollowDbContext>();
@@ -65,9 +72,9 @@ namespace Kwetter.Services.FollowService.API
         /// </summary>
         /// <param name="app">The application builder.</param>
         /// <param name="env">The web host environment.</param>
-        /// <param name="eventBus">The event bus.</param>
-        /// <param name="serviceScopeFactory">The service scope factory.</param>
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IEventBus eventBus, IServiceScopeFactory serviceScopeFactory)
+        /// <param name="eventBus">The event bus.</param>        
+        /// <param name="rabbitConfiguration">The rabbit configuration.</param>
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IEventBus eventBus, RabbitConfiguration rabbitConfiguration)
         {
             if (env.IsDevelopment())
             {
@@ -79,24 +86,16 @@ namespace Kwetter.Services.FollowService.API
             }
 
             // Declare used exchanges!
-            eventBus.DeclareExchange("UserExchange", Common.Application.Eventing.ExchangeType.FANOUT);
-            eventBus.DeclareExchange("FollowExchange", Common.Application.Eventing.ExchangeType.FANOUT);
+            rabbitConfiguration.DeclareExchange("UserExchange", ExchangeType.Topic);
+            rabbitConfiguration.DeclareExchange("FollowExchange", ExchangeType.Topic);
+            rabbitConfiguration.DeclareAndBindQueueToExchange("UserExchange", "FollowService.UserCreatedIntegrationEvent", "#.UserCreatedIntegrationEvent");
+            rabbitConfiguration.DeclareAndBindQueueToExchange("UserExchange", "FollowService.UserDisplayNameUpdatedIntegrationEvent", "#.UserDisplayNameUpdatedIntegrationEvent");
+            rabbitConfiguration.DeclareAndBindQueueToExchange("UserExchange", "FollowService.UserProfilePictureUrlUpdatedIntegrationEvent", "#.UserProfilePictureUrlUpdatedIntegrationEvent");
 
             // Subscribe to integration events.
-            eventBus.Subscribe<UserCreatedIntegrationEvent, UserCreatedIntegrationEventHandler>(
-                exchangeName: "UserExchange",
-                queueName: $"UserService.Integration.UserCreatedIntegrationEvent",
-                eventHandler: new UserCreatedIntegrationEventHandler(serviceScopeFactory));
-
-            eventBus.Subscribe<UserDisplayNameUpdatedIntegrationEvent, UserDisplayNameUpdatedIntegrationEventHandler>(
-                exchangeName: "UserExchange",
-                queueName: $"UserService.Integration.UserDisplayNameUpdatedIntegrationEvent",
-                eventHandler: new UserDisplayNameUpdatedIntegrationEventHandler(serviceScopeFactory));
-
-            eventBus.Subscribe<UserProfilePictureUrlUpdatedIntegrationEvent, UserProfilePictureUrlUpdatedIntegrationEventHandler>(
-                exchangeName: "UserExchange",
-                queueName: $"UserService.Integration.UserProfilePictureUrlUpdatedIntegrationEvent",
-                eventHandler: new UserProfilePictureUrlUpdatedIntegrationEventHandler(serviceScopeFactory));
+            eventBus.Subscribe<UserCreatedIntegrationEvent, UserCreatedIntegrationEventHandler>("FollowService.UserCreatedIntegrationEvent");
+            eventBus.Subscribe<UserDisplayNameUpdatedIntegrationEvent, UserDisplayNameUpdatedIntegrationEventHandler>("FollowService.UserDisplayNameUpdatedIntegrationEvent");
+            eventBus.Subscribe<UserProfilePictureUrlUpdatedIntegrationEvent, UserProfilePictureUrlUpdatedIntegrationEventHandler>("FollowService.UserProfilePictureUrlUpdatedIntegrationEvent");
 
             app.UseRouting();
             app.UseCors(x => x.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());

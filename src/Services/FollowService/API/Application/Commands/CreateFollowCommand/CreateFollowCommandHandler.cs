@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Kwetter.Services.Common.API.CQRS;
+using Kwetter.Services.Common.Application.CQRS;
 using Kwetter.Services.FollowService.Domain.AggregatesModel.UserAggregate;
 using MediatR;
 

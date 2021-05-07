@@ -1,7 +1,6 @@
 ﻿using Kwetter.Services.Common.Application.Eventing;
-using Kwetter.Services.FollowService.API.Application.Commands.UpdateUserDisplayNameCommand;
-using MediatR;
-using Microsoft.Extensions.DependencyInjection;
+using Kwetter.Services.FollowService.Domain.AggregatesModel.UserAggregate;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -12,15 +11,15 @@ namespace Kwetter.Services.FollowService.API.Application.IntegrationEventHandler
     /// </summary>
     public sealed class UserDisplayNameUpdatedIntegrationEventHandler : KwetterEventHandler<UserDisplayNameUpdatedIntegrationEvent>
     {
-        private readonly IServiceScopeFactory _serviceScopeFactory;
+        private readonly IUserRepository _userRepository;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="UserDisplayNameUpdatedIntegrationEventHandler"/> class.
         /// </summary>
-        /// <param name="serviceScopeFactory">The service scope factory.</param>
-        public UserDisplayNameUpdatedIntegrationEventHandler(IServiceScopeFactory serviceScopeFactory)
+        /// <param name="userRepository">The user repository.</param>
+        public UserDisplayNameUpdatedIntegrationEventHandler(IUserRepository userRepository)
         {
-            _serviceScopeFactory = serviceScopeFactory;
+            _userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
         }
 
         /// <summary>
@@ -31,13 +30,11 @@ namespace Kwetter.Services.FollowService.API.Application.IntegrationEventHandler
         /// <returns>Returns an awaitable task.</returns>
         public async override ValueTask HandleAsync(UserDisplayNameUpdatedIntegrationEvent @event, CancellationToken cancellationToken)
         {
-            using IServiceScope scope = _serviceScopeFactory.CreateScope();
-            IMediator mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
-            await mediator.Send(new UpdateUserDisplayNameCommand()
-            {
-                UserId = @event.UserId,
-                UserDisplayName = @event.UserDisplayName
-            }, cancellationToken);
+            UserAggregate trackedUser = await _userRepository.FindAsync(@event.UserId, cancellationToken);
+            trackedUser?.UpdateUserDisplayName(@event.UserDisplayName);
+            bool success = await _userRepository.UnitOfWork.SaveEntitiesAsync(cancellationToken);
+            if (!success)
+                throw new FollowIntegrationException("Failed to handle UserDisplayNameUpdatedIntegrationEvent");
         }
     }
 }

@@ -1,5 +1,5 @@
 ﻿using System;
-using Kwetter.Services.Common.API.CQRS;
+using Kwetter.Services.Common.Application.CQRS;
 using MediatR;
 
 namespace Kwetter.Services.FollowService.API.Application.Commands.CreateFollowCommand

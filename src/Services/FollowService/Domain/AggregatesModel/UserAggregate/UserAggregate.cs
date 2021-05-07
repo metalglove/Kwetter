@@ -2,6 +2,7 @@
 using Kwetter.Services.FollowService.Domain.Exceptions;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Kwetter.Services.FollowService.Domain.AggregatesModel.UserAggregate
 {
@@ -15,6 +16,7 @@ namespace Kwetter.Services.FollowService.Domain.AggregatesModel.UserAggregate
         private List<Follow> followings;
         private string userDisplayName;
         private string userProfilePictureUrl;
+        private string userName;
 
         /// <summary>
         /// Gets and sets the user display name.
@@ -26,8 +28,28 @@ namespace Kwetter.Services.FollowService.Domain.AggregatesModel.UserAggregate
             {
                 if (string.IsNullOrWhiteSpace(value))
                     throw new FollowDomainException("The user display name is null, empty or contains only whitespaces.");
+                if (value.Length > 64)
+                    throw new FollowDomainException("The user display name length exceeded 64 characters.");
                 userDisplayName = value;
             } 
+        }
+
+        /// <summary>
+        /// Gets and sets the user name.
+        /// </summary>
+        public string UserName
+        {
+            get => userName;
+            private set
+            {
+                if (string.IsNullOrWhiteSpace(value))
+                    throw new FollowDomainException("The user name is null, empty or contains only whitespaces.");
+                if (value.Length > 32)
+                    throw new FollowDomainException("The user name length exceeded 32 characters.");
+                if (!value.All(char.IsLetterOrDigit))
+                    throw new FollowDomainException("The user name is not alphanumeric.");
+                userName = value;
+            }
         }
 
         /// <summary>
@@ -68,16 +90,16 @@ namespace Kwetter.Services.FollowService.Domain.AggregatesModel.UserAggregate
         /// </summary>
         /// <param name="userId">The user id.</param>
         /// <param name="userDisplayName">The user display name.</param>
+        /// <param name="userName">The user name.</param>
         /// <param name="userProfilePictureUrl">The user profile picture url.</param>
-        public UserAggregate(Guid userId, string userDisplayName, string userProfilePictureUrl)
+        public UserAggregate(Guid userId, string userDisplayName, string userName, string userProfilePictureUrl) : this()
         {
             if (userId == Guid.Empty)
                 throw new FollowDomainException("The user id is empty.");
             Id = userId;
             UserDisplayName = userDisplayName;
+            UserName = userName;
             UserProfilePictureUrl = userProfilePictureUrl;
-            followers = new List<Follow>();
-            followings = new List<Follow>();
         }
 
         /// <summary>

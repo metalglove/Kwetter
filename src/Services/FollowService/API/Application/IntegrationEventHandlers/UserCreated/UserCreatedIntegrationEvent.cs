@@ -6,42 +6,31 @@ namespace Kwetter.Services.FollowService.API.Application.IntegrationEventHandler
     /// <summary>
     /// Represents the <see cref="UserCreatedIntegrationEvent"/> class.
     /// </summary>
-    public sealed class UserCreatedIntegrationEvent : IntegrationEvent
+    public sealed class UserCreatedIntegrationEvent : IncomingIntegrationEvent
     {
         /// <summary>
         /// Gets and sets the user id.
         /// </summary>
-        public Guid UserId { get; private set; }
+        public Guid UserId { get; set; }
 
         /// <summary>
         /// Gets and sets the user display name.
         /// </summary>
-        public string UserDisplayName { get; private set; }
+        public string UserDisplayName { get; set; }
+
+        /// <summary>
+        /// Gets and sets the user name.
+        /// </summary>
+        public string UserName { get; set; }
 
         /// <summary>
         /// Gets and sets the user profile description.
         /// </summary>
-        public string UserProfileDescription { get; private set; }
+        public string UserProfileDescription { get; set; }
 
         /// <summary>
         /// Gets and sets the user profile picture url.
         /// </summary>
-        public string UserProfilePictureUrl { get; private set; }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="UserCreatedIntegrationEvent"/> class.
-        /// </summary>
-        /// <param name="userId">The user id.</param>
-        /// <param name="userDisplayName">The user display name.</param>
-        /// <param name="userProfileDescription">The user profile description.</param>
-        /// <param name="userProfilePictureUrl">The user profile picture url.</param>
-        public UserCreatedIntegrationEvent(Guid userId, string userDisplayName, string userProfileDescription, string userProfilePictureUrl)
-        {
-            UserId = userId;
-            UserDisplayName = userDisplayName;
-            UserProfileDescription = userProfileDescription;
-            UserProfilePictureUrl = userProfilePictureUrl;
-            EventVersion = 1;
-        }
+        public string UserProfilePictureUrl { get; set; }
     }
 }

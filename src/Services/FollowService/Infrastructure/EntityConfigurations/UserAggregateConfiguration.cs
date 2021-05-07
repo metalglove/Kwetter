@@ -30,22 +30,16 @@ namespace Kwetter.Services.FollowService.Infrastructure.EntityConfigurations
                 .IsRequired(true);
 
             // The user has many followings.
-            //builder.HasMany<Follow>("followings")
-            //    .WithOne(p => p.Follower)
-            //    .HasForeignKey(p => p.FollowerId);
-
             builder.HasMany(p => p.Followings)
                 .WithOne(p => p.Follower)
-                .HasForeignKey(p => p.FollowerId);
+                .HasForeignKey(p => p.FollowerId)
+                .OnDelete(DeleteBehavior.Restrict);
 
             // The user has many followers.
-            //builder.HasMany<Follow>("followers")
-            //    .WithOne(p => p.Following)
-            //    .HasForeignKey(p => p.FollowingId);
-
             builder.HasMany(p => p.Followers)
                 .WithOne(p => p.Following)
-                .HasForeignKey(p => p.FollowingId);
+                .HasForeignKey(p => p.FollowingId)
+                .OnDelete(DeleteBehavior.Restrict);
 
             builder.Metadata
                 .FindNavigation("Followers")

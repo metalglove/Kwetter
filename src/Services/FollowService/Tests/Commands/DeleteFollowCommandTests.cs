@@ -1,4 +1,4 @@
-﻿using Kwetter.Services.Common.API.CQRS;
+﻿using Kwetter.Services.Common.Application.CQRS;
 using Kwetter.Services.Common.Tests;
 using Kwetter.Services.FollowService.API;
 using Kwetter.Services.FollowService.API.Application.Commands.CreateFollowCommand;
@@ -37,10 +37,10 @@ namespace Kwetter.Services.FollowService.Tests.Commands
             FollowController = CreateAuthorizedController<FollowController>(Mediator);
 
             IUserRepository userRepository = ServiceProvider.GetRequiredService<IUserRepository>();
-            UserAggregate follower = new(FollowerId, AuthorizedUserName, "https://icon-library.net/images/default-user-icon/default-user-icon-8.jpg");
+            UserAggregate follower = new(FollowerId, "kwetter man", AuthorizedUserName, "https://icon-library.net/images/default-user-icon/default-user-icon-8.jpg");
             userRepository.Create(follower);
 
-            UserAggregate following = new(FollowingId, "candyman67", "https://icon-library.net/images/default-user-icon/default-user-icon-8.jpg");
+            UserAggregate following = new(FollowingId, "candyman67", "candyman", "https://icon-library.net/images/default-user-icon/default-user-icon-8.jpg");
             userRepository.Create(following);
             await userRepository.UnitOfWork.SaveEntitiesAsync();
 

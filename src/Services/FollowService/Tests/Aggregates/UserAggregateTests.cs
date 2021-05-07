@@ -13,11 +13,12 @@ namespace Kwetter.Services.FollowService.Tests.Aggregates
         {
             // Arrange
             Guid userId = Guid.NewGuid();
-            const string userDisplayName = "someone";
+            const string userDisplayName = "HELLOMAN";
+            const string userName = "someone";
             const string userProfilePictureUrl = "https://icon-library.net/images/default-user-icon/default-user-icon-8.jpg";
 
             // Act
-            UserAggregate userAggregate = new(userId, userDisplayName, userProfilePictureUrl);
+            UserAggregate userAggregate = new(userId, userDisplayName, userName, userProfilePictureUrl);
 
             // Assert
             Assert.IsNotNull(userAggregate);
@@ -27,8 +28,8 @@ namespace Kwetter.Services.FollowService.Tests.Aggregates
         public void Should_Follow_User()
         {
             // Arrange
-            UserAggregate userAggregate = new(Guid.NewGuid(), "SuperMario", "https://icon-library.net/images/default-user-icon/default-user-icon-8.jpg");
-            UserAggregate otherUserAggregate = new(Guid.NewGuid(), "candyman67", "https://icon-library.net/images/default-user-icon/default-user-icon-8.jpg");
+            UserAggregate userAggregate = new(Guid.NewGuid(), "SuperMario", "supermario", "https://icon-library.net/images/default-user-icon/default-user-icon-8.jpg");
+            UserAggregate otherUserAggregate = new(Guid.NewGuid(), "candyman67", "canyman", "https://icon-library.net/images/default-user-icon/default-user-icon-8.jpg");
             
             // Act
             bool followed = userAggregate.Follow(otherUserAggregate);
@@ -42,11 +43,12 @@ namespace Kwetter.Services.FollowService.Tests.Aggregates
         {
             // Arrange
             Guid userId = Guid.Empty;
-            const string userDisplayName = "someone";
+            const string userDisplayName = "HelloMan";
+            const string userName = "someone";
             const string userProfilePictureUrl = "https://icon-library.net/images/default-user-icon/default-user-icon-8.jpg";
 
             // Act
-            FollowDomainException exception = Assert.ThrowsException<FollowDomainException>(() => new UserAggregate(userId, userDisplayName, userProfilePictureUrl));
+            FollowDomainException exception = Assert.ThrowsException<FollowDomainException>(() => new UserAggregate(userId, userDisplayName, userName, userProfilePictureUrl));
             
             // Assert
             Assert.AreEqual(exception.Message, "The user id is empty.");
@@ -58,10 +60,11 @@ namespace Kwetter.Services.FollowService.Tests.Aggregates
             // Arrange
             Guid userId = Guid.NewGuid();
             const string userDisplayName = "";
+            const string userName = "someone";
             const string userProfilePictureUrl = "https://icon-library.net/images/default-user-icon/default-user-icon-8.jpg";
 
             // Act
-            FollowDomainException exception = Assert.ThrowsException<FollowDomainException>(() => new UserAggregate(userId, userDisplayName, userProfilePictureUrl));
+            FollowDomainException exception = Assert.ThrowsException<FollowDomainException>(() => new UserAggregate(userId, userDisplayName, userName, userProfilePictureUrl));
 
             // Assert
             Assert.AreEqual(exception.Message, "The user display name is null, empty or contains only whitespaces.");
@@ -72,11 +75,12 @@ namespace Kwetter.Services.FollowService.Tests.Aggregates
         {
             // Arrange
             Guid userId = Guid.NewGuid();
-            const string userDisplayName = "someone";
+            const string userDisplayName = "sdfgsDSD";
+            const string userName = "someone";
             const string userProfilePictureUrl = "";
 
             // Act
-            FollowDomainException exception = Assert.ThrowsException<FollowDomainException>(() => new UserAggregate(userId, userDisplayName, userProfilePictureUrl));
+            FollowDomainException exception = Assert.ThrowsException<FollowDomainException>(() => new UserAggregate(userId, userDisplayName, userName, userProfilePictureUrl));
 
             // Assert
             Assert.AreEqual(exception.Message, "The user profile picture url is null, empty or contains only whitespaces.");
@@ -86,7 +90,7 @@ namespace Kwetter.Services.FollowService.Tests.Aggregates
         public void Should_Throw_Exception_While_Following_Due_To_Same_Follower_And_Following_Ids()
         {
             // Arrange
-            UserAggregate userAggregate = new(Guid.NewGuid(), "SuperMario", "https://icon-library.net/images/default-user-icon/default-user-icon-8.jpg");
+            UserAggregate userAggregate = new(Guid.NewGuid(), "SuperMario", "sdaddds", "https://icon-library.net/images/default-user-icon/default-user-icon-8.jpg");
 
             // Act
             FollowDomainException exception = Assert.ThrowsException<FollowDomainException>(() => userAggregate.Follow(userAggregate));
@@ -99,7 +103,7 @@ namespace Kwetter.Services.FollowService.Tests.Aggregates
         public void Should_Throw_Exception_While_Following_Due_To_Null()
         {
             // Arrange
-            UserAggregate userAggregate = new(Guid.NewGuid(), "SuperMario", "https://icon-library.net/images/default-user-icon/default-user-icon-8.jpg");
+            UserAggregate userAggregate = new(Guid.NewGuid(), "SuperMario", "dsdsdsd", "https://icon-library.net/images/default-user-icon/default-user-icon-8.jpg");
 
             // Act
             FollowDomainException exception = Assert.ThrowsException<FollowDomainException>(() => userAggregate.Follow(null));
@@ -112,7 +116,7 @@ namespace Kwetter.Services.FollowService.Tests.Aggregates
         public void Should_Throw_Exception_While_Unfollowing_Due_To_Same_Follower_And_Following_Ids()
         {
             // Arrange
-            UserAggregate userAggregate = new(Guid.NewGuid(), "SuperMario", "https://icon-library.net/images/default-user-icon/default-user-icon-8.jpg");
+            UserAggregate userAggregate = new(Guid.NewGuid(), "SuperMario", "dsdsdds", "https://icon-library.net/images/default-user-icon/default-user-icon-8.jpg");
 
             // Act
             FollowDomainException exception = Assert.ThrowsException<FollowDomainException>(() => userAggregate.Unfollow(userAggregate));
@@ -125,7 +129,7 @@ namespace Kwetter.Services.FollowService.Tests.Aggregates
         public void Should_Throw_Exception_While_Unfollowing_Due_To_Null()
         {
             // Arrange
-            UserAggregate userAggregate = new(Guid.NewGuid(), "SuperMario", "https://icon-library.net/images/default-user-icon/default-user-icon-8.jpg");
+            UserAggregate userAggregate = new(Guid.NewGuid(), "SuperMario", "dsdsds", "https://icon-library.net/images/default-user-icon/default-user-icon-8.jpg");
 
             // Act
             FollowDomainException exception = Assert.ThrowsException<FollowDomainException>(() => userAggregate.Unfollow(null));
@@ -138,8 +142,8 @@ namespace Kwetter.Services.FollowService.Tests.Aggregates
         public void Should_Unfollow_User()
         {
             // Arrange
-            UserAggregate userAggregate = new(Guid.NewGuid(), "SuperMario", "https://icon-library.net/images/default-user-icon/default-user-icon-8.jpg");
-            UserAggregate otherUserAggregate = new(Guid.NewGuid(), "candyman67", "https://icon-library.net/images/default-user-icon/default-user-icon-8.jpg");
+            UserAggregate userAggregate = new(Guid.NewGuid(), "SuperMario", "supermario", "https://icon-library.net/images/default-user-icon/default-user-icon-8.jpg");
+            UserAggregate otherUserAggregate = new(Guid.NewGuid(), "candyman67", "candyman", "https://icon-library.net/images/default-user-icon/default-user-icon-8.jpg");
             userAggregate.Follow(otherUserAggregate);
 
             // Act
@@ -153,8 +157,8 @@ namespace Kwetter.Services.FollowService.Tests.Aggregates
         public void Should_Fail_To_Unfollow_Twice_In_Same_Context()
         {
             // Arrange
-            UserAggregate userAggregate = new(Guid.NewGuid(), "SuperMario", "https://icon-library.net/images/default-user-icon/default-user-icon-8.jpg");
-            UserAggregate otherUserAggregate = new(Guid.NewGuid(), "candyman67", "https://icon-library.net/images/default-user-icon/default-user-icon-8.jpg");
+            UserAggregate userAggregate = new(Guid.NewGuid(), "SuperMario", "supermario", "https://icon-library.net/images/default-user-icon/default-user-icon-8.jpg");
+            UserAggregate otherUserAggregate = new(Guid.NewGuid(), "candyman67", "candyman", "https://icon-library.net/images/default-user-icon/default-user-icon-8.jpg");
             userAggregate.Follow(otherUserAggregate);
             userAggregate.Unfollow(otherUserAggregate);
 
