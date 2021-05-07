@@ -38,6 +38,7 @@ namespace Kwetter.Services.UserService.API.Application.DomainEventHandlers.UserC
                 notification.UserProfileDescription,
                 notification.UserProfilePictureUrl);
             userCreatedIntegrationEvent.SetExchangeName("UserExchange");
+            userCreatedIntegrationEvent.SetRoutingKey("UserService.UserCreatedIntegrationEvent");
             _integrationEventService.EnqueueEvent(userCreatedIntegrationEvent);
             return Task.CompletedTask;
         }

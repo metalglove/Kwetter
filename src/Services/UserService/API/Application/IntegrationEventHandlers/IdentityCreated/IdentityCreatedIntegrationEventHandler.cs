@@ -1,7 +1,5 @@
 ﻿using Kwetter.Services.Common.Application.Eventing;
-using Kwetter.Services.UserService.API.Application.Commands.CreateUserCommand;
-using MediatR;
-using Microsoft.Extensions.DependencyInjection;
+using Kwetter.Services.UserService.Domain.AggregatesModel.UserAggregate;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -13,15 +11,15 @@ namespace Kwetter.Services.UserService.API.Application.IntegrationEventHandlers.
     /// </summary>
     public sealed class IdentityCreatedIntegrationEventHandler : KwetterEventHandler<IdentityCreatedIntegrationEvent>
     {
-        private readonly IServiceScopeFactory _serviceScopeFactory;
+        private readonly IUserRepository _userRepository;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="IdentityCreatedIntegrationEventHandler"/> class.
         /// </summary>
-        /// <param name="serviceScopeFactory">The service scope factory.</param>
-        public IdentityCreatedIntegrationEventHandler(IServiceScopeFactory serviceScopeFactory)
+        /// <param name="userRepository">The user repository.</param>
+        public IdentityCreatedIntegrationEventHandler(IUserRepository userRepository)
         {
-            _serviceScopeFactory = serviceScopeFactory ?? throw new ArgumentNullException(nameof(serviceScopeFactory));
+            _userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
         }
 
         /// <summary>
@@ -32,16 +30,17 @@ namespace Kwetter.Services.UserService.API.Application.IntegrationEventHandlers.
         /// <returns>Returns an awaitable task.</returns>
         public async override ValueTask HandleAsync(IdentityCreatedIntegrationEvent @event, CancellationToken cancellationToken)
         {
-            using IServiceScope scope = _serviceScopeFactory.CreateScope();
-            IMediator mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
-            await mediator.Send(new CreateUserCommand()
-            {
-                UserId = @event.UserId,
-                UserDisplayName = @event.GivenName,
-                UserName = @event.UserName,
-                UserProfileDescription = $"Hello! I am {@event.GivenName}!",
-                UserProfilePictureUrl = @event.ProfilePictureUrl
-            }, cancellationToken);
+            UserAggregate user = await _userRepository.FindByIdAsync(@event.UserId, cancellationToken);
+            if (user != default)
+                throw new UserIntegrationException("A user with the proposed user id already exists.");
+            user = await _userRepository.FindByUserNameAsync(@event.UserName, cancellationToken);
+            if (user != default)
+                throw new UserIntegrationException("A user with the proposed user name already exists.");
+            user = new(@event.UserId, @event.GivenName, @event.UserName, $"Hello! I am {@event.GivenName}!", @event.ProfilePictureUrl);
+            _userRepository.Create(user);
+            bool success = await _userRepository.UnitOfWork.SaveEntitiesAsync(cancellationToken);
+            if (!success)
+                throw new UserIntegrationException("Failed to handle IdentityCreatedIntegrationEvent.");
         }
     }
 }

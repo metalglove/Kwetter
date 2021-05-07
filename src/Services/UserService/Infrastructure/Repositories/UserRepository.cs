@@ -47,11 +47,12 @@ namespace Kwetter.Services.UserService.Infrastructure.Repositories
                 .FindAsync(new object[] {id}, cancellationToken);
         }
 
-        /// <inheritdoc cref="IUserRepository.FindByUserDisplayNameAsync" />
-        public async Task<UserAggregate> FindByUserDisplayNameAsync(string displayName, CancellationToken cancellationToken)
+        /// <inheritdoc cref="IUserRepository.FindByUserNameAsync(string, CancellationToken)" />
+        public async Task<UserAggregate> FindByUserNameAsync(string userName, CancellationToken cancellationToken)
         {
+            string loweredUserName = userName.ToLower();
             return await _userDbContext.Users
-                .AsQueryable().Where(user => user.DisplayName.ToLower() == displayName.ToLower())
+                .AsQueryable().Where(user => user.UserName == loweredUserName)
                 .SingleOrDefaultAsync(cancellationToken);
         }
     }

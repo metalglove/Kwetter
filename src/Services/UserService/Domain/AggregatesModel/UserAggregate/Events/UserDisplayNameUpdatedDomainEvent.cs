@@ -9,12 +9,12 @@ namespace Kwetter.Services.UserService.Domain.AggregatesModel.UserAggregate.Even
     public sealed class UserDisplayNameUpdatedDomainEvent : DomainEvent
     {
         /// <summary>
-        /// Gets and sets the user id.
+        /// Gets the user id.
         /// </summary>
         public Guid UserId { get; }
 
         /// <summary>
-        /// Gets and sets the display name.
+        /// Gets the display name.
         /// </summary>
         public string UserDisplayName { get; }
 

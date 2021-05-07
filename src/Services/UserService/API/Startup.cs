@@ -1,9 +1,11 @@
 using Kwetter.Services.Common.API;
+using Kwetter.Services.Common.Application.Eventing;
 using Kwetter.Services.Common.Application.Eventing.Bus;
 using Kwetter.Services.Common.Infrastructure;
 using Kwetter.Services.Common.Infrastructure.Behaviours;
-using Kwetter.Services.UserService.API.Application.Commands.CreateUserCommand;
+using Kwetter.Services.Common.Infrastructure.RabbitMq;
 using Kwetter.Services.UserService.API.Application.IntegrationEventHandlers.IdentityCreated;
+using Kwetter.Services.UserService.API.Controllers;
 using Kwetter.Services.UserService.Domain.AggregatesModel.UserAggregate;
 using Kwetter.Services.UserService.Infrastructure;
 using Kwetter.Services.UserService.Infrastructure.Repositories;
@@ -14,6 +16,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using RabbitMQ.Client;
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 
@@ -44,7 +47,7 @@ namespace Kwetter.Services.UserService.API
         {
             services.AddConfigurations(_configuration);
             services.AddLogging(p => p.AddConsole());
-            services.AddDefaultApplicationServices(Assembly.GetAssembly(typeof(Startup)), Assembly.GetAssembly(typeof(CreateUserCommand)));
+            services.AddDefaultApplicationServices(Assembly.GetAssembly(typeof(Startup)), Assembly.GetAssembly(typeof(UserController)));
             services.AddScoped(typeof(IPipelineBehavior<,>), typeof(TransactionBehaviour<,>));
             services.AddDefaultInfrastructureServices();
             services.AddEventStore();
@@ -53,6 +56,9 @@ namespace Kwetter.Services.UserService.API
             services.AddScoped<UserDbContext>(p => p.GetRequiredService<IFactory<UserDbContext>>().Create());
             services.AddScoped<IAggregateUnitOfWork>(p => p.GetRequiredService<IFactory<UserDbContext>>().Create());
             services.AddScoped<IUserRepository, UserRepository>();
+
+            services.AddIntegrationEventHandler<IdentityCreatedIntegrationEventHandler, IdentityCreatedIntegrationEvent>();
+
             services.AddControllers();
             services.AddSwagger(_configuration);
             services.VerifyDatabaseConnection<UserDbContext>();
@@ -63,9 +69,9 @@ namespace Kwetter.Services.UserService.API
         /// </summary>
         /// <param name="app">The application builder.</param>
         /// <param name="env">The web host environment.</param>
-        /// <param name="eventBus">The event bus.</param>
-        /// <param name="serviceScopeFactory">The service scope factory.</param>
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IEventBus eventBus, IServiceScopeFactory serviceScopeFactory)
+        /// <param name="eventBus">The event bus.</param>        
+        /// <param name="rabbitConfiguration">The rabbit configuration.</param>
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IEventBus eventBus, RabbitConfiguration rabbitConfiguration)
         {
             if (env.IsDevelopment())
             {
@@ -77,14 +83,12 @@ namespace Kwetter.Services.UserService.API
             }
 
             // Declare used exchanges!
-            eventBus.DeclareExchange("AuthorizationExchange", Common.Application.Eventing.ExchangeType.DIRECT);
-            eventBus.DeclareExchange("UserExchange", Common.Application.Eventing.ExchangeType.FANOUT);
+            rabbitConfiguration.DeclareExchange("AuthorizationExchange", ExchangeType.Direct);
+            rabbitConfiguration.DeclareExchange("UserExchange", ExchangeType.Topic);
+            rabbitConfiguration.DeclareAndBindQueueToExchange("AuthorizationExchange", "UserService.IdentityCreatedIntegrationEvent", "IdentityCreatedIntegrationEvent");
 
             // Subscribe to integration events.
-            eventBus.Subscribe<IdentityCreatedIntegrationEvent, IdentityCreatedIntegrationEventHandler>(
-                exchangeName: "AuthorizationExchange", 
-                queueName: $"AuthorizationService.Integration.IdentityCreatedIntegrationEvent", 
-                eventHandler: new IdentityCreatedIntegrationEventHandler(serviceScopeFactory));
+            eventBus.Subscribe<IdentityCreatedIntegrationEvent, IdentityCreatedIntegrationEventHandler>("UserService.IdentityCreatedIntegrationEvent");
 
             app.UseRouting();
             app.UseCors(x => x.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());

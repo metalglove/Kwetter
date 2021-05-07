@@ -60,24 +60,24 @@ namespace Kwetter.Services.UserService.Domain.AggregatesModel.UserAggregate
         }
 
         /// <summary>
-        /// Sets the profile description.
+        /// Updates the profile description.
         /// </summary>
         /// <param name="userId">The user id.</param>
         /// <param name="description">The description.</param>
         /// <exception cref="UserDomainException">Thrown when the provided description exceeds 512 characters.</exception>
-        public void SetDescription(Guid userId, string description)
+        public void UpdateDescription(Guid userId, string description)
         {
             Description = description;
             AddDomainEvent(new UserProfileDescriptionUpdatedDomainEvent(userId, Description));
         }
 
         /// <summary>
-        /// Sets the profile picture url.
+        /// Updates the profile picture url.
         /// </summary>
         /// <param name="userId">The user id.</param>
         /// <param name="pictureUrl">The picture url.</param>
         /// <exception cref="UserDomainException">Thrown when the provided picture url is empty.</exception>
-        public void SetPictureUrl(Guid userId, string pictureUrl)
+        public void UpdatePictureUrl(Guid userId, string pictureUrl)
         {
             PictureUrl = pictureUrl;
             AddDomainEvent(new UserProfilePictureUrlUpdatedDomainEvent(userId, PictureUrl));

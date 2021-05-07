@@ -35,6 +35,10 @@ namespace Kwetter.Services.UserService.Infrastructure.EntityConfigurations
             builder.Property(p => p.UserName)
                 .HasMaxLength(32);
 
+            // The user name is unique.
+            builder.HasIndex(p => p.UserName)
+                .IsUnique(true);
+
             // Configures the navigation property for the UserAggregate.
             builder.OwnsOne(p => p.Profile, navigationBuilder =>
             {

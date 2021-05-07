@@ -9,17 +9,17 @@ namespace Kwetter.Services.UserService.Domain.AggregatesModel.UserAggregate.Even
     public sealed class UserProfileCreatedDomainEvent : DomainEvent
     {
         /// <summary>
-        /// Gets and sets the user id.
+        /// Gets the user id.
         /// </summary>
         public Guid UserId { get; }
 
         /// <summary>
-        /// Gets and sets the description.
+        /// Gets the description.
         /// </summary>
         public string Description { get; }
 
         /// <summary>
-        /// Gets and sets the picture url.
+        /// Gets the picture url.
         /// </summary>
         public string PictureUrl { get; }
 

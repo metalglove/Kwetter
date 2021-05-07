@@ -69,6 +69,116 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Kwetter.Services.TimelineSe
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Kwetter.Services.TimelineService.API", "Services\TimelineService\API\Kwetter.Services.TimelineService.API.csproj", "{B3E32FBF-1A84-48B3-898D-C1706912DE04}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{6D06590F-5596-4DD5-9398-BDA2A6FD7FB2}"
+	ProjectSection(SolutionItems) = preProject
+		..\commands.md = ..\commands.md
+		..\docs\minikube-setup.md = ..\docs\minikube-setup.md
+		..\docs\production-setup.md = ..\docs\production-setup.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "queries", "queries", "{073E84ED-63CC-447D-9B04-D3D28F0E2BC6}"
+	ProjectSection(SolutionItems) = preProject
+		..\docs\queries\Seed.cypher = ..\docs\queries\Seed.cypher
+		..\docs\queries\Working_timeline.cypher = ..\docs\queries\Working_timeline.cypher
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "K8s", "K8s", "{AC4D1981-C4B8-484D-8302-FB94B92F96E6}"
+	ProjectSection(SolutionItems) = preProject
+		..\K8s\kwetter-namespace.yaml = ..\K8s\kwetter-namespace.yaml
+		..\K8s\kwetter-storage-class.yaml = ..\K8s\kwetter-storage-class.yaml
+		..\K8s\networking.yaml = ..\K8s\networking.yaml
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "EventStore", "EventStore", "{FACEADC9-5FD0-40C9-AF3A-E36A7432C97C}"
+	ProjectSection(SolutionItems) = preProject
+		..\K8s\EventStore\eventstore-storage-persistent-volume-and-claim.yaml = ..\K8s\EventStore\eventstore-storage-persistent-volume-and-claim.yaml
+		..\K8s\EventStore\eventstore.deployment.yaml = ..\K8s\EventStore\eventstore.deployment.yaml
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "cluster", "cluster", "{F9BCEB9F-B402-43C1-ADB3-78AD73ABC246}"
+	ProjectSection(SolutionItems) = preProject
+		..\K8s\EventStore\cluster\eventstore-pv-1.yaml = ..\K8s\EventStore\cluster\eventstore-pv-1.yaml
+		..\K8s\EventStore\cluster\eventstore-pv-2.yaml = ..\K8s\EventStore\cluster\eventstore-pv-2.yaml
+		..\K8s\EventStore\cluster\eventstore.statefulset.yaml = ..\K8s\EventStore\cluster\eventstore.statefulset.yaml
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Istio", "Istio", "{2D6D62DF-B1D1-4080-8719-3AB7FE201E6B}"
+	ProjectSection(SolutionItems) = preProject
+		..\K8s\Istio\kwetter-istio-gateway.yaml = ..\K8s\Istio\kwetter-istio-gateway.yaml
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MetalLB", "MetalLB", "{6EA8792F-CA38-4441-861C-BE169A40FB15}"
+	ProjectSection(SolutionItems) = preProject
+		..\K8s\MetalLB\kwetter-metal-loadbalancer-layer-2-config.yaml = ..\K8s\MetalLB\kwetter-metal-loadbalancer-layer-2-config.yaml
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Minikube", "Minikube", "{71E16994-F03B-4BB1-A499-6BAF7199F4B2}"
+	ProjectSection(SolutionItems) = preProject
+		..\K8s\Minikube\eventstore-storage-persistent-volume-and-claim.yaml = ..\K8s\Minikube\eventstore-storage-persistent-volume-and-claim.yaml
+		..\K8s\Minikube\kwetter-authorization-storage-persistent-volume-and-claim.yaml = ..\K8s\Minikube\kwetter-authorization-storage-persistent-volume-and-claim.yaml
+		..\K8s\Minikube\kwetter-follow-storage-persistent-volume-and-claim.yaml = ..\K8s\Minikube\kwetter-follow-storage-persistent-volume-and-claim.yaml
+		..\K8s\Minikube\kwetter-kweet-storage-persistent-volume-and-claim.yaml = ..\K8s\Minikube\kwetter-kweet-storage-persistent-volume-and-claim.yaml
+		..\K8s\Minikube\kwetter-user-storage-persistent-volume-and-claim.yaml = ..\K8s\Minikube\kwetter-user-storage-persistent-volume-and-claim.yaml
+		..\K8s\Minikube\rabbit-pv-1.yaml = ..\K8s\Minikube\rabbit-pv-1.yaml
+		..\K8s\Minikube\rabbit-pv-2.yaml = ..\K8s\Minikube\rabbit-pv-2.yaml
+		..\K8s\Minikube\rabbit-pv-3.yaml = ..\K8s\Minikube\rabbit-pv-3.yaml
+		..\K8s\Minikube\rabbit-pv.yaml = ..\K8s\Minikube\rabbit-pv.yaml
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "rabbitmq", "rabbitmq", "{3A444BA7-0C8F-4AFB-95A7-057705612009}"
+	ProjectSection(SolutionItems) = preProject
+		..\K8s\rabbitmq\rabbit-configmap.yaml = ..\K8s\rabbitmq\rabbit-configmap.yaml
+		..\K8s\rabbitmq\rabbit-pv-1.yaml = ..\K8s\rabbitmq\rabbit-pv-1.yaml
+		..\K8s\rabbitmq\rabbit-pv-2.yaml = ..\K8s\rabbitmq\rabbit-pv-2.yaml
+		..\K8s\rabbitmq\rabbit-pv-3.yaml = ..\K8s\rabbitmq\rabbit-pv-3.yaml
+		..\K8s\rabbitmq\rabbit-pv.yaml = ..\K8s\rabbitmq\rabbit-pv.yaml
+		..\K8s\rabbitmq\rabbit-rbac.yaml = ..\K8s\rabbitmq\rabbit-rbac.yaml
+		..\K8s\rabbitmq\rabbit-statefulset.yaml = ..\K8s\rabbitmq\rabbit-statefulset.yaml
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "services", "services", "{732B40E6-6403-4361-9364-23E08475E2BF}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "secrets", "secrets", "{C70C6332-84D2-4B83-BDA2-5594D8C36C74}"
+	ProjectSection(SolutionItems) = preProject
+		..\K8s\secrets\kwetter-authorization-db-secret.yaml = ..\K8s\secrets\kwetter-authorization-db-secret.yaml
+		..\K8s\secrets\kwetter-authorization-service-secret.yaml = ..\K8s\secrets\kwetter-authorization-service-secret.yaml
+		..\K8s\secrets\kwetter-follow-db-secret.yaml = ..\K8s\secrets\kwetter-follow-db-secret.yaml
+		..\K8s\secrets\kwetter-follow-service-secret.yaml = ..\K8s\secrets\kwetter-follow-service-secret.yaml
+		..\K8s\secrets\kwetter-kweet-db-secret.yaml = ..\K8s\secrets\kwetter-kweet-db-secret.yaml
+		..\K8s\secrets\kwetter-kweet-service-secret.yaml = ..\K8s\secrets\kwetter-kweet-service-secret.yaml
+		..\K8s\secrets\kwetter-user-db-secret.yaml = ..\K8s\secrets\kwetter-user-db-secret.yaml
+		..\K8s\secrets\kwetter-user-service-secret.yaml = ..\K8s\secrets\kwetter-user-service-secret.yaml
+		..\K8s\secrets\rabbit-secret.yaml = ..\K8s\secrets\rabbit-secret.yaml
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "authorization-service", "authorization-service", "{6FE94FE8-EF0C-4A88-A923-1076C5FF5A5D}"
+	ProjectSection(SolutionItems) = preProject
+		..\K8s\services\authorization-service\kwetter-authorization-db.deployment.yaml = ..\K8s\services\authorization-service\kwetter-authorization-db.deployment.yaml
+		..\K8s\services\authorization-service\kwetter-authorization-service.deployment.yaml = ..\K8s\services\authorization-service\kwetter-authorization-service.deployment.yaml
+		..\K8s\services\authorization-service\kwetter-authorization-storage-persistent-volume-and-claim.yaml = ..\K8s\services\authorization-service\kwetter-authorization-storage-persistent-volume-and-claim.yaml
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "kweet-service", "kweet-service", "{339023D9-46CF-4BD3-A44F-D556BC363611}"
+	ProjectSection(SolutionItems) = preProject
+		..\K8s\services\kweet-service\kwetter-kweet-db.deployment.yaml = ..\K8s\services\kweet-service\kwetter-kweet-db.deployment.yaml
+		..\K8s\services\kweet-service\kwetter-kweet-service.deployment.yaml = ..\K8s\services\kweet-service\kwetter-kweet-service.deployment.yaml
+		..\K8s\services\kweet-service\kwetter-kweet-storage-persistent-volume-and-claim.yaml = ..\K8s\services\kweet-service\kwetter-kweet-storage-persistent-volume-and-claim.yaml
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "user-service", "user-service", "{3D4CF2F0-CC99-444C-A62E-8DAC30E6873E}"
+	ProjectSection(SolutionItems) = preProject
+		..\K8s\services\user-service\kwetter-user-db.deployment.yaml = ..\K8s\services\user-service\kwetter-user-db.deployment.yaml
+		..\K8s\services\user-service\kwetter-user-service.deployment.yaml = ..\K8s\services\user-service\kwetter-user-service.deployment.yaml
+		..\K8s\services\user-service\kwetter-user-storage-persistent-volume-and-claim.yaml = ..\K8s\services\user-service\kwetter-user-storage-persistent-volume-and-claim.yaml
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "follow-service", "follow-service", "{AF6D06CE-3273-483A-9EBF-3746A01FB578}"
+	ProjectSection(SolutionItems) = preProject
+		..\K8s\services\follow-service\kwetter-follow-db.deployment.yaml = ..\K8s\services\follow-service\kwetter-follow-db.deployment.yaml
+		..\K8s\services\follow-service\kwetter-follow-service.deployment.yaml = ..\K8s\services\follow-service\kwetter-follow-service.deployment.yaml
+		..\K8s\services\follow-service\kwetter-follow-storage-persistent-volume-and-claim.yaml = ..\K8s\services\follow-service\kwetter-follow-storage-persistent-volume-and-claim.yaml
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -311,6 +421,19 @@ Global
 		{95BD6ACB-D122-4B73-9663-D974F85852D9} = {B3BC9EA4-5BD1-47DD-9B85-03CFE1BE71F8}
 		{59E2F2AF-BCFF-45A1-BFA4-8FDA1514BB75} = {B3BC9EA4-5BD1-47DD-9B85-03CFE1BE71F8}
 		{B3E32FBF-1A84-48B3-898D-C1706912DE04} = {B3BC9EA4-5BD1-47DD-9B85-03CFE1BE71F8}
+		{073E84ED-63CC-447D-9B04-D3D28F0E2BC6} = {6D06590F-5596-4DD5-9398-BDA2A6FD7FB2}
+		{FACEADC9-5FD0-40C9-AF3A-E36A7432C97C} = {AC4D1981-C4B8-484D-8302-FB94B92F96E6}
+		{F9BCEB9F-B402-43C1-ADB3-78AD73ABC246} = {FACEADC9-5FD0-40C9-AF3A-E36A7432C97C}
+		{2D6D62DF-B1D1-4080-8719-3AB7FE201E6B} = {AC4D1981-C4B8-484D-8302-FB94B92F96E6}
+		{6EA8792F-CA38-4441-861C-BE169A40FB15} = {AC4D1981-C4B8-484D-8302-FB94B92F96E6}
+		{71E16994-F03B-4BB1-A499-6BAF7199F4B2} = {AC4D1981-C4B8-484D-8302-FB94B92F96E6}
+		{3A444BA7-0C8F-4AFB-95A7-057705612009} = {AC4D1981-C4B8-484D-8302-FB94B92F96E6}
+		{732B40E6-6403-4361-9364-23E08475E2BF} = {AC4D1981-C4B8-484D-8302-FB94B92F96E6}
+		{C70C6332-84D2-4B83-BDA2-5594D8C36C74} = {AC4D1981-C4B8-484D-8302-FB94B92F96E6}
+		{6FE94FE8-EF0C-4A88-A923-1076C5FF5A5D} = {732B40E6-6403-4361-9364-23E08475E2BF}
+		{339023D9-46CF-4BD3-A44F-D556BC363611} = {732B40E6-6403-4361-9364-23E08475E2BF}
+		{3D4CF2F0-CC99-444C-A62E-8DAC30E6873E} = {732B40E6-6403-4361-9364-23E08475E2BF}
+		{AF6D06CE-3273-483A-9EBF-3746A01FB578} = {732B40E6-6403-4361-9364-23E08475E2BF}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {B4A5CA09-D8B5-43B6-BB96-97B00B1EC94A}

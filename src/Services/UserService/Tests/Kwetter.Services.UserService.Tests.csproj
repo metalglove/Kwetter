@@ -26,4 +26,8 @@
     <ProjectReference Include="..\Infrastructure\Kwetter.Services.UserService.Infrastructure.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Commands\" />
+  </ItemGroup>
+
 </Project>

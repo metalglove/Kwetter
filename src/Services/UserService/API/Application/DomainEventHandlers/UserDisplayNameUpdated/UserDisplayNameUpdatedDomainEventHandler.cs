@@ -33,6 +33,7 @@ namespace Kwetter.Services.UserService.API.Application.DomainEventHandlers.UserD
         {
             UserDisplayNameUpdatedIntegrationEvent userDisplayNameUpdatedIntegrationEvent = new(notification.UserId, notification.UserDisplayName);
             userDisplayNameUpdatedIntegrationEvent.SetExchangeName("UserExchange");
+            userDisplayNameUpdatedIntegrationEvent.SetRoutingKey("UserService.UserDisplayNameUpdatedIntegrationEvent");
             _integrationEventService.EnqueueEvent(userDisplayNameUpdatedIntegrationEvent);
             return Task.CompletedTask;
         }

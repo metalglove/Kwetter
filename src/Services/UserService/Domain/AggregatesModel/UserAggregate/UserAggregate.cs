@@ -79,11 +79,11 @@ namespace Kwetter.Services.UserService.Domain.AggregatesModel.UserAggregate
         }
 
         /// <summary>
-        /// Sets the display name.
+        /// Updates the display name.
         /// </summary>
         /// <param name="displayName">The display name.</param>
         /// <exception cref="UserDomainException">Thrown when the provided display name exceeds 64 characters or is empty.</exception>
-        public void SetDisplayName(string displayName)
+        public void UpdateDisplayName(string displayName)
         {
             DisplayName = displayName;
             AddDomainEvent(new UserDisplayNameUpdatedDomainEvent(Id, DisplayName));

@@ -33,6 +33,7 @@ namespace Kwetter.Services.UserService.API.Application.DomainEventHandlers.UserP
         {
             UserProfilePictureUrlUpdatedIntegrationEvent userProfilePictureUrlUpdatedIntegrationEvent = new(notification.UserId, notification.ProfilePictureUrl);
             userProfilePictureUrlUpdatedIntegrationEvent.SetExchangeName("UserExchange");
+            userProfilePictureUrlUpdatedIntegrationEvent.SetRoutingKey("UserService.UserProfilePictureUrlUpdatedIntegrationEvent");
             _integrationEventService.EnqueueEvent(userProfilePictureUrlUpdatedIntegrationEvent);
             return Task.CompletedTask;
         }
