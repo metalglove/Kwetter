@@ -9,17 +9,17 @@ namespace Kwetter.Services.KweetService.API.Application.DomainEventHandlers.Kwee
     public sealed class KweetLikedIntegrationEvent : IntegrationEvent
     {
         /// <summary>
-        /// Gets and sets the kweet id.
+        /// Gets the kweet id.
         /// </summary>
         public Guid KweetId { get; }
 
         /// <summary>
-        /// Gets and sets the user id.
+        /// Gets the user id.
         /// </summary>
         public Guid UserId { get; }
 
         /// <summary>
-        /// Gets and sets the date time when the kweet was liked.
+        /// Gets the date time when the kweet was liked.
         /// </summary>
         public DateTime LikedDateTime { get; }
 

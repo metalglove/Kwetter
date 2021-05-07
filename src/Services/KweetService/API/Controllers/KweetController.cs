@@ -1,20 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Kwetter.Services.Common.API.CQRS;
+﻿using Kwetter.Services.Common.Application.CQRS;
 using Kwetter.Services.KweetService.API.Application.Commands.CreateKweetCommand;
 using Kwetter.Services.KweetService.API.Application.Commands.LikeKweetCommand;
 using Kwetter.Services.KweetService.API.Application.Commands.UnlikeKweetCommand;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Kwetter.Services.KweetService.API.Controllers
 {
     /// <summary>
     /// Represents the <see cref="KweetController"/> class.
     /// </summary>
+    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class KweetController : ControllerBase

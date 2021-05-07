@@ -31,6 +31,10 @@ namespace Kwetter.Services.KweetService.Infrastructure.EntityConfigurations
             builder.Property(p => p.UserName)
                 .IsRequired(true);
 
+            // The user profile picture url required.
+            builder.Property(p => p.UserProfilePictureUrl)
+                .IsRequired(true);
+
             // The user name has a maximum length of 32.
             builder.Property(p => p.UserName)
                 .HasMaxLength(32);

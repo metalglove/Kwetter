@@ -42,11 +42,11 @@ namespace Kwetter.Services.KweetService.Domain.AggregatesModel.UserAggregate
         ValueTask<Kweet> FindKweetAsync(Guid kweetId, CancellationToken cancellationToken);
 
         /// <summary>
-        /// Finds users by user display names asynchronously.
+        /// Find and track mentions asynchronously.
         /// </summary>
-        /// <param name="userDisplayNames">The user display names.</param>
+        /// <param name="mentions">The mentions.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns>Returns the user aggregates found by user display name.</returns>
-        ValueTask<IEnumerable<UserAggregate>> FindUsersByUserDisplayNamesAsync(IEnumerable<string> userDisplayNames, CancellationToken cancellationToken);
+        /// <returns>Returns the tracked mentions.</returns>
+        Task<IEnumerable<Mention>> FindUsersByUserNameAndTrackMentionsAsync(IEnumerable<Mention> mentions, CancellationToken cancellationToken);
     }
 }

@@ -32,7 +32,7 @@ namespace Kwetter.Services.KweetService.Infrastructure.EntityConfigurations
                 .HasMaxLength(140)
                 .IsRequired(true);
 
-            // The KweetAggregate owns many KweetLikes.
+            // The kweet has many KweetLikes.
             builder.HasMany(p => p.Likes)
                 .WithOne()
                 .HasForeignKey(p => p.KweetId);
@@ -40,6 +40,25 @@ namespace Kwetter.Services.KweetService.Infrastructure.EntityConfigurations
             builder
                 .Navigation(p => p.Likes)
                 .HasField("likes")
+                .UsePropertyAccessMode(PropertyAccessMode.Field);
+
+            // The kweet has many mentions.
+            builder.HasMany(p => p.Mentions)
+                .WithOne();
+
+            builder
+                .Navigation(p => p.Mentions)
+                .HasField("mentions")
+                .UsePropertyAccessMode(PropertyAccessMode.Field);
+
+            // The kweet has many hashtags.
+            builder.HasMany(p => p.HashTags)
+                .WithOne()
+                .HasForeignKey(p => p.KweetId);
+
+            builder
+                .Navigation(p => p.HashTags)
+                .HasField("hashTags")
                 .UsePropertyAccessMode(PropertyAccessMode.Field);
 
             // The like count is computed from the likes set.

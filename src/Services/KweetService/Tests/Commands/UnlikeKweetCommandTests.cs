@@ -1,4 +1,4 @@
-﻿using Kwetter.Services.Common.API.CQRS;
+﻿using Kwetter.Services.Common.Application.CQRS;
 using Kwetter.Services.Common.Tests;
 using Kwetter.Services.KweetService.API;
 using Kwetter.Services.KweetService.API.Application.Commands.CreateKweetCommand;
@@ -35,7 +35,7 @@ namespace Kwetter.Services.KweetService.Tests.Commands
 
             KweetController = CreateAuthorizedController<KweetController>(Mediator);
             IUserRepository userRepository = ServiceProvider.GetRequiredService<IUserRepository>();
-            UserAggregate user = new(AuthorizedUserId, "kwetter user", AuthorizedUserName);
+            UserAggregate user = new(AuthorizedUserId, "kwetter user", AuthorizedUserName, "https://icon-library.net/images/default-user-icon/default-user-icon-8.jpg");
             userRepository.Create(user);
             await userRepository.UnitOfWork.SaveChangesAsync();
             KweetId = Guid.NewGuid();

@@ -1,10 +1,10 @@
-﻿using Kwetter.Services.Common.API.CQRS;
+﻿using Kwetter.Services.Common.Application.CQRS;
+using Kwetter.Services.KweetService.Domain.AggregatesModel.UserAggregate;
 using MediatR;
 using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using Kwetter.Services.KweetService.Domain.AggregatesModel.UserAggregate;
 
 namespace Kwetter.Services.KweetService.API.Application.Commands.UnlikeKweetCommand
 {

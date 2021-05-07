@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 
 namespace Kwetter.Services.KweetService.API.Application.DomainEventHandlers.KweetUnliked
 {
-
     /// <summary>
     /// Represents the <see cref="KweetUnlikedDomainEventHandler"/> class.
     /// </summary>
@@ -34,6 +33,7 @@ namespace Kwetter.Services.KweetService.API.Application.DomainEventHandlers.Kwee
         {
             KweetUnlikedIntegrationEvent kweetUnlikedIntegrationEvent = new(notification.KweetId, notification.UserId, notification.UnlikedDateTime);
             kweetUnlikedIntegrationEvent.SetExchangeName("KweetExchange");
+            kweetUnlikedIntegrationEvent.SetRoutingKey("KweetService.KweetUnlikedIntegrationEvent");
             _integrationEventService.EnqueueEvent(kweetUnlikedIntegrationEvent);
             return Task.CompletedTask;
         }

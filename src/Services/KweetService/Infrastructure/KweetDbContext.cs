@@ -48,6 +48,8 @@ namespace Kwetter.Services.KweetService.Infrastructure
         /// <param name="modelBuilder">The model builder.</param>
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.ApplyConfiguration(new HashTagConfiguration());
+            modelBuilder.ApplyConfiguration(new MentionConfiguration());
             modelBuilder.ApplyConfiguration(new KweetLikeConfiguration());
             modelBuilder.ApplyConfiguration(new KweetConfiguration());
             modelBuilder.ApplyConfiguration(new UserAggregateConfiguration());

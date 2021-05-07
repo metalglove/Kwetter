@@ -33,6 +33,7 @@ namespace Kwetter.Services.KweetService.API.Application.DomainEventHandlers.Kwee
         {
             KweetLikedIntegrationEvent kweetLikedIntegrationEvent = new(notification.KweetId, notification.UserId, notification.LikedDateTime);
             kweetLikedIntegrationEvent.SetExchangeName("KweetExchange");
+            kweetLikedIntegrationEvent.SetRoutingKey("KweetService.KweetLikedIntegrationEvent");
             _integrationEventService.EnqueueEvent(kweetLikedIntegrationEvent);
             return Task.CompletedTask;
         }

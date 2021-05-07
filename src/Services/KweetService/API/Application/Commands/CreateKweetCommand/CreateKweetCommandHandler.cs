@@ -1,4 +1,4 @@
-﻿using Kwetter.Services.Common.API.CQRS;
+﻿using Kwetter.Services.Common.Application.CQRS;
 using Kwetter.Services.KweetService.Domain.AggregatesModel.UserAggregate;
 using MediatR;
 using System;
@@ -33,7 +33,9 @@ namespace Kwetter.Services.KweetService.API.Application.Commands.CreateKweetComm
         public async Task<CommandResponse> Handle(CreateKweetCommand request, CancellationToken cancellationToken)
         {
             UserAggregate user = await _userRepository.FindAsync(request.UserId, cancellationToken);
-            Kweet kweet = user.CreateKweet(request.KweetId, request.Message);
+            Task<IEnumerable<Mention>> FindUsersByUserNamesAsync(IEnumerable<Mention> mentions, CancellationToken ct)
+                => _userRepository.FindUsersByUserNameAndTrackMentionsAsync(mentions, ct);
+            Kweet kweet = await user.CreateKweetAsync(request.KweetId, request.Message, FindUsersByUserNamesAsync, cancellationToken);
             kweet = _userRepository.TrackKweet(kweet);
             bool success = await _userRepository.UnitOfWork.SaveEntitiesAsync(cancellationToken);
             CommandResponse commandResponse = new()

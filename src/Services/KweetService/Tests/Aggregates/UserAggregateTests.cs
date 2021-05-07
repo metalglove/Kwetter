@@ -2,6 +2,10 @@
 using Kwetter.Services.KweetService.Domain.Exceptions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Kwetter.Services.KweetService.Tests.Aggregates
 {
@@ -9,11 +13,34 @@ namespace Kwetter.Services.KweetService.Tests.Aggregates
     public class UserAggregateTests
     {
         public UserAggregate User { get; set; }
+        private List<UserAggregate> ExistingUsers { get; set; }
 
         [TestInitialize]
         public void Initialize()
         {
-            User = new(Guid.NewGuid(), "Glovali", "supermario");
+            User = new(Guid.NewGuid(), "Glovali", "supermario", "https://icon-library.net/images/default-user-icon/default-user-icon-8.jpg");
+            ExistingUsers = new List<UserAggregate>()
+            {
+                new UserAggregate(Guid.NewGuid(), "Omegaguy1", "helloguy1", "https://icon-library.net/images/default-user-icon/default-user-icon-8.jpg"),
+                new UserAggregate(Guid.NewGuid(), "Megaaaa", "megaman2", "https://icon-library.net/images/default-user-icon/default-user-icon-8.jpg"),
+                new UserAggregate(Guid.NewGuid(), "WAIKOOO", "waiko", "https://icon-library.net/images/default-user-icon/default-user-icon-8.jpg"),
+                new UserAggregate(Guid.NewGuid(), "SUPERMAN", "superman", "https://icon-library.net/images/default-user-icon/default-user-icon-8.jpg"),
+                new UserAggregate(Guid.NewGuid(), "PIKAAAAA", "pikachu", "https://icon-library.net/images/default-user-icon/default-user-icon-8.jpg"),
+                User
+            };
+        }
+
+        private Task<IEnumerable<Mention>> FindUsersByUserNameAndTrackMentionsAsync(IEnumerable<Mention> userNames, CancellationToken ct)
+        {
+            List<Mention> returnMentions = new();
+            var result = ExistingUsers.Join(userNames, u => u.UserName, mention => mention.UserName, (user, mention) => new { user, mention }).ToList();
+            foreach (var item in result)
+            {
+                Mention mention = item.mention;
+                mention.User = item.user;
+                returnMentions.Add(mention);
+            }
+            return Task.FromResult(returnMentions.AsEnumerable());
         }
 
         [TestMethod]
@@ -23,9 +50,10 @@ namespace Kwetter.Services.KweetService.Tests.Aggregates
             Guid userId = Guid.NewGuid();
             const string userDisplayName = "Glovali";
             const string userName = "supermario";
+            const string userProfilePictureUrl = "https://icon-library.net/images/default-user-icon/default-user-icon-8.jpg";
 
             // Act
-            UserAggregate user = new(userId, userDisplayName, userName);
+            UserAggregate user = new(userId, userDisplayName, userName, userProfilePictureUrl);
 
             // Assert
             Assert.IsNotNull(user);
@@ -38,9 +66,10 @@ namespace Kwetter.Services.KweetService.Tests.Aggregates
             Guid userId = Guid.Empty;
             const string userDisplayName = "Glovali";
             const string userName = "supermario";
+            const string userProfilePictureUrl = "https://icon-library.net/images/default-user-icon/default-user-icon-8.jpg";
 
             // Act
-            KweetDomainException kweetDomainException = Assert.ThrowsException<KweetDomainException>(() => new UserAggregate(userId, userDisplayName, userName));
+            KweetDomainException kweetDomainException = Assert.ThrowsException<KweetDomainException>(() => new UserAggregate(userId, userDisplayName, userName, userProfilePictureUrl));
 
             // Assert
             Assert.IsTrue(kweetDomainException.Message.Equals("The user id is empty."));
@@ -54,7 +83,7 @@ namespace Kwetter.Services.KweetService.Tests.Aggregates
             const string message = "hello world!";
 
             // Act
-            KweetDomainException kweetDomainException = Assert.ThrowsException<KweetDomainException>(() => User.CreateKweet(kweetId, message));
+            KweetDomainException kweetDomainException = Assert.ThrowsException<KweetDomainException>(() => User.CreateKweetAsync(kweetId, message, FindUsersByUserNameAndTrackMentionsAsync).GetAwaiter().GetResult());
 
             // Assert
             Assert.IsTrue(kweetDomainException.Message.Equals("The kweet id is empty."));
@@ -68,7 +97,7 @@ namespace Kwetter.Services.KweetService.Tests.Aggregates
             const string message = "";
 
             // Act
-            KweetDomainException kweetDomainException = Assert.ThrowsException<KweetDomainException>(() => User.CreateKweet(kweetId, message));
+            KweetDomainException kweetDomainException = Assert.ThrowsException<KweetDomainException>(() => User.CreateKweetAsync(kweetId, message, FindUsersByUserNameAndTrackMentionsAsync).GetAwaiter().GetResult());
 
             // Assert
             Assert.IsTrue(kweetDomainException.Message.Equals("The message is null, empty or contains only whitespaces."));
@@ -82,31 +111,31 @@ namespace Kwetter.Services.KweetService.Tests.Aggregates
             const string message = "asdfsdfsadfasdfdasdfsdfsadfasdfdasdfsdfsadfasdfdasdfsdfsadfasdfdasdfsdfsadfasdfdasdfsdfsadfasdfdasdfsdfsadfasdfdasdfsdfsadfasdfdasdfsd3434433";
 
             // Act
-            KweetDomainException kweetDomainException = Assert.ThrowsException<KweetDomainException>(() => User.CreateKweet(kweetId, message));
+            KweetDomainException kweetDomainException = Assert.ThrowsException<KweetDomainException>(() => User.CreateKweetAsync(kweetId, message, FindUsersByUserNameAndTrackMentionsAsync).GetAwaiter().GetResult());
 
             // Assert
             Assert.IsTrue(kweetDomainException.Message.Equals("The length of the message exceeded 140 characters."));
         }
 
         [TestMethod]
-        public void Should_Create_Kweet()
+        public async Task Should_Create_Kweet()
         {
             // Arrange
             Guid kweetId = Guid.NewGuid();
             const string message = "hello world!";
 
             // Act
-            Kweet kweet = User.CreateKweet(kweetId, message);
+            Kweet kweet = await User.CreateKweetAsync(kweetId, message, FindUsersByUserNameAndTrackMentionsAsync);
 
             // Assert
             Assert.IsNotNull(kweet);
         }
 
         [TestMethod]
-        public void Should_Like_Kweet()
+        public async Task Should_Like_Kweet()
         {
             // Arrange
-            Kweet kweet = User.CreateKweet(Guid.NewGuid(), "hello world");
+            Kweet kweet = await User.CreateKweetAsync(Guid.NewGuid(), "hello world", FindUsersByUserNameAndTrackMentionsAsync);
 
             // Act
             bool liked = User.LikeKweet(kweet);
@@ -116,10 +145,10 @@ namespace Kwetter.Services.KweetService.Tests.Aggregates
         }
 
         [TestMethod]
-        public void Should_Unlike_Kweet()
+        public async Task Should_Unlike_Kweet()
         {
             // Arrange
-            Kweet kweet = User.CreateKweet(Guid.NewGuid(), "hello world");
+            Kweet kweet = await User.CreateKweetAsync(Guid.NewGuid(), "hello world", FindUsersByUserNameAndTrackMentionsAsync);
             User.LikeKweet(kweet);
 
             // Act
@@ -130,10 +159,10 @@ namespace Kwetter.Services.KweetService.Tests.Aggregates
         }
 
         [TestMethod]
-        public void Should_After_Liking_The_Kweet_Contain_1_Like()
+        public async Task Should_After_Liking_The_Kweet_Contain_1_Like()
         {
             // Arrange
-            Kweet kweet = User.CreateKweet(Guid.NewGuid(), "hello world");
+            Kweet kweet = await User.CreateKweetAsync(Guid.NewGuid(), "hello world", FindUsersByUserNameAndTrackMentionsAsync);
 
             // Act
             User.LikeKweet(kweet);
@@ -143,10 +172,10 @@ namespace Kwetter.Services.KweetService.Tests.Aggregates
         }
 
         [TestMethod]
-        public void Should_After_Liking_And_UnLiking_The_Kweet_Contain_0_Likes()
+        public async Task Should_After_Liking_And_UnLiking_The_Kweet_Contain_0_Likes()
         {
             // Arrange
-            Kweet kweet = User.CreateKweet(Guid.NewGuid(), "hello world");
+            Kweet kweet = await User.CreateKweetAsync(Guid.NewGuid(), "hello world", FindUsersByUserNameAndTrackMentionsAsync);
 
             // Act
             User.LikeKweet(kweet);
@@ -154,6 +183,35 @@ namespace Kwetter.Services.KweetService.Tests.Aggregates
 
             // Assert
             Assert.IsTrue(kweet.LikeCount == 0);
+        }
+
+        [TestMethod]
+        public async Task Should_Mention_User_Glovali_With_UserName_supermario_When_Creating_Kweet()
+        {
+            // Arrange & Act
+            const string message = "Hello @supermario!";
+
+            // Act
+            Kweet kweet = await User.CreateKweetAsync(Guid.NewGuid(), message, FindUsersByUserNameAndTrackMentionsAsync);
+
+            // Assert
+            Assert.IsTrue(kweet.Mentions.Contains(new Mention(User.UserName, kweet)));
+        }
+
+        [TestMethod]
+        public async Task Should_Tag_Fun_When_Creating_Kweet()
+        {
+            // Arrange & Act
+            const string fun = "#Fun";
+            string message = $"Programming {fun}!";
+            Guid kweetId = Guid.NewGuid();
+            HashTag expectedTag = new("#fun", kweetId);
+
+            // Act
+            Kweet kweet = await User.CreateKweetAsync(kweetId, message, FindUsersByUserNameAndTrackMentionsAsync);
+
+            // Assert
+            Assert.IsTrue(kweet.HashTags.Contains(expectedTag));
         }
     }
 }
