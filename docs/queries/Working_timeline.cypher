@@ -1,12 +1,14 @@
 //Timeline
 CALL {
-    MATCH (user:User {id: 'bb7f4b58-cddb-462f-a6ef-c735c44c8276'})-[:FOLLOWS]->(user:User)<-[:KWEETED_BY]-(kweet:Kweet)
-    RETURN user, kweet
+    MATCH (:User {id: 'abfc1edc-8b2e-4351-8e55-a0daf0d60d46'})-[:FOLLOWS]->(user:User)<-[:KWEETED_BY]-(kweet:Kweet)
+    MATCH (userProfile:UserProfile)<-[:DESCRIBED_BY]-(user)
+    RETURN userProfile, user, kweet
     UNION
-    MATCH (user:User)<-[:KWEETED_BY]-(kweet:Kweet)
-    RETURN user, kweet
+    MATCH (userProfile:UserProfile)<-[:DESCRIBED_BY]-(user:User {id: 'abfc1edc-8b2e-4351-8e55-a0daf0d60d46'})<-[:KWEETED_BY]-(kweet:Kweet)
+    RETURN userProfile, user, kweet
 }
-WITH user, kweet
+WITH userProfile, user, kweet
+ORDER BY kweet.createdDateTime DESC
 SKIP 0
 LIMIT 25
 CALL {
@@ -16,7 +18,7 @@ CALL {
 }
 CALL {
     WITH kweet
-    OPTIONAL MATCH (i:User {id: 'bb7f4b58-cddb-462f-a6ef-c735c44c8276'})<-[:LIKED_BY]-(kweet)
+    OPTIONAL MATCH (i:User {id: 'abfc1edc-8b2e-4351-8e55-a0daf0d60d46'})<-[:LIKED_BY]-(kweet)
     RETURN (i.id IS NOT NULL) as liked
 }
-RETURN user.id, user.userDisplayName, kweet.createdDateTime, kweet.id, kweet.message, count(liker) as likes, liked
+RETURN user.id, user.userName, user.userDisplayName, userProfile.pictureUrl, kweet.createdDateTime, kweet.id, kweet.message, count(liker) as likes, liked
