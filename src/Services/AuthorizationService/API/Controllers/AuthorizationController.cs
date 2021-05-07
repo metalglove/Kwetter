@@ -1,6 +1,6 @@
 ﻿using Kwetter.Services.AuthorizationService.API.Application.Commands.ClaimsCommand;
 using Kwetter.Services.AuthorizationService.API.Application.Queries.VerifyUserNameUniquenessQuery;
-using Kwetter.Services.Common.API.CQRS;
+using Kwetter.Services.Common.Application.CQRS;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;

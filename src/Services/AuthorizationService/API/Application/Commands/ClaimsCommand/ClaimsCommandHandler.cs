@@ -1,6 +1,6 @@
 ﻿using Kwetter.Services.AuthorizationService.Domain.AggregatesModel.IdentityAggregate;
 using Kwetter.Services.AuthorizationService.Infrastructure.Interfaces;
-using Kwetter.Services.Common.API.CQRS;
+using Kwetter.Services.Common.Application.CQRS;
 using Kwetter.Services.Common.Application.Dtos;
 using MediatR;
 using System;

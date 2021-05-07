@@ -4,7 +4,7 @@ using Kwetter.Services.AuthorizationService.API.Controllers;
 using Kwetter.Services.AuthorizationService.Domain.AggregatesModel.IdentityAggregate;
 using Kwetter.Services.AuthorizationService.Infrastructure;
 using Kwetter.Services.AuthorizationService.Infrastructure.Repositories;
-using Kwetter.Services.Common.API.CQRS;
+using Kwetter.Services.Common.Application.CQRS;
 using Kwetter.Services.Common.Tests;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;

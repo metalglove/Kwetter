@@ -1,4 +1,4 @@
-﻿using Kwetter.Services.Common.API.CQRS;
+﻿using Kwetter.Services.Common.Application.CQRS;
 using MediatR;
 
 namespace Kwetter.Services.AuthorizationService.API.Application.Commands.ClaimsCommand

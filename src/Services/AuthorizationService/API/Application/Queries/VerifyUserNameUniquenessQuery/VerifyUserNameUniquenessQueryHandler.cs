@@ -1,5 +1,5 @@
 ﻿using Kwetter.Services.AuthorizationService.Domain.AggregatesModel.IdentityAggregate;
-using Kwetter.Services.Common.API.CQRS;
+using Kwetter.Services.Common.Application.CQRS;
 using MediatR;
 using System;
 using System.Threading;

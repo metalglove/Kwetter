@@ -39,6 +39,7 @@ namespace Kwetter.Services.AuthorizationService.API.Application.DomainEventHandl
                 profilePictureUrl: notification.ProfilePictureUrl
             );
             identityCreatedIntegrationEvent.SetExchangeName("AuthorizationExchange");
+            identityCreatedIntegrationEvent.SetRoutingKey("IdentityCreatedIntegrationEvent");
             _integrationEventService.EnqueueEvent(identityCreatedIntegrationEvent);
             return Task.CompletedTask;
         }
