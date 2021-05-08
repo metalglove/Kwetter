@@ -23,11 +23,6 @@ namespace Kwetter.Services.TimelineService.Domain
         public string UserName { get; set; }
 
         /// <summary>
-        /// Gets and sets the user profile description.
-        /// </summary>
-        public string UserProfileDescription { get; set; }
-
-        /// <summary>
         /// Gets and sets the user profile picture url.
         /// </summary>
         public string UserProfilePictureUrl { get; set; }

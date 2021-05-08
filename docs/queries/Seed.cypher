@@ -1,14 +1,8 @@
 // Create users
 CREATE 
-(:User {id:'abfc1edc-8b2e-4351-8e55-a0daf0d60d46',userDisplayName:'SuperMario',userName:'supermario'})
--[:DESCRIBED_BY]->
-(:UserProfile {id:'abfc1edc-8b2e-4351-8e55-a0daf0d60d46',description:'Hello I am SuperMario!',pictureUrl:'https://icon-library.net/images/default-user-icon/default-user-icon-8.jpg'}), 
-(:User {id:'2ea3a292-f6e4-40d7-98c0-fa721cfae443',userDisplayName:'Jeff',userName:'jeffery'})
--[:DESCRIBED_BY]->
-(:UserProfile {id:'2ea3a292-f6e4-40d7-98c0-fa721cfae443',description:'Hello I am Jeff!',pictureUrl:'https://icon-library.net/images/default-user-icon/default-user-icon-8.jpg'}), 
-(:User {id:'f89c35de-fb43-4fb4-848d-68c8b625ca38',userDisplayName:'Tobin',userName:'kick'})
--[:DESCRIBED_BY]->
-(:UserProfile {id:'f89c35de-fb43-4fb4-848d-68c8b625ca38',description:'Hello I am TOBIN!',pictureUrl:'https://icon-library.net/images/default-user-icon/default-user-icon-8.jpg'});
+(:User {id:'abfc1edc-8b2e-4351-8e55-a0daf0d60d46',displayName:'SuperMario',name:'supermario',profilePictureUrl:'https://icon-library.net/images/default-user-icon/default-user-icon-8.jpg'})
+(:User {id:'2ea3a292-f6e4-40d7-98c0-fa721cfae443',displayName:'Jeff',name:'jeffery',profilePictureUrl:'https://icon-library.net/images/default-user-icon/default-user-icon-8.jpg'})
+(:User {id:'f89c35de-fb43-4fb4-848d-68c8b625ca38',displayName:'Tobin',name:'kick',profilePictureUrl:'https://icon-library.net/images/default-user-icon/default-user-icon-8.jpg'});
 
 // Follows
 MATCH (a:User {id: 'abfc1edc-8b2e-4351-8e55-a0daf0d60d46' }), (b:User { id: '2ea3a292-f6e4-40d7-98c0-fa721cfae443' }) CREATE (a)<-[:FOLLOWED_BY {followedDateTime: '2021-04-25 21:45:40Z'}]-(b);

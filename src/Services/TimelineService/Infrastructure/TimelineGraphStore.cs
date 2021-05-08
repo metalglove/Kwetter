@@ -139,15 +139,13 @@ namespace Kwetter.Services.TimelineService.Infrastructure
                 result = await session.WriteTransactionAsync(async transaction =>
                 {
                     IResultCursor cursor = await transaction.RunAsync(@"
-                        CREATE (:User {id: $userId, userDisplayName: $userDisplayName, userName: $userName})-[:DESCRIBED_BY]->(:UserProfile {id: $userProfileId, userId: $userId, description: $description, pictureUrl: $pictureUrl})",
+                        CREATE (:User {id: $userId, displayName: $displayName, name: $userName, profilePictureUrl: $profilePictureUrl})",
                         new
                         {
-                            userDisplayName = user.UserDisplayName,
+                            displayName = user.UserDisplayName,
                             userName = user.UserName,
                             userId = user.Id.ToString(),
-                            userProfileId = user.Id.ToString(),
-                            description = user.UserProfileDescription,
-                            pictureUrl = user.UserProfilePictureUrl
+                            profilePictureUrl = user.UserProfilePictureUrl
                         }
                     );
                     return await cursor.ConsumeAsync();
@@ -181,13 +179,12 @@ namespace Kwetter.Services.TimelineService.Infrastructure
                     IResultCursor cursor = await transaction.RunAsync(@"
                         CALL {
                             MATCH (:User {id: $userId})<-[:FOLLOWED_BY]-(user:User)<-[:KWEETED_BY]-(kweet:Kweet)
-                            MATCH (userProfile:UserProfile)<-[:DESCRIBED_BY]-(user)
-                            RETURN userProfile, user, kweet
+                            RETURN user, kweet
                             UNION
-                            MATCH (userProfile:UserProfile)<-[:DESCRIBED_BY]-(user:User {id: $userId})<-[:KWEETED_BY]-(kweet:Kweet)
-                            RETURN userProfile, user, kweet
+                            MATCH (user:User {id: $userId})<-[:KWEETED_BY]-(kweet:Kweet)
+                            RETURN user, kweet
                         }
-                        WITH userProfile, user, kweet
+                        WITH user, kweet
                         ORDER BY kweet.createdDateTime DESC
                         SKIP $skip
                         LIMIT $limit
@@ -201,7 +198,7 @@ namespace Kwetter.Services.TimelineService.Infrastructure
                             OPTIONAL MATCH (i:User {id: $userId})<-[:LIKED_BY]-(kweet)
                             RETURN (i.id IS NOT NULL) as liked
                         }
-                        RETURN user.id, user.userName, user.userDisplayName, userProfile.pictureUrl, kweet.createdDateTime, kweet.id, kweet.message, count(liker) as likes, liked",
+                        RETURN user.id, user.name, user.displayName, user.profilePictureUrl, kweet.createdDateTime, kweet.id, kweet.message, count(liker) as likes, liked",
                         new
                         {
                             userId = userId.ToString(),
@@ -215,10 +212,10 @@ namespace Kwetter.Services.TimelineService.Infrastructure
                         UserId = Guid.Parse(record["user.id"].As<string>()),
                         LikeCount = record["likes"].As<int>(),
                         Message = record["kweet.message"].As<string>(),
-                        UserDisplayName = record["user.userDisplayName"].As<string>(),
-                        UserName = record["user.userName"].As<string>(),
+                        UserDisplayName = record["user.displayName"].As<string>(),
+                        UserName = record["user.name"].As<string>(),
                         CreatedDateTime = DateTime.Parse(record["kweet.createdDateTime"].As<string>()),
-                        UserProfilePictureUrl = record["userProfile.pictureUrl"].As<string>(),
+                        UserProfilePictureUrl = record["user.profilePictureUrl"].As<string>(),
                         Liked = record["liked"].As<bool>(),
                     });
                 });
@@ -279,43 +276,10 @@ namespace Kwetter.Services.TimelineService.Infrastructure
                 {
                     IResultCursor cursor = await transaction.RunAsync(@"
                         MATCH (user:User { id: $userId }) 
-                        SET user.userDisplayName = $userDisplayName",
+                        SET user.displayName = $displayName",
                         new
                         {
-                            userDisplayName = userDisplayName,
-                            userId = userId.ToString()
-                        }
-                    );
-                    return await cursor.ConsumeAsync();
-                });
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex.Message);
-                throw;
-            }
-            finally
-            {
-                await session.CloseAsync();
-            }
-            return result.Counters.PropertiesSet == 1;
-        }
-
-        /// <inheritdoc cref="ITimelineGraphStore.UpdateUserProfileDescriptionAsync(Guid,string)"/>
-        public async Task<bool> UpdateUserProfileDescriptionAsync(Guid userId, string userProfileDescription)
-        {
-            IAsyncSession session = _driver.AsyncSession((c) => c.WithDatabase(DATABASE));
-            IResultSummary result;
-            try
-            {
-                result = await session.WriteTransactionAsync(async transaction =>
-                {
-                    IResultCursor cursor = await transaction.RunAsync(@"
-                        MATCH (:User { id: $userId })-[:DESCRIBED_BY]->(userProfile:UserProfile) 
-                        SET userProfile.description = $description",
-                        new
-                        {
-                            description = userProfileDescription,
+                            displayName = userDisplayName,
                             userId = userId.ToString()
                         }
                     );
@@ -344,11 +308,11 @@ namespace Kwetter.Services.TimelineService.Infrastructure
                 result = await session.WriteTransactionAsync(async transaction =>
                 {
                     IResultCursor cursor = await transaction.RunAsync(@"
-                        MATCH (:User { id: $userId })-[:DESCRIBED_BY]->(userProfile:UserProfile) 
-                        SET userProfile.pictureUrl = $pictureUrl",
+                        MATCH (user:User { id: $userId })
+                        SET user.profilePictureUrl = $profilePictureUrl",
                         new
                         {
-                            pictureUrl = userProfilePictureUrl,
+                            profilePictureUrl = userProfilePictureUrl,
                             userId = userId.ToString()
                         }
                     );

@@ -24,11 +24,6 @@ namespace Kwetter.Services.TimelineService.API.Application.IntegrationEventHandl
         public string UserName { get; set; }
 
         /// <summary>
-        /// Gets and sets the user profile description.
-        /// </summary>
-        public string UserProfileDescription { get; set; }
-
-        /// <summary>
         /// Gets and sets the user profile picture url.
         /// </summary>
         public string UserProfilePictureUrl { get; set; }

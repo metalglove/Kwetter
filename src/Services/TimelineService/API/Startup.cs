@@ -7,7 +7,6 @@ using Kwetter.Services.TimelineService.API.Application.IntegrationEventHandlers.
 using Kwetter.Services.TimelineService.API.Application.IntegrationEventHandlers.UserCreated;
 using Kwetter.Services.TimelineService.API.Application.IntegrationEventHandlers.UserDisplayNameUpdated;
 using Kwetter.Services.TimelineService.API.Application.IntegrationEventHandlers.UserFollowed;
-using Kwetter.Services.TimelineService.API.Application.IntegrationEventHandlers.UserProfileDescriptionUpdated;
 using Kwetter.Services.TimelineService.API.Application.IntegrationEventHandlers.UserProfilePictureUrlUpdated;
 using Kwetter.Services.TimelineService.API.Application.IntegrationEventHandlers.UserUnfollowed;
 using Kwetter.Services.TimelineService.API.Application.Queries.KweetTimelineQuery;
@@ -57,7 +56,6 @@ namespace Kwetter.Services.TimelineService.API
 
             services.AddIntegrationEventHandler<UserCreatedIntegrationEventHandler, UserCreatedIntegrationEvent>();
             services.AddIntegrationEventHandler<UserDisplayNameUpdatedIntegrationEventHandler, UserDisplayNameUpdatedIntegrationEvent>();
-            services.AddIntegrationEventHandler<UserProfileDescriptionUpdatedIntegrationEventHandler, UserProfileDescriptionUpdatedIntegrationEvent>();
             services.AddIntegrationEventHandler<UserProfilePictureUrlUpdatedIntegrationEventHandler, UserProfilePictureUrlUpdatedIntegrationEvent>();
 
             services.AddIntegrationEventHandler<KweetCreatedIntegrationEventHandler, KweetCreatedIntegrationEvent>();
@@ -96,7 +94,6 @@ namespace Kwetter.Services.TimelineService.API
 
             rabbitConfiguration.DeclareAndBindQueueToExchange("UserExchange", "TimelineService.UserCreatedIntegrationEvent", "#.UserCreatedIntegrationEvent");
             rabbitConfiguration.DeclareAndBindQueueToExchange("UserExchange", "TimelineService.UserDisplayNameUpdatedIntegrationEvent", "#.UserDisplayNameUpdatedIntegrationEvent");
-            rabbitConfiguration.DeclareAndBindQueueToExchange("UserExchange", "TimelineService.UserProfileDescriptionUpdatedIntegrationEvent", "#.UserProfileDescriptionUpdatedIntegrationEvent");
             rabbitConfiguration.DeclareAndBindQueueToExchange("UserExchange", "TimelineService.UserProfilePictureUrlUpdatedIntegrationEvent", "#.UserProfilePictureUrlUpdatedIntegrationEvent");
 
             rabbitConfiguration.DeclareAndBindQueueToExchange("FollowExchange", "TimelineService.UserFollowedIntegrationEvent", "#.UserFollowedIntegrationEvent");
@@ -110,7 +107,6 @@ namespace Kwetter.Services.TimelineService.API
             eventBus.Subscribe<UserCreatedIntegrationEvent, UserCreatedIntegrationEventHandler>("TimelineService.UserCreatedIntegrationEvent");
             eventBus.Subscribe<UserDisplayNameUpdatedIntegrationEvent, UserDisplayNameUpdatedIntegrationEventHandler>("TimelineService.UserDisplayNameUpdatedIntegrationEvent");
             eventBus.Subscribe<UserProfilePictureUrlUpdatedIntegrationEvent, UserProfilePictureUrlUpdatedIntegrationEventHandler>("TimelineService.UserProfilePictureUrlUpdatedIntegrationEvent");
-            eventBus.Subscribe<UserProfileDescriptionUpdatedIntegrationEvent, UserProfileDescriptionUpdatedIntegrationEventHandler>("TimelineService.UserProfileDescriptionUpdatedIntegrationEvent");
 
             eventBus.Subscribe<KweetCreatedIntegrationEvent, KweetCreatedIntegrationEventHandler>("TimelineService.KweetCreatedIntegrationEvent");
             eventBus.Subscribe<KweetLikedIntegrationEvent, KweetLikedIntegrationEventHandler>("TimelineService.KweetLikedIntegrationEvent");

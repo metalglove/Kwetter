@@ -62,14 +62,6 @@ namespace Kwetter.Services.TimelineService.Infrastructure
         public Task<bool> UpdateUserDisplayNameAsync(Guid userId, string userDisplayName);
 
         /// <summary>
-        /// Updates the user profile description asynchronously.
-        /// </summary>
-        /// <param name="userId">The user id.</param>
-        /// <param name="userProfileDescription">The user profile description.</param>
-        /// <returns>Returns a boolean indicating whether the user profile description is updated.</returns>
-        public Task<bool> UpdateUserProfileDescriptionAsync(Guid userId, string userProfileDescription);
-
-        /// <summary>
         /// Updates the user profile picture url asynchronously.
         /// </summary>
         /// <param name="userId">The user id.</param>

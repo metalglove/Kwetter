@@ -36,7 +36,6 @@ namespace Kwetter.Services.TimelineService.API.Application.IntegrationEventHandl
                 Id = @event.UserId,
                 UserDisplayName = @event.UserDisplayName,
                 UserName = @event.UserName,
-                UserProfileDescription = @event.UserProfileDescription,
                 UserProfilePictureUrl = @event.UserProfilePictureUrl
             };
             bool success = await _timelineGraphStore.CreateUserAsync(user);
