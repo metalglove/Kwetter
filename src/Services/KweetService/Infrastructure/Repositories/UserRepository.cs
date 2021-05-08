@@ -1,6 +1,5 @@
 ﻿using Kwetter.Services.Common.Domain.Persistence;
 using Kwetter.Services.KweetService.Domain.AggregatesModel.UserAggregate;
-using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -54,30 +53,21 @@ namespace Kwetter.Services.KweetService.Infrastructure.Repositories
             return await _kweetDbContext.Kweets.FindAsync(new object[] { kweetId }, cancellationToken);
         }
 
-        /// <inheritdoc cref="IUserRepository.FindUsersByUserNamesAsync(IEnumerable{string}, CancellationToken)" />
-        public async Task<IEnumerable<UserAggregate>> FindUsersByUserNamesAsync(IEnumerable<string> userNames, CancellationToken cancellationToken)
-        {
-            // Close to O(N) due to hashing
-            return await _kweetDbContext.Users
-                .AsQueryable()
-                .Join(userNames, u => u.UserName, id => id, (user, id) => user)
-                .ToListAsync(cancellationToken);
-        }
-
         /// <inheritdoc cref="IUserRepository.FindUsersByUserNameAndTrackMentionsAsync(IEnumerable{Mention}, CancellationToken)" />
-        public async Task<IEnumerable<Mention>> FindUsersByUserNameAndTrackMentionsAsync(IEnumerable<Mention> mentions, CancellationToken cancellationToken)
+        public Task<IEnumerable<Mention>> FindUsersByUserNameAndTrackMentionsAsync(IEnumerable<Mention> mentions, CancellationToken cancellationToken)
         {
             List<Mention> returnMentions = new();
-            foreach (var item in from item in await _kweetDbContext.Users
-                                .AsQueryable()
-                                .Join(mentions, user => user.UserName, mention => mention.UserName, (user, mention) => new { user, mention })
-                                .ToListAsync(cancellationToken)
-                                 select item)
+            List<UserMention> userMentions = mentions
+                .Join(_kweetDbContext.Users, mention => mention.UserName, user => user.UserName, (mention, user) => new UserMention(user, mention))
+                .ToList();
+            foreach (UserMention item in userMentions)
             {
-                Mention mention = item.mention.ToTrackableMention(item.user);
-                returnMentions.Add(_kweetDbContext.Attach(mention).Entity);
+                Mention mention = item.Mention.ToTrackableMention(item.User);
+                returnMentions.Add(_kweetDbContext.Add(mention).Entity);
             }
-            return returnMentions;
+            return Task.FromResult(returnMentions.AsEnumerable());
         }
     }
+
+    internal record UserMention(UserAggregate User, Mention Mention);
 }

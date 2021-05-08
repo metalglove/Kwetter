@@ -145,7 +145,10 @@ namespace Kwetter.Services.KweetService.Domain.AggregatesModel.UserAggregate
         internal KweetLike AddLike(Guid userId)
         {
             KweetLike like = new(Id, userId);
-            return likes.Add(like) ? like : default;
+            if (Likes.Contains(like))
+                return default;
+            likes.Add(like);
+            return like;
         }
 
         /// <summary>
@@ -158,12 +161,12 @@ namespace Kwetter.Services.KweetService.Domain.AggregatesModel.UserAggregate
         {
             if (userId == Guid.Empty)
                 throw new KweetDomainException("The user id is empty.");
-            KweetLike kweetLike = likes.FirstOrDefault(kweet => kweet.UserId == userId);
+            KweetLike kweetLike = Likes.FirstOrDefault(like => like.UserId == userId);
             if (kweetLike == default)
                 return default;
             bool removed = likes.Remove(kweetLike);
             if (removed)
-                AddDomainEvent(new KweetUnlikedDomainEvent(userId, Id));
+                AddDomainEvent(new KweetUnlikedDomainEvent(Id, userId));
             return kweetLike;
         }
 

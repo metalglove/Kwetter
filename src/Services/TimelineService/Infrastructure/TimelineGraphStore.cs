@@ -160,7 +160,7 @@ namespace Kwetter.Services.TimelineService.Infrastructure
             {
                 await session.CloseAsync();
             }
-            return result.Counters.NodesCreated == 2 && result.Counters.RelationshipsCreated == 1;
+            return result.Counters.NodesCreated == 1;
         }
 
         /// <inheritdoc cref="ITimelineGraphStore.GetPaginatedTimelineAsync(Guid,uint,uint)"/>
