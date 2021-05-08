@@ -38,7 +38,7 @@ namespace Kwetter.Services.TimelineService.Infrastructure
                 {
                     IResultCursor cursor = await transaction.RunAsync(@"
                         MATCH (a:User { id: $followerId }), (b:User { id: $followingId }) 
-                        CREATE (a)-[:FOLLOWS {followedDateTime: $followedDateTime}]->(b)",
+                        CREATE (a)<-[:FOLLOWED_BY {followedDateTime: $followedDateTime}]-(b)",
                         new { 
                             followerId = follow.FollowerId.ToString(),
                             followingId = follow.FollowingId.ToString(),
@@ -106,10 +106,9 @@ namespace Kwetter.Services.TimelineService.Infrastructure
                 {
                     IResultCursor cursor = await transaction.RunAsync(@"
                         MATCH (a:User { id: $userId }), (b:Kweet { id: $kweetId }) 
-                        CREATE (a)<-[:LIKED_BY {id: $kweetLikeId, likedDateTime: $likedDateTime}]-(b)",
+                        CREATE (a)<-[:LIKED_BY {likedDateTime: $likedDateTime}]-(b)",
                         new
                         {
-                            kweetLikeId = kweetLike.Id.ToString(),
                             kweetId = kweetLike.KweetId.ToString(),
                             userId = kweetLike.UserId.ToString(),
                             likedDateTime = kweetLike.LikedDateTime
@@ -181,7 +180,7 @@ namespace Kwetter.Services.TimelineService.Infrastructure
                 {
                     IResultCursor cursor = await transaction.RunAsync(@"
                         CALL {
-                            MATCH (:User {id: $userId})-[:FOLLOWS]->(user:User)<-[:KWEETED_BY]-(kweet:Kweet)
+                            MATCH (:User {id: $userId})<-[:FOLLOWED_BY]-(user:User)<-[:KWEETED_BY]-(kweet:Kweet)
                             MATCH (userProfile:UserProfile)<-[:DESCRIBED_BY]-(user)
                             RETURN userProfile, user, kweet
                             UNION
@@ -234,6 +233,171 @@ namespace Kwetter.Services.TimelineService.Infrastructure
                 await session.CloseAsync();
             }
             return timeline;
+        }
+
+        /// <inheritdoc cref="ITimelineGraphStore.DeleteKweetLikeAsync(Guid,Guid)"/>
+        public async Task<bool> DeleteKweetLikeAsync(Guid userId, Guid kweetId)
+        {
+            IAsyncSession session = _driver.AsyncSession((c) => c.WithDatabase(DATABASE));
+            IResultSummary result;
+            try
+            {
+                result = await session.WriteTransactionAsync(async transaction =>
+                {
+                    IResultCursor cursor = await transaction.RunAsync(@"
+                        MATCH (:User { id: $userId })<-[like:LIKED_BY]-(:Kweet { id: $kweetId }) 
+                        DELETE like",
+                        new
+                        {
+                            kweetId = kweetId.ToString(),
+                            userId = userId.ToString()
+                        }
+                    );
+                    return await cursor.ConsumeAsync();
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                throw;
+            }
+            finally
+            {
+                await session.CloseAsync();
+            }
+            return result.Counters.RelationshipsDeleted == 1;
+        }
+
+        /// <inheritdoc cref="ITimelineGraphStore.UpdateUserDisplayNameAsync(Guid,string)"/>
+        public async Task<bool> UpdateUserDisplayNameAsync(Guid userId, string userDisplayName)
+        {
+            IAsyncSession session = _driver.AsyncSession((c) => c.WithDatabase(DATABASE));
+            IResultSummary result;
+            try
+            {
+                result = await session.WriteTransactionAsync(async transaction =>
+                {
+                    IResultCursor cursor = await transaction.RunAsync(@"
+                        MATCH (user:User { id: $userId }) 
+                        SET user.userDisplayName = $userDisplayName",
+                        new
+                        {
+                            userDisplayName = userDisplayName,
+                            userId = userId.ToString()
+                        }
+                    );
+                    return await cursor.ConsumeAsync();
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                throw;
+            }
+            finally
+            {
+                await session.CloseAsync();
+            }
+            return result.Counters.PropertiesSet == 1;
+        }
+
+        /// <inheritdoc cref="ITimelineGraphStore.UpdateUserProfileDescriptionAsync(Guid,string)"/>
+        public async Task<bool> UpdateUserProfileDescriptionAsync(Guid userId, string userProfileDescription)
+        {
+            IAsyncSession session = _driver.AsyncSession((c) => c.WithDatabase(DATABASE));
+            IResultSummary result;
+            try
+            {
+                result = await session.WriteTransactionAsync(async transaction =>
+                {
+                    IResultCursor cursor = await transaction.RunAsync(@"
+                        MATCH (:User { id: $userId })-[:DESCRIBED_BY]->(userProfile:UserProfile) 
+                        SET userProfile.description = $description",
+                        new
+                        {
+                            description = userProfileDescription,
+                            userId = userId.ToString()
+                        }
+                    );
+                    return await cursor.ConsumeAsync();
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                throw;
+            }
+            finally
+            {
+                await session.CloseAsync();
+            }
+            return result.Counters.PropertiesSet == 1;
+        }
+
+        /// <inheritdoc cref="ITimelineGraphStore.UpdateUserProfilePictureUrlAsync(Guid,string)"/>
+        public async Task<bool> UpdateUserProfilePictureUrlAsync(Guid userId, string userProfilePictureUrl)
+        {
+            IAsyncSession session = _driver.AsyncSession((c) => c.WithDatabase(DATABASE));
+            IResultSummary result;
+            try
+            {
+                result = await session.WriteTransactionAsync(async transaction =>
+                {
+                    IResultCursor cursor = await transaction.RunAsync(@"
+                        MATCH (:User { id: $userId })-[:DESCRIBED_BY]->(userProfile:UserProfile) 
+                        SET userProfile.pictureUrl = $pictureUrl",
+                        new
+                        {
+                            pictureUrl = userProfilePictureUrl,
+                            userId = userId.ToString()
+                        }
+                    );
+                    return await cursor.ConsumeAsync();
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                throw;
+            }
+            finally
+            {
+                await session.CloseAsync();
+            }
+            return result.Counters.PropertiesSet == 1;
+        }
+
+        /// <inheritdoc cref="ITimelineGraphStore.DeleteFollowerAsync(Guid,Guid)"/>
+        public async Task<bool> DeleteFollowerAsync(Guid followerId, Guid followingId)
+        {
+            IAsyncSession session = _driver.AsyncSession((c) => c.WithDatabase(DATABASE));
+            IResultSummary result;
+            try
+            {
+                result = await session.WriteTransactionAsync(async transaction =>
+                {
+                    IResultCursor cursor = await transaction.RunAsync(@"
+                        MATCH (:User { id: $followingId })-[follow:FOLLOWED_BY]->(:User { id: $followerId }) 
+                        DELETE follow",
+                        new
+                        {
+                            followingId = followingId.ToString(),
+                            followerId = followerId.ToString()
+                        }
+                    );
+                    return await cursor.ConsumeAsync();
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                throw;
+            }
+            finally
+            {
+                await session.CloseAsync();
+            }
+            return result.Counters.RelationshipsDeleted == 1;
         }
     }
 }

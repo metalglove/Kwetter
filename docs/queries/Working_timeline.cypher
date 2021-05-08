@@ -1,6 +1,6 @@
 //Timeline
 CALL {
-    MATCH (:User {id: 'abfc1edc-8b2e-4351-8e55-a0daf0d60d46'})-[:FOLLOWS]->(user:User)<-[:KWEETED_BY]-(kweet:Kweet)
+    MATCH (:User {id: 'abfc1edc-8b2e-4351-8e55-a0daf0d60d46'})<-[:FOLLOWED_BY]-(user:User)<-[:KWEETED_BY]-(kweet:Kweet)
     MATCH (userProfile:UserProfile)<-[:DESCRIBED_BY]-(user)
     RETURN userProfile, user, kweet
     UNION

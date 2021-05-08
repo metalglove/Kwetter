@@ -16,7 +16,7 @@ namespace Kwetter.Services.UserService.API.Application.DomainEventHandlers.UserP
         /// <summary>
         /// Gets and sets the user profile picture url.
         /// </summary>
-        public string ProfilePictureUrl { get; private set; }
+        public string UserProfilePictureUrl { get; private set; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="UserProfilePictureUrlUpdatedIntegrationEvent"/> class.
@@ -26,7 +26,7 @@ namespace Kwetter.Services.UserService.API.Application.DomainEventHandlers.UserP
         public UserProfilePictureUrlUpdatedIntegrationEvent(Guid userId, string profilePictureUrl)
         {
             UserId = userId;
-            ProfilePictureUrl = profilePictureUrl;
+            UserProfilePictureUrl = profilePictureUrl;
             EventVersion = 1;
         }
     }

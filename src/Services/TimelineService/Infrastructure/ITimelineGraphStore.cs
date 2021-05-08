@@ -17,6 +17,14 @@ namespace Kwetter.Services.TimelineService.Infrastructure
         public Task<bool> CreateFollowerAsync(Follow follow);
 
         /// <summary>
+        /// Deletes the follow asynchronously.
+        /// </summary>
+        /// <param name="followerId">The follower id.</param>
+        /// <param name="followingId">The following id.</param>
+        /// <returns>Returns a boolean indicating whether the follow is deleted.</returns>
+        public Task<bool> DeleteFollowerAsync(Guid followerId, Guid followingId);
+
+        /// <summary>
         /// Creates the kweet asynchronously.
         /// </summary>
         /// <param name="kweet">The kweet.</param>
@@ -31,11 +39,43 @@ namespace Kwetter.Services.TimelineService.Infrastructure
         public Task<bool> CreateKweetLikeAsync(KweetLike kweetLike);
 
         /// <summary>
+        /// Deletes the kweet like asynchronously.
+        /// </summary>
+        /// <param name="userId">The user id.</param>
+        /// <param name="kweetId">The kweet id.</param>
+        /// <returns>Returns a boolean indicating whether the kweet like is deleted.</returns>
+        public Task<bool> DeleteKweetLikeAsync(Guid userId, Guid kweetId);
+
+        /// <summary>
         /// Creates the user asynchronously.
         /// </summary>
         /// <param name="user">The user.</param>
         /// <returns>Returns a boolean indicating whether the user is created.</returns>
         public Task<bool> CreateUserAsync(User user);
+
+        /// <summary>
+        /// Updates the user display name asynchronously.
+        /// </summary>
+        /// <param name="userId">The user id.</param>
+        /// <param name="userDisplayName">The user display name.</param>
+        /// <returns>Returns a boolean indicating whether the user display name is updated.</returns>
+        public Task<bool> UpdateUserDisplayNameAsync(Guid userId, string userDisplayName);
+
+        /// <summary>
+        /// Updates the user profile description asynchronously.
+        /// </summary>
+        /// <param name="userId">The user id.</param>
+        /// <param name="userProfileDescription">The user profile description.</param>
+        /// <returns>Returns a boolean indicating whether the user profile description is updated.</returns>
+        public Task<bool> UpdateUserProfileDescriptionAsync(Guid userId, string userProfileDescription);
+
+        /// <summary>
+        /// Updates the user profile picture url asynchronously.
+        /// </summary>
+        /// <param name="userId">The user id.</param>
+        /// <param name="userProfilePictureUrl">The user profile picture url.</param>
+        /// <returns>Returns a boolean indicating whether the user profile picture url is updated.</returns>
+        public Task<bool> UpdateUserProfilePictureUrlAsync(Guid userId, string userProfilePictureUrl);
 
         /// <summary>
         /// Gets the timeline for a specific user id using pagination asynchronously.

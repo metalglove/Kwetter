@@ -12,7 +12,7 @@ namespace Kwetter.Services.Common.Application.Eventing
     public interface IEventHandler<in TEvent> where TEvent : Event
     {
         /// <summary>
-        /// The unsubscribe event.
+        /// The unsubscribe event handler.
         /// </summary>
         public event EventHandler UnsubscribeEventHandler;
 

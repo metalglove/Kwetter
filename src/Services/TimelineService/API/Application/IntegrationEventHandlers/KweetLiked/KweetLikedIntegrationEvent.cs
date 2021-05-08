@@ -1,11 +1,12 @@
-﻿using System;
+﻿using Kwetter.Services.Common.Application.Eventing.Integration;
+using System;
 
-namespace Kwetter.Services.TimelineService.Domain
+namespace Kwetter.Services.TimelineService.API.Application.IntegrationEventHandlers.KweetLiked
 {
     /// <summary>
-    /// Gets and sets the <see cref="KweetLike"/> class.
+    /// Represents the <see cref="KweetLikedIntegrationEvent"/> class.
     /// </summary>
-    public class KweetLike
+    public sealed class KweetLikedIntegrationEvent : IncomingIntegrationEvent
     {
         /// <summary>
         /// Gets and sets the kweet id.
@@ -18,7 +19,7 @@ namespace Kwetter.Services.TimelineService.Domain
         public Guid UserId { get; set; }
 
         /// <summary>
-        /// Gets and sets the liked date time.
+        /// Gets and sets the date time when the kweet was liked.
         /// </summary>
         public DateTime LikedDateTime { get; set; }
     }

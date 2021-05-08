@@ -11,9 +11,9 @@ CREATE
 (:UserProfile {id:'f89c35de-fb43-4fb4-848d-68c8b625ca38',description:'Hello I am TOBIN!',pictureUrl:'https://icon-library.net/images/default-user-icon/default-user-icon-8.jpg'});
 
 // Follows
-MATCH (a:User {id: 'abfc1edc-8b2e-4351-8e55-a0daf0d60d46' }), (b:User { id: '2ea3a292-f6e4-40d7-98c0-fa721cfae443' }) CREATE (a)-[:FOLLOWS {followedDateTime: '2021-04-25 21:45:40Z'}]->(b);
-MATCH (a:User {id: 'abfc1edc-8b2e-4351-8e55-a0daf0d60d46' }), (b:User { id: 'f89c35de-fb43-4fb4-848d-68c8b625ca38' }) CREATE (a)-[:FOLLOWS {followedDateTime: '2021-04-25 21:45:40Z'}]->(b);
-MATCH (a:User {id: '2ea3a292-f6e4-40d7-98c0-fa721cfae443' }), (b:User { id: 'abfc1edc-8b2e-4351-8e55-a0daf0d60d46' }) CREATE (a)-[:FOLLOWS {followedDateTime: '2021-04-25 21:45:40Z'}]->(b);
+MATCH (a:User {id: 'abfc1edc-8b2e-4351-8e55-a0daf0d60d46' }), (b:User { id: '2ea3a292-f6e4-40d7-98c0-fa721cfae443' }) CREATE (a)<-[:FOLLOWED_BY {followedDateTime: '2021-04-25 21:45:40Z'}]-(b);
+MATCH (a:User {id: 'abfc1edc-8b2e-4351-8e55-a0daf0d60d46' }), (b:User { id: 'f89c35de-fb43-4fb4-848d-68c8b625ca38' }) CREATE (a)<-[:FOLLOWED_BY {followedDateTime: '2021-04-25 21:45:40Z'}]-(b);
+MATCH (a:User {id: '2ea3a292-f6e4-40d7-98c0-fa721cfae443' }), (b:User { id: 'abfc1edc-8b2e-4351-8e55-a0daf0d60d46' }) CREATE (a)<-[:FOLLOWED_BY {followedDateTime: '2021-04-25 21:45:40Z'}]-(b);
 
 // Kweets
 MATCH (a:User {id: 'abfc1edc-8b2e-4351-8e55-a0daf0d60d46' }) CREATE (a)<-[:KWEETED_BY]-(:Kweet {id:'b3a84788-dda1-495a-a30f-0e7e35e04c37', message:'Hello Kwetter1!',createdDateTime:'2021-04-25 21:45:40Z'});

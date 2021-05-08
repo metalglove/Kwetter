@@ -1,7 +1,15 @@
 using Kwetter.Services.Common.API;
 using Kwetter.Services.Common.Application.Eventing.Bus;
 using Kwetter.Services.Common.Infrastructure.RabbitMq;
+using Kwetter.Services.TimelineService.API.Application.IntegrationEventHandlers.KweetCreated;
+using Kwetter.Services.TimelineService.API.Application.IntegrationEventHandlers.KweetLiked;
+using Kwetter.Services.TimelineService.API.Application.IntegrationEventHandlers.KweetUnliked;
 using Kwetter.Services.TimelineService.API.Application.IntegrationEventHandlers.UserCreated;
+using Kwetter.Services.TimelineService.API.Application.IntegrationEventHandlers.UserDisplayNameUpdated;
+using Kwetter.Services.TimelineService.API.Application.IntegrationEventHandlers.UserFollowed;
+using Kwetter.Services.TimelineService.API.Application.IntegrationEventHandlers.UserProfileDescriptionUpdated;
+using Kwetter.Services.TimelineService.API.Application.IntegrationEventHandlers.UserProfilePictureUrlUpdated;
+using Kwetter.Services.TimelineService.API.Application.IntegrationEventHandlers.UserUnfollowed;
 using Kwetter.Services.TimelineService.API.Application.Queries.KweetTimelineQuery;
 using Kwetter.Services.TimelineService.Infrastructure;
 using Microsoft.AspNetCore.Builder;
@@ -48,6 +56,16 @@ namespace Kwetter.Services.TimelineService.API
             services.AddSingleton<ITimelineGraphStore, TimelineGraphStore>();
 
             services.AddIntegrationEventHandler<UserCreatedIntegrationEventHandler, UserCreatedIntegrationEvent>();
+            services.AddIntegrationEventHandler<UserDisplayNameUpdatedIntegrationEventHandler, UserDisplayNameUpdatedIntegrationEvent>();
+            services.AddIntegrationEventHandler<UserProfileDescriptionUpdatedIntegrationEventHandler, UserProfileDescriptionUpdatedIntegrationEvent>();
+            services.AddIntegrationEventHandler<UserProfilePictureUrlUpdatedIntegrationEventHandler, UserProfilePictureUrlUpdatedIntegrationEvent>();
+
+            services.AddIntegrationEventHandler<KweetCreatedIntegrationEventHandler, KweetCreatedIntegrationEvent>();
+            services.AddIntegrationEventHandler<KweetLikedIntegrationEventHandler, KweetLikedIntegrationEvent>();
+            services.AddIntegrationEventHandler<KweetUnlikedIntegrationEventHandler, KweetUnlikedIntegrationEvent>();
+
+            services.AddIntegrationEventHandler<UserUnfollowedIntegrationEventHandler, UserUnfollowedIntegrationEvent>();
+            services.AddIntegrationEventHandler<UserFollowedIntegrationEventHandler, UserFollowedIntegrationEvent>();
 
             services.AddControllers();
             services.AddSwagger(_configuration);
@@ -75,19 +93,31 @@ namespace Kwetter.Services.TimelineService.API
             rabbitConfiguration.DeclareExchange("UserExchange", ExchangeType.Topic);
             rabbitConfiguration.DeclareExchange("FollowExchange", ExchangeType.Topic);
             rabbitConfiguration.DeclareExchange("KweetExchange", ExchangeType.Topic);
+
             rabbitConfiguration.DeclareAndBindQueueToExchange("UserExchange", "TimelineService.UserCreatedIntegrationEvent", "#.UserCreatedIntegrationEvent");
-            //rabbitConfiguration.DeclareAndBindQueueToExchange("UserExchange", "TimelineService.UserDisplayNameUpdatedIntegrationEvent", "#.UserDisplayNameUpdatedIntegrationEvent");
-            //rabbitConfiguration.DeclareAndBindQueueToExchange("UserExchange", "TimelineService.UserProfilePictureUrlUpdatedIntegrationEvent", "#.UserProfilePictureUrlUpdatedIntegrationEvent");
-            //rabbitConfiguration.DeclareAndBindQueueToExchange("FollowExchange", "TimelineService.UserFollowedIntegrationEvent", "#.UserFollowedIntegrationEvent");
-            //rabbitConfiguration.DeclareAndBindQueueToExchange("FollowExchange", "TimelineService.UserUnfollowedIntegrationEvent", "#.UserUnfollowedIntegrationEvent");
-            //rabbitConfiguration.DeclareAndBindQueueToExchange("KweetExchange", "TimelineService.KweetCreatedIntegrationEvent", "#.KweetCreatedIntegrationEvent");
-            //rabbitConfiguration.DeclareAndBindQueueToExchange("KweetExchange", "TimelineService.KweetLikedIntegrationEvent", "#.KweetLikedIntegrationEvent");
-            //rabbitConfiguration.DeclareAndBindQueueToExchange("KweetExchange", "TimelineService.KweetUnlikedIntegrationEvent", "#.KweetUnlikedIntegrationEvent");
-            
+            rabbitConfiguration.DeclareAndBindQueueToExchange("UserExchange", "TimelineService.UserDisplayNameUpdatedIntegrationEvent", "#.UserDisplayNameUpdatedIntegrationEvent");
+            rabbitConfiguration.DeclareAndBindQueueToExchange("UserExchange", "TimelineService.UserProfileDescriptionUpdatedIntegrationEvent", "#.UserProfileDescriptionUpdatedIntegrationEvent");
+            rabbitConfiguration.DeclareAndBindQueueToExchange("UserExchange", "TimelineService.UserProfilePictureUrlUpdatedIntegrationEvent", "#.UserProfilePictureUrlUpdatedIntegrationEvent");
+
+            rabbitConfiguration.DeclareAndBindQueueToExchange("FollowExchange", "TimelineService.UserFollowedIntegrationEvent", "#.UserFollowedIntegrationEvent");
+            rabbitConfiguration.DeclareAndBindQueueToExchange("FollowExchange", "TimelineService.UserUnfollowedIntegrationEvent", "#.UserUnfollowedIntegrationEvent");
+
+            rabbitConfiguration.DeclareAndBindQueueToExchange("KweetExchange", "TimelineService.KweetCreatedIntegrationEvent", "#.KweetCreatedIntegrationEvent");
+            rabbitConfiguration.DeclareAndBindQueueToExchange("KweetExchange", "TimelineService.KweetLikedIntegrationEvent", "#.KweetLikedIntegrationEvent");
+            rabbitConfiguration.DeclareAndBindQueueToExchange("KweetExchange", "TimelineService.KweetUnlikedIntegrationEvent", "#.KweetUnlikedIntegrationEvent");
+
             // Subscribe to integration events.
             eventBus.Subscribe<UserCreatedIntegrationEvent, UserCreatedIntegrationEventHandler>("TimelineService.UserCreatedIntegrationEvent");
-            //eventBus.Subscribe<UserDisplayNameUpdatedIntegrationEvent, UserDisplayNameUpdatedIntegrationEventHandler>("TimelineService.UserDisplayNameUpdatedIntegrationEvent");
-            //eventBus.Subscribe<UserProfilePictureUrlUpdatedIntegrationEvent, UserProfilePictureUrlUpdatedIntegrationEventHandler>("TimelineService.UserProfilePictureUrlUpdatedIntegrationEvent");
+            eventBus.Subscribe<UserDisplayNameUpdatedIntegrationEvent, UserDisplayNameUpdatedIntegrationEventHandler>("TimelineService.UserDisplayNameUpdatedIntegrationEvent");
+            eventBus.Subscribe<UserProfilePictureUrlUpdatedIntegrationEvent, UserProfilePictureUrlUpdatedIntegrationEventHandler>("TimelineService.UserProfilePictureUrlUpdatedIntegrationEvent");
+            eventBus.Subscribe<UserProfileDescriptionUpdatedIntegrationEvent, UserProfileDescriptionUpdatedIntegrationEventHandler>("TimelineService.UserProfileDescriptionUpdatedIntegrationEvent");
+
+            eventBus.Subscribe<KweetCreatedIntegrationEvent, KweetCreatedIntegrationEventHandler>("TimelineService.KweetCreatedIntegrationEvent");
+            eventBus.Subscribe<KweetLikedIntegrationEvent, KweetLikedIntegrationEventHandler>("TimelineService.KweetLikedIntegrationEvent");
+            eventBus.Subscribe<KweetUnlikedIntegrationEvent, KweetUnlikedIntegrationEventHandler>("TimelineService.KweetUnlikedIntegrationEvent");
+
+            eventBus.Subscribe<UserFollowedIntegrationEvent, UserFollowedIntegrationEventHandler>("TimelineService.UserFollowedIntegrationEvent");
+            eventBus.Subscribe<UserUnfollowedIntegrationEvent, UserUnfollowedIntegrationEventHandler>("TimelineService.UserUnfollowedIntegrationEvent");
 
             app.UseRouting();
             app.UseCors(x => x.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
