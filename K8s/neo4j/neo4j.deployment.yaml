@@ -60,7 +60,7 @@ spec:
             memory: 600Mi
             cpu: 400m
         volumeMounts:
-        - name: neo4j-data
+        - name: neo4j-data-volume
           mountPath: /var/lib/neo4j/data
       volumes:
       - name: neo4j-data-volume
