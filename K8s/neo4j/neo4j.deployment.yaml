@@ -57,8 +57,8 @@ spec:
             name: https
         resources:
           limits:
-            memory: 600Mi
-            cpu: 400m
+            memory: 1200Mi
+            cpu: 600m
         volumeMounts:
         - name: neo4j-data-volume
           mountPath: /var/lib/neo4j/data
