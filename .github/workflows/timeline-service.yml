@@ -1,0 +1,173 @@
+name: TimelineService
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - src/Services/TimelineService/**
+  pull_request:
+    types: [opened, synchronize, reopened]
+    paths:
+      - src/Services/TimelineService/**
+
+defaults:
+  run:
+    working-directory: src
+
+jobs:
+
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+    # Checks out the code
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    # Sets up the .NET SDK
+    - name: Setup .NET SDK
+      uses: actions/setup-dotnet@v1.7.2
+      with:
+        dotnet-version: '5.0.x'
+    
+    # Installs the dependencies
+    - name: Install dependencies
+      run: dotnet restore ./Services/TimelineService/API
+
+    # Builds the code
+    - name: Build
+      run: dotnet build --no-restore ./Services/TimelineService/API
+  
+  # test:
+  #   needs: build
+  #   name: Test
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #   # Checks out the code
+  #   - name: Checkout
+  #     uses: actions/checkout@v2
+
+  #   # Tests the code
+  #   - name: Build
+  #     run: dotnet test ./Services/TimelineService/Tests
+
+  semver:
+    name: Calculate SemVer version
+    runs-on: ubuntu-latest
+    outputs:
+      SEMVER: ${{ steps.fixsemver.outputs.SEMVER }}
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+
+    - name: Git version
+      id: gitversion
+      uses: codacy/git-version@2.4.0
+      with:
+        prefix: kwetter-timeline-service-
+
+    - name: Fix semver
+      id: fixsemver
+      run: |
+        VERSION=${{ steps.gitversion.outputs.VERSION }}
+        FIXED_SEMVER=${VERSION##*kwetter-timeline-service-}
+        echo "::set-output name=SEMVER::${FIXED_SEMVER}"
+        echo "${FIXED_SEMVER}"
+
+  docker:
+    needs: 
+     - semver
+    #  - test
+    name: Build and push Docker images
+    env:
+      SEMVER: ${{ needs.semver.outputs.SEMVER }}
+    environment:
+      name: docker
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+    
+    - name: Add Neuralm certificate
+      run: |
+        echo "Create root certificate directory"
+        sudo mkdir -p /usr/local/share/ca-certificates/${{ secrets.NEURALM_REGISTRY }}/
+        echo "Create certificate"
+        sudo printf "${{ secrets.NEURALM_CERTIFICATE }}" >> neuralm.crt
+        echo "Create docker directory"
+        sudo mkdir -p /etc/docker/
+        echo "Create docker daemon json"
+        sudo touch /etc/docker/daemon.json
+        echo "Copy certificate to the ca-certificates directory"
+        sudo cp neuralm.crt /usr/local/share/ca-certificates/${{ secrets.NEURALM_REGISTRY }}/ca.crt
+        echo "Create neuralm certificate directory in docker"
+        sudo mkdir -p /etc/docker/certs.d/${{ secrets.NEURALM_REGISTRY }}/
+        echo "Copy certificate to the docker directory"
+        sudo cp neuralm.crt /etc/docker/certs.d/${{ secrets.NEURALM_REGISTRY }}/ca.crt
+        echo "Update CA certificates"
+        sudo update-ca-certificates
+        echo "Restart docker"
+        sudo systemctl daemon-reload
+        sudo systemctl restart docker
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v1
+    
+    - name: Cache Docker layers
+      uses: actions/cache@v2
+      with:
+        path: /tmp/.buildx-cache
+        key: ${{ runner.os }}-buildx-${{ github.sha }}
+        restore-keys: |
+          ${{ runner.os }}-buildx-
+
+    - name: Login to Neuralm Docker registry
+      uses: docker/login-action@v1 
+      with:
+        registry: ${{ secrets.NEURALM_REGISTRY }}
+        username: ${{ secrets.NEURALM_DOCKER_USERNAME }}
+        password: ${{ secrets.NEURALM_DOCKER_PASSWORD }}
+    
+    - name: Build and push TimelineService Docker image 
+      run: |
+        echo "Building TimelineService docker image"
+        docker build -t ${{ secrets.NEURALM_REGISTRY }}/kwetter-timeline-service:${{ env.SEMVER }} -t ${{ secrets.NEURALM_REGISTRY }}/kwetter-timeline-service:latest -f ./kwetter-timeline-service.Dockerfile .
+        echo "Publishing TimelineService docker image"
+        docker push --all-tags ${{ secrets.NEURALM_REGISTRY }}/kwetter-timeline-service
+
+  production:
+    needs: 
+    - docker
+    - semver
+    name: Deploy to Kubernetes
+    env:
+      SEMVER: ${{ needs.semver.outputs.SEMVER }}
+    environment:
+      name: production
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Update manifest tags
+        run: |
+          sed -i'' -e 's/:latest/:${{ env.SEMVER }}/g' ./../K8s/services/timeline-service/kwetter-timeline-service.deployment.yaml
+      
+      - name: Set kubernetes context
+        uses: azure/k8s-set-context@v1
+        with:
+          method: kubeconfig
+          kubeconfig: ${{ secrets.KUBE_CONFIG }}
+          context: kwetter
+
+      - name: Deploy services
+        uses: jtalk/k8s-deploy@v2
+        with:
+          namespace: kwetter
+          manifests: |
+            ./K8s/services/timeline-service/kwetter-timeline-service.deployment.yaml
+      
