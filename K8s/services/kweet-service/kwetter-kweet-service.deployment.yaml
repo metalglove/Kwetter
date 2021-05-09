@@ -48,8 +48,8 @@ spec:
             name: kwetter-kweet-service-secret
         resources:
           limits:
-            memory: 500Mi
-            cpu: 300m
+            memory: 300Mi
+            cpu: 100m
         ports:
         - containerPort: 80
       imagePullSecrets:

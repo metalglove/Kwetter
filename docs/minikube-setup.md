@@ -83,6 +83,7 @@ minikube ssh -- sudo mkdir /mnt/data/rabbit-store-1
 minikube ssh -- sudo mkdir /mnt/data/rabbit-store-2
 minikube ssh -- sudo mkdir /mnt/data/rabbit-store-3
 minikube ssh -- sudo mkdir /mnt/data/eventstore
+minikube ssh -- sudo mkdir /mnt/data/neo4j
 minikube ssh -- sudo chown -R 10001:0 /mnt/data
 ```
 
@@ -106,6 +107,11 @@ kubectl apply -f ./K8s/rabbitmq/rabbit-statefulset.yaml
 ### Install EventStore
 ```
 kubectl apply -f ./K8s/EventStore/eventstore.deployment.yaml
+```
+
+### Install neo4j
+```
+kubectl apply -f ./K8s/neo4j/neo4j.deployment.yaml
 ```
 
 ### Deploy services
@@ -136,6 +142,11 @@ Spin up authorization service!
 ```
 kubectl apply -f ./K8s/services/authorization-service/kwetter-authorization-db.deployment.yaml
 kubectl apply -f ./K8s/services/authorization-service/kwetter-authorization-service.deployment.yaml
+```
+
+Spin up timeline service!
+```
+kubectl apply -f ./K8s/services/timeline-service/kwetter-timeline-service.deployment.yaml
 ```
 
 ### Validate deployment

@@ -1,14 +1,14 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: kwetter-user-service
+  name: kwetter-timeline-service
   namespace: kwetter
   labels:
-    app: kwetter-user-service
-    service: kwetter-user-service
+    app: kwetter-timeline-service
+    service: kwetter-timeline-service
 spec:
   selector:
-    app: kwetter-user-service-pod
+    app: kwetter-timeline-service-pod
   ports:
   - protocol: TCP
     name: http
@@ -19,7 +19,7 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: kwetter-user-service
+  name: kwetter-timeline-service
   namespace: kwetter
 spec:
   replicas: 3
@@ -31,21 +31,21 @@ spec:
       maxUnavailable: 1
   selector:
     matchLabels:
-      app: kwetter-user-service-pod
+      app: kwetter-timeline-service-pod
       version: latest
   template:
     metadata:
       labels:
-        app: kwetter-user-service-pod
+        app: kwetter-timeline-service-pod
         version: latest
     spec:
       containers:
-      - name: kwetter-user-container
-        image: neuralm.net:7676/kwetter-user-service:latest
+      - name: kwetter-timeline-container
+        image: neuralm.net:7676/kwetter-timeline-service:latest
         imagePullPolicy: Always
         envFrom:
         - secretRef:
-            name: kwetter-user-service-secret
+            name: kwetter-timeline-service-secret
         resources:
           limits:
             memory: 300Mi

@@ -73,4 +73,6 @@ kubectl patch pv pvname -p '{"metadata":{"finalizers":null}}'
 Windows check local nginx instances
 ```
 tasklist /fi "imagename eq nginx.exe"
+cd C:\nginx\nginx-1.19.9\
+start .\nginx.exe
 ```

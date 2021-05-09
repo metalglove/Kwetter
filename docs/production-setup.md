@@ -155,6 +155,7 @@ mkdir /mnt/data/rabbit-store-1
 mkdir /mnt/data/rabbit-store-2
 mkdir /mnt/data/rabbit-store-3
 mkdir /mnt/data/eventstore
+mkdir /mnt/data/neo4j
 chown -R 10001:0 /mnt/data
 ```
 
@@ -178,6 +179,12 @@ Install EventStore
 ```
 kubectl apply -f ./K8s/EventStore/eventstore-storage-persistent-volume-and-claim.yaml
 kubectl apply -f ./K8s/EventStore/eventstore.deployment.yaml
+```
+
+Install neo4j
+```
+kubectl apply -f ./K8s/neo4j/neo4j-storage-persistent-volume-and-claim.yaml
+kubectl apply -f ./K8s/neo4j/neo4j.deployment.yaml
 ```
 
 Deploy the services
@@ -213,6 +220,11 @@ Spin up authorization service!
 kubectl apply -f ./K8s/services/authorization-service/kwetter-authorization-storage-persistent-volume-and-claim.yaml
 kubectl apply -f ./K8s/services/authorization-service/kwetter-authorization-db.deployment.yaml
 kubectl apply -f ./K8s/services/authorization-service/kwetter-authorization-service.deployment.yaml
+```
+
+Spin up timeline service!
+```
+kubectl apply -f ./K8s/services/timeline-service/kwetter-timeline-service.deployment.yaml
 ```
 
 Validate deployment

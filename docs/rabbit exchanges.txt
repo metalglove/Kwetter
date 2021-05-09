@@ -1,0 +1,29 @@
+Direct Exchange
+A message goes to the queue(s) with the binding key that exactly matches the routing key of the message.
+
+Topic Exchange
+Messages are routed to one or many queues based on a match between a message routing key and the routing pattern.
+
+Fanout Exchange
+The received message is routed to all queues that are bound to the exchange.
+
+Headers Exchange
+Routes messages to queues that are bound using arguments (key and value) in the headers attribute.
+
+AuthorizationService
+-> ExchangeDeclare
+   - ExchangeName: AuthorizationExchange
+   - Type: Direct
+-> BasicPublish
+   - ExchangeName: AuthorizationExchange
+   - RoutingKey: IdentityCreatedIntegrationEvent
+
+UserService
+-> ExchangeDeclare
+   - ExchangeName: AuthorizationExchange
+   - Type: Direct
+-> QueueDeclare(UserService.IdentityCreatedIntegrationEvent)
+-> QueueBind
+    - QueueName: UserService.IdentityCreatedIntegrationEvent
+    - ExchangeName: AuthorizationExchange
+    - RoutingKey: IdentityCreatedIntegrationEvent

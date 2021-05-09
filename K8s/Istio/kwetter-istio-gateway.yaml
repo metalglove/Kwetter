@@ -65,3 +65,12 @@ spec:
         port:
           number: 80
         host: kwetter-follow-service
+  - name: kwetter-timeline-service-latest-routes
+    match:
+    - uri:
+        prefix: /api/Timeline
+    route:
+    - destination:
+        port:
+          number: 80
+        host: kwetter-timeline-service

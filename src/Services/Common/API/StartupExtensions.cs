@@ -178,7 +178,12 @@ namespace Kwetter.Services.Common.API
         {
             FirebaseApp firebaseApp = FirebaseApp.Create(new AppOptions()
             {
-                Credential = GoogleCredential.FromFile(configuration["Authorization:Credential"])
+                Credential = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") switch
+                {
+                    "Production" => GoogleCredential.FromJson(configuration["Authorization:Credential"]),
+                    "Development" => GoogleCredential.FromFile(configuration["Authorization:Credential"]),
+                    _ => throw new ArgumentOutOfRangeException("Environment is not Production or Development."),
+                }
             });
             serviceCollection.AddSingleton(firebaseApp);
             serviceCollection.AddSingleton<ITokenVerifier, GoogleTokenVerifier>();
