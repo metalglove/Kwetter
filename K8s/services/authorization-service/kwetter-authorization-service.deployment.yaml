@@ -22,7 +22,7 @@ metadata:
   name: kwetter-authorization-service
   namespace: kwetter
 spec:
-  replicas: 2
+  replicas: 1
   minReadySeconds: 10
   strategy:
     type: RollingUpdate
@@ -49,7 +49,7 @@ spec:
         resources:
           limits:
             memory: 300Mi
-            cpu: 100m
+            cpu: 200m
         ports:
         - containerPort: 80
       imagePullSecrets:

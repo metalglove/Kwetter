@@ -22,7 +22,7 @@ metadata:
   name: kwetter-user-service
   namespace: kwetter
 spec:
-  replicas: 3
+  replicas: 1
   minReadySeconds: 10
   strategy:
     type: RollingUpdate
@@ -48,8 +48,8 @@ spec:
             name: kwetter-user-service-secret
         resources:
           limits:
-            memory: 300Mi
-            cpu: 100m
+            memory: 500Mi
+            cpu: 300m
         ports:
         - containerPort: 80
       imagePullSecrets:

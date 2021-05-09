@@ -58,7 +58,7 @@ spec:
         resources:
           limits:
             memory: 1200Mi
-            cpu: 600m
+            cpu: 1000m
         volumeMounts:
         - name: neo4j-data-volume
           mountPath: /var/lib/neo4j/data

@@ -56,8 +56,8 @@ spec:
           value: "true"
         resources:
           limits:
-            memory: 300Mi
-            cpu: 200m
+            memory: 500Mi
+            cpu: 1000m
         volumeMounts:
         - name: eventstore-data-volume
           mountPath: /var/lib/eventstore

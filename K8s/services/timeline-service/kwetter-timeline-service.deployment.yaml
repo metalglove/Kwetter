@@ -48,8 +48,8 @@ spec:
             name: kwetter-timeline-service-secret
         resources:
           limits:
-            memory: 300Mi
-            cpu: 100m
+            memory: 600Mi
+            cpu: 500m
         ports:
         - containerPort: 80
       imagePullSecrets:
