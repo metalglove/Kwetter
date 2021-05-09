@@ -35,7 +35,7 @@ spec:
       containers:
       - name: eventstore
         image: eventstore/eventstore:20.10.2-bionic
-        imagePullPolicy: IfNotPresent
+        imagePullPolicy: Always
         ports: 
           - containerPort: 2113
             name: es-web
