@@ -11,10 +11,10 @@ namespace Kwetter.Services.FollowService.Infrastructure.Migrations
                 name: "Users",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    UserDisplayName = table.Column<string>(type: "nvarchar(64)", maxLength: 64, nullable: false),
-                    UserName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    UserProfilePictureUrl = table.Column<string>(type: "nvarchar(512)", maxLength: 512, nullable: false)
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    UserDisplayName = table.Column<string>(type: "character varying(64)", maxLength: 64, nullable: false),
+                    UserName = table.Column<string>(type: "text", nullable: true),
+                    UserProfilePictureUrl = table.Column<string>(type: "character varying(512)", maxLength: 512, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -25,9 +25,9 @@ namespace Kwetter.Services.FollowService.Infrastructure.Migrations
                 name: "Follow",
                 columns: table => new
                 {
-                    FollowingId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    FollowerId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    FollowDateTime = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    FollowingId = table.Column<Guid>(type: "uuid", nullable: false),
+                    FollowerId = table.Column<Guid>(type: "uuid", nullable: false),
+                    FollowDateTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: false)
                 },
                 constraints: table =>
                 {

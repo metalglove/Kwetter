@@ -11,10 +11,10 @@ spec:
     app: kwetter-follow-db-pod
   ports:
   - protocol: TCP
-    name: tcp-mssql
-    port: 1433
-    targetPort: 1433
-  type: LoadBalancer
+    name: tcp-psql
+    port: 5432
+    targetPort: 5432
+  type: ClusterIP
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -34,20 +34,20 @@ spec:
     spec:
       containers:
       - name: kwetter-follow-db-container
-        image: mcr.microsoft.com/mssql/server:2019-latest
-        imagePullPolicy: IfNotPresent
+        image: postgres:13.2
+        imagePullPolicy: "IfNotPresent"
         resources:
           limits:
-            memory: 2Gi
+            memory: 200Mi
             cpu: 300m
         ports:
-        - containerPort: 1433
+        - containerPort: 5432
         envFrom:
         - secretRef:
             name: kwetter-follow-db-secret
         volumeMounts:
         - name: kwetter-follow-db-volume-mount
-          mountPath: /var/opt/mssql
+          mountPath: /var/lib/postgresql/data
       volumes:
       - name: kwetter-follow-db-volume-mount
         persistentVolumeClaim:

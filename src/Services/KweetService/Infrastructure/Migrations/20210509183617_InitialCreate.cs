@@ -11,10 +11,10 @@ namespace Kwetter.Services.KweetService.Infrastructure.Migrations
                 name: "Users",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    UserDisplayName = table.Column<string>(type: "nvarchar(64)", maxLength: 64, nullable: false),
-                    UserName = table.Column<string>(type: "nvarchar(32)", maxLength: 32, nullable: false),
-                    UserProfilePictureUrl = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    UserDisplayName = table.Column<string>(type: "character varying(64)", maxLength: 64, nullable: false),
+                    UserName = table.Column<string>(type: "character varying(32)", maxLength: 32, nullable: false),
+                    UserProfilePictureUrl = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -25,10 +25,10 @@ namespace Kwetter.Services.KweetService.Infrastructure.Migrations
                 name: "Kweets",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Message = table.Column<string>(type: "nvarchar(140)", maxLength: 140, nullable: false),
-                    CreatedDateTime = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    UserId = table.Column<Guid>(type: "uuid", nullable: false),
+                    Message = table.Column<string>(type: "character varying(140)", maxLength: 140, nullable: false),
+                    CreatedDateTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -45,8 +45,8 @@ namespace Kwetter.Services.KweetService.Infrastructure.Migrations
                 name: "HashTag",
                 columns: table => new
                 {
-                    Tag = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    KweetId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    Tag = table.Column<string>(type: "text", nullable: false),
+                    KweetId = table.Column<Guid>(type: "uuid", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -63,9 +63,9 @@ namespace Kwetter.Services.KweetService.Infrastructure.Migrations
                 name: "KweetLike",
                 columns: table => new
                 {
-                    KweetId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    LikedDateTime = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    KweetId = table.Column<Guid>(type: "uuid", nullable: false),
+                    UserId = table.Column<Guid>(type: "uuid", nullable: false),
+                    LikedDateTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -88,9 +88,9 @@ namespace Kwetter.Services.KweetService.Infrastructure.Migrations
                 name: "Mention",
                 columns: table => new
                 {
-                    UserName = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    KweetId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
+                    UserName = table.Column<string>(type: "text", nullable: false),
+                    KweetId = table.Column<Guid>(type: "uuid", nullable: false),
+                    UserId = table.Column<Guid>(type: "uuid", nullable: true)
                 },
                 constraints: table =>
                 {

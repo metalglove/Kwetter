@@ -91,6 +91,9 @@ namespace Kwetter.Services.Common.Infrastructure
                 case "mssql-in-memory":
                     optionsBuilder.UseInMemoryDatabase(Guid.NewGuid().ToString());
                     break;
+                case "psql":
+                    optionsBuilder.UseNpgsql(connectionString);
+                    break;
                 case "sqlite":
                     optionsBuilder.UseSqlite(connectionString);
                     break;
@@ -103,7 +106,8 @@ namespace Kwetter.Services.Common.Infrastructure
             if (LoggerFactory != null)
             {
                 optionsBuilder.UseLoggerFactory(LoggerFactory);
-                optionsBuilder.EnableSensitiveDataLogging();
+                if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Development")
+                    optionsBuilder.EnableSensitiveDataLogging();
             }
 
             _dbContextOptionsBuilder = optionsBuilder;

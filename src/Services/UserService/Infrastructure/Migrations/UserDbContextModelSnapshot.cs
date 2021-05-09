@@ -3,8 +3,8 @@ using System;
 using Kwetter.Services.UserService.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace Kwetter.Services.UserService.Infrastructure.Migrations
 {
@@ -15,25 +15,25 @@ namespace Kwetter.Services.UserService.Infrastructure.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("Relational:MaxIdentifierLength", 128)
+                .HasAnnotation("Relational:MaxIdentifierLength", 63)
                 .HasAnnotation("ProductVersion", "5.0.5")
-                .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
             modelBuilder.Entity("Kwetter.Services.UserService.Domain.AggregatesModel.UserAggregate.UserAggregate", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid");
 
                     b.Property<string>("DisplayName")
                         .IsRequired()
                         .HasMaxLength(64)
-                        .HasColumnType("nvarchar(64)");
+                        .HasColumnType("character varying(64)");
 
                     b.Property<string>("UserName")
                         .IsRequired()
                         .HasMaxLength(32)
-                        .HasColumnType("nvarchar(32)");
+                        .HasColumnType("character varying(32)");
 
                     b.HasKey("Id");
 
@@ -48,17 +48,17 @@ namespace Kwetter.Services.UserService.Infrastructure.Migrations
                     b.OwnsOne("Kwetter.Services.UserService.Domain.AggregatesModel.UserAggregate.UserProfile", "Profile", b1 =>
                         {
                             b1.Property<Guid>("UserAggregateId")
-                                .HasColumnType("uniqueidentifier");
+                                .HasColumnType("uuid");
 
                             b1.Property<string>("Description")
                                 .IsRequired()
                                 .HasMaxLength(512)
-                                .HasColumnType("nvarchar(512)");
+                                .HasColumnType("character varying(512)");
 
                             b1.Property<string>("PictureUrl")
                                 .IsRequired()
                                 .HasMaxLength(512)
-                                .HasColumnType("nvarchar(512)");
+                                .HasColumnType("character varying(512)");
 
                             b1.HasKey("UserAggregateId");
 
