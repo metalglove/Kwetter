@@ -9,22 +9,27 @@ namespace Kwetter.Services.KweetService.Domain.AggregatesModel.UserAggregate.Eve
     public sealed class UserMentionedDomainEvent : DomainEvent
     {
         /// <summary>
-        /// Gets and sets the kweet id.
+        /// Gets the kweet id.
         /// </summary>
         public Guid KweetId { get; }
 
         /// <summary>
-        /// Gets and sets the user id.
+        /// Gets the user id.
         /// </summary>
         public Guid UserId { get; }
 
         /// <summary>
-        /// Gets and sets the user name.
+        /// Gets the user id by whom the user is mentioned.
+        /// </summary>
+        public Guid MentionedByUserId { get; }
+
+        /// <summary>
+        /// Gets the user name.
         /// </summary>
         public string UserName { get; }
 
         /// <summary>
-        /// Gets and sets the date time when the kweet was created.
+        /// Gets the date time when the kweet was created.
         /// </summary>
         public DateTime MentionedDateTime { get; }
 
@@ -33,12 +38,14 @@ namespace Kwetter.Services.KweetService.Domain.AggregatesModel.UserAggregate.Eve
         /// </summary>
         /// <param name="kweetId">The kweet id.</param>
         /// <param name="userId">The user id.</param>
+        /// <param name="mentionedByUserId">The user id that mentioned this user.</param>
         /// <param name="userName">The user name.</param>
         /// <param name="mentionedDateTime">The mentioned date time.</param>
-        public UserMentionedDomainEvent(Guid kweetId, Guid userId, string userName, DateTime mentionedDateTime)
+        public UserMentionedDomainEvent(Guid kweetId, Guid userId, Guid mentionedByUserId, string userName, DateTime mentionedDateTime)
         {
             KweetId = kweetId;
             UserId = userId;
+            MentionedByUserId = mentionedByUserId;
             UserName = userName;
             MentionedDateTime = mentionedDateTime;
             EventVersion = 1;

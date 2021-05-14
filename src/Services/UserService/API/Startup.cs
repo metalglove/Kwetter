@@ -1,5 +1,4 @@
 using Kwetter.Services.Common.API;
-using Kwetter.Services.Common.Application.Eventing;
 using Kwetter.Services.Common.Application.Eventing.Bus;
 using Kwetter.Services.Common.Infrastructure;
 using Kwetter.Services.Common.Infrastructure.Behaviours;

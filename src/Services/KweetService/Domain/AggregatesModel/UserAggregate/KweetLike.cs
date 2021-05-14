@@ -54,14 +54,14 @@ namespace Kwetter.Services.KweetService.Domain.AggregatesModel.UserAggregate
         /// <summary>
         /// Initializes a new instance of the <see cref="KweetLike"/> class.
         /// </summary>
-        /// <param name="kweetId">The kweet id.</param>
+        /// <param name="kweet">The kweet.</param>
         /// <param name="userId">The user id.</param>
-        public KweetLike(Guid kweetId, Guid userId)
+        public KweetLike(Kweet kweet, Guid userId)
         {
-            KweetId = kweetId;
+            KweetId = kweet.Id;
             UserId = userId;
             LikedDateTime = DateTime.UtcNow;
-            AddDomainEvent(new KweetLikedDomainEvent(KweetId, UserId, LikedDateTime));
+            AddDomainEvent(new KweetLikedDomainEvent(KweetId, kweet.Id, UserId, LikedDateTime));
         }
     }
 }

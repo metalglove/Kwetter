@@ -41,7 +41,7 @@ namespace Kwetter.Services.KweetService.Domain.AggregatesModel.UserAggregate
             UserName = user.UserName;
             User = user;
             KweetId = kweet.Id;
-            AddDomainEvent(new UserMentionedDomainEvent(KweetId, user.Id, UserName, kweet.CreatedDateTime));
+            AddDomainEvent(new UserMentionedDomainEvent(KweetId, user.Id, kweet.UserId, UserName, kweet.CreatedDateTime));
         }
 
         /// <summary>

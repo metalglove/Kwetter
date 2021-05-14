@@ -31,7 +31,7 @@ namespace Kwetter.Services.KweetService.API.Application.DomainEventHandlers.User
         /// <returns>Returns an awaitable task.</returns>
         public Task Handle(UserMentionedDomainEvent notification, CancellationToken cancellationToken)
         {
-            UserMentionedIntegrationEvent userMentionedIntegrationEvent = new(notification.KweetId, notification.UserId, notification.UserName, notification.MentionedDateTime);
+            UserMentionedIntegrationEvent userMentionedIntegrationEvent = new(notification.KweetId, notification.UserId, notification.MentionedByUserId, notification.UserName, notification.MentionedDateTime);
             userMentionedIntegrationEvent.SetExchangeName("KweetExchange");
             userMentionedIntegrationEvent.SetRoutingKey("KweetService.UserMentionedIntegrationEvent");
             _integrationEventService.EnqueueEvent(userMentionedIntegrationEvent);

@@ -144,7 +144,7 @@ namespace Kwetter.Services.KweetService.Domain.AggregatesModel.UserAggregate
         /// <exception cref="KweetDomainException">Thrown when the user id is empty.</exception>
         internal KweetLike AddLike(Guid userId)
         {
-            KweetLike like = new(Id, userId);
+            KweetLike like = new(this, userId);
             if (Likes.Contains(like))
                 return default;
             likes.Add(like);

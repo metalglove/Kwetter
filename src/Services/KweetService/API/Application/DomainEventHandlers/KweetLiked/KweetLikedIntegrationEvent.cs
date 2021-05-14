@@ -14,6 +14,11 @@ namespace Kwetter.Services.KweetService.API.Application.DomainEventHandlers.Kwee
         public Guid KweetId { get; }
 
         /// <summary>
+        /// Gets the kweet user id.
+        /// </summary>
+        public Guid KweetUserId { get; }
+
+        /// <summary>
         /// Gets the user id.
         /// </summary>
         public Guid UserId { get; }
@@ -27,11 +32,13 @@ namespace Kwetter.Services.KweetService.API.Application.DomainEventHandlers.Kwee
         /// Initializes a new instance of the <see cref="KweetLikedIntegrationEvent"/> class.
         /// </summary>
         /// <param name="kweetId">The kweet id.</param>
+        /// <param name="kweetUserId">The kweet user id.</param>
         /// <param name="userId">The user id.</param>
         /// <param name="likedDateTime">The liked date time.</param>
-        public KweetLikedIntegrationEvent(Guid kweetId, Guid userId, DateTime likedDateTime)
+        public KweetLikedIntegrationEvent(Guid kweetId, Guid kweetUserId, Guid userId, DateTime likedDateTime)
         {
             KweetId = kweetId;
+            KweetUserId = kweetUserId;
             UserId = userId;
             LikedDateTime = likedDateTime;
             EventVersion = 1;
