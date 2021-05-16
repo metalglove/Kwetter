@@ -25,6 +25,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using Neo4j.Driver;
 using RabbitMQ.Client;
+using StackExchange.Redis;
 using System;
 using System.Reflection;
 
@@ -169,6 +170,24 @@ namespace Kwetter.Services.Common.API
         }
 
         /// <summary>
+        /// Adds Redis to the service collection.
+        /// </summary>
+        /// <param name="serviceCollection">The service collection.</param>
+        /// <param name="configuration">The configuration.</param>
+        /// <returns>Returns the service collection to chain further upon.</returns>
+        public static IServiceCollection AddRedis(this IServiceCollection serviceCollection, IConfiguration configuration)
+        {
+            ConfigurationOptions configurationOptions = new()
+            {
+                AbortOnConnectFail = false,
+                ConnectRetry = 3,
+                EndPoints = { { configuration["Redis:Host"], int.Parse(configuration["Redis:Port"]) } }
+            };
+            IConnectionMultiplexer redis = ConnectionMultiplexer.Connect(configurationOptions);
+            return serviceCollection.AddSingleton<IConnectionMultiplexer>(redis);
+        }
+
+        /// <summary>
         /// Adds the defaults authentication implementation.
         /// </summary>
         /// <param name="serviceCollection">The service collection.</param>
@@ -182,7 +201,7 @@ namespace Kwetter.Services.Common.API
                 {
                     "Production" => GoogleCredential.FromJson(configuration["Authorization:Credential"]),
                     "Development" => GoogleCredential.FromFile(configuration["Authorization:Credential"]),
-                    _ => throw new ArgumentOutOfRangeException("Environment is not Production or Development."),
+                    _ => throw new Exception("ASPNETCORE_ENVIRONMENT is not set to Production or Development."),
                 }
             });
             serviceCollection.AddSingleton(firebaseApp);

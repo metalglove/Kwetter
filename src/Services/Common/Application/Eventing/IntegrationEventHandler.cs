@@ -42,7 +42,7 @@ namespace Kwetter.Services.Common.Application.Eventing
         {
             _logger.LogInformation($"Started handling {typeof(TEvent).Name}");
             await _eventHandler.HandleAsync(request, cancellationToken);
-            _logger.LogInformation($"Finsihed handling {typeof(TEvent).Name}");
+            _logger.LogInformation($"Finished handling {typeof(TEvent).Name}");
             return new CommandResponse() { Success = true };
         }
     }
