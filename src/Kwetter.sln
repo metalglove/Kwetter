@@ -179,6 +179,14 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "follow-service", "follow-se
 		..\K8s\services\follow-service\kwetter-follow-storage-persistent-volume-and-claim.yaml = ..\K8s\services\follow-service\kwetter-follow-storage-persistent-volume-and-claim.yaml
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "NotificationService", "NotificationService", "{43749B9E-8FBA-42A7-A3B9-75ECEC9EF06E}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Kwetter.Services.NotificationService.API", "Services\NotificationService\API\Kwetter.Services.NotificationService.API.csproj", "{105EE2F5-B93C-4846-ABE5-49A376C5B7A2}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Kwetter.Services.NotificationService.Infrastructure", "Services\NotificationService\Kwetter.Services.NotificationService.Infrastructure\Kwetter.Services.NotificationService.Infrastructure.csproj", "{F00E0DF6-D06A-4CEF-8977-0CFA6BF9F28F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kwetter.Services.NotificationService.Domain", "Services\NotificationService\Kwetter.Services.NotificationService.Domain\Kwetter.Services.NotificationService.Domain.csproj", "{EBE677CD-E6C8-4D1C-A901-96811F5DC60E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -385,6 +393,30 @@ Global
 		{B3E32FBF-1A84-48B3-898D-C1706912DE04}.Services Build|Any CPU.Build.0 = Services Build|Any CPU
 		{B3E32FBF-1A84-48B3-898D-C1706912DE04}.Services Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B3E32FBF-1A84-48B3-898D-C1706912DE04}.Services Release|Any CPU.Build.0 = Release|Any CPU
+		{105EE2F5-B93C-4846-ABE5-49A376C5B7A2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{105EE2F5-B93C-4846-ABE5-49A376C5B7A2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{105EE2F5-B93C-4846-ABE5-49A376C5B7A2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{105EE2F5-B93C-4846-ABE5-49A376C5B7A2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{105EE2F5-B93C-4846-ABE5-49A376C5B7A2}.Services Build|Any CPU.ActiveCfg = Debug|Any CPU
+		{105EE2F5-B93C-4846-ABE5-49A376C5B7A2}.Services Build|Any CPU.Build.0 = Debug|Any CPU
+		{105EE2F5-B93C-4846-ABE5-49A376C5B7A2}.Services Release|Any CPU.ActiveCfg = Release|Any CPU
+		{105EE2F5-B93C-4846-ABE5-49A376C5B7A2}.Services Release|Any CPU.Build.0 = Release|Any CPU
+		{F00E0DF6-D06A-4CEF-8977-0CFA6BF9F28F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F00E0DF6-D06A-4CEF-8977-0CFA6BF9F28F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F00E0DF6-D06A-4CEF-8977-0CFA6BF9F28F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F00E0DF6-D06A-4CEF-8977-0CFA6BF9F28F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F00E0DF6-D06A-4CEF-8977-0CFA6BF9F28F}.Services Build|Any CPU.ActiveCfg = Debug|Any CPU
+		{F00E0DF6-D06A-4CEF-8977-0CFA6BF9F28F}.Services Build|Any CPU.Build.0 = Debug|Any CPU
+		{F00E0DF6-D06A-4CEF-8977-0CFA6BF9F28F}.Services Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F00E0DF6-D06A-4CEF-8977-0CFA6BF9F28F}.Services Release|Any CPU.Build.0 = Release|Any CPU
+		{EBE677CD-E6C8-4D1C-A901-96811F5DC60E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EBE677CD-E6C8-4D1C-A901-96811F5DC60E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EBE677CD-E6C8-4D1C-A901-96811F5DC60E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EBE677CD-E6C8-4D1C-A901-96811F5DC60E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EBE677CD-E6C8-4D1C-A901-96811F5DC60E}.Services Build|Any CPU.ActiveCfg = Debug|Any CPU
+		{EBE677CD-E6C8-4D1C-A901-96811F5DC60E}.Services Build|Any CPU.Build.0 = Debug|Any CPU
+		{EBE677CD-E6C8-4D1C-A901-96811F5DC60E}.Services Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EBE677CD-E6C8-4D1C-A901-96811F5DC60E}.Services Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -434,6 +466,10 @@ Global
 		{339023D9-46CF-4BD3-A44F-D556BC363611} = {732B40E6-6403-4361-9364-23E08475E2BF}
 		{3D4CF2F0-CC99-444C-A62E-8DAC30E6873E} = {732B40E6-6403-4361-9364-23E08475E2BF}
 		{AF6D06CE-3273-483A-9EBF-3746A01FB578} = {732B40E6-6403-4361-9364-23E08475E2BF}
+		{43749B9E-8FBA-42A7-A3B9-75ECEC9EF06E} = {316126FB-31AD-403A-B600-CF5DC5489D43}
+		{105EE2F5-B93C-4846-ABE5-49A376C5B7A2} = {43749B9E-8FBA-42A7-A3B9-75ECEC9EF06E}
+		{F00E0DF6-D06A-4CEF-8977-0CFA6BF9F28F} = {43749B9E-8FBA-42A7-A3B9-75ECEC9EF06E}
+		{EBE677CD-E6C8-4D1C-A901-96811F5DC60E} = {43749B9E-8FBA-42A7-A3B9-75ECEC9EF06E}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {B4A5CA09-D8B5-43B6-BB96-97B00B1EC94A}

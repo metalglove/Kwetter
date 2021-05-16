@@ -78,7 +78,6 @@ namespace Kwetter.Services.FollowService.API
         {
             if (env.IsDevelopment())
             {
-                app.UseDeveloperExceptionPage();
                 app.UseSwagger();
                 string version = _configuration["Service:Version"];
                 string title = _configuration["Service:Title"];
