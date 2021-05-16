@@ -84,6 +84,7 @@ minikube ssh -- sudo mkdir /mnt/data/rabbit-store-2
 minikube ssh -- sudo mkdir /mnt/data/rabbit-store-3
 minikube ssh -- sudo mkdir /mnt/data/eventstore
 minikube ssh -- sudo mkdir /mnt/data/neo4j
+minikube ssh -- sudo mkdir /mnt/data/redis
 minikube ssh -- sudo chown -R 10001:0 /mnt/data
 ```
 
@@ -94,6 +95,13 @@ kubectl apply -f ./K8s/kwetter-storage-class.yaml
 Setup the volume and volume claims
 ```
 kubectl apply -f ./K8s/Minikube
+```
+
+### Install redis
+Install redis
+```
+kubectl apply -f ./K8s/redis/redis-configmap.yaml
+kubectl apply -f ./K8s/redis/redis.deployment.yaml
 ```
 
 ### Install rabbitmq
@@ -147,6 +155,11 @@ kubectl apply -f ./K8s/services/authorization-service/kwetter-authorization-serv
 Spin up timeline service!
 ```
 kubectl apply -f ./K8s/services/timeline-service/kwetter-timeline-service.deployment.yaml
+```
+
+Spin up notification service!
+```
+kubectl apply -f ./K8s/services/notification-service/kwetter-notification-service.deployment.yaml
 ```
 
 ### Validate deployment

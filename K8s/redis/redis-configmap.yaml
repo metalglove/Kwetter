@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: redis-configmap
+data:
+  redis-config: |
+    dir ./data/
+
+    ## logging
+    loglevel notice
+    logfile "redis-logs.log"
+
+    ### persistence
+    save 900 1
+    save 300 10
+    save 60 10000
+    dbfilename dump.rdb
+    rdbcompression yes
+    stop-writes-on-bgsave-error yes
+    

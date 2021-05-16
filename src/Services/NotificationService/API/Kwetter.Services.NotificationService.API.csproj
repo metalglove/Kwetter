@@ -6,7 +6,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Common\API\Kwetter.Services.Common.API.csproj" />
-    <ProjectReference Include="..\Kwetter.Services.NotificationService.Infrastructure\Kwetter.Services.NotificationService.Infrastructure.csproj" />
+    <ProjectReference Include="..\Infrastructure\Kwetter.Services.NotificationService.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

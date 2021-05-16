@@ -1,4 +1,4 @@
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using StackExchange.Redis;
 using System;
 using System.Collections.Generic;
@@ -45,6 +45,40 @@ namespace Kwetter.Services.NotificationService.Infrastructure.Stores
             }
         }
 
+        /// <inheritdoc cref="INotificationStore.GetNotificationsAsync(string, CancellationToken)"/>
+        public async IAsyncEnumerable<string> GetNotificationsAsync(string userId, [EnumeratorCancellation] CancellationToken cancellationToken)
+        {
+            string key = $"user:notifications:{userId}";
+            long length = await Database.ListLengthAsync(key);
+            if (length == 0)
+                yield break;
+            cancellationToken.ThrowIfCancellationRequested();
+            string notification;
+            do
+            {
+                notification = await Database.ListLeftPopAsync(key);
+                if (notification is null)
+                    yield break;
+                yield return notification;
+                cancellationToken.ThrowIfCancellationRequested();
+            }
+            while (true);
+        }
+
+        /// <inheritdoc cref="INotificationStore.PrependNotificationsAsync(string, IEnumerable{string}, CancellationToken)"/>
+        public async Task<bool> PrependNotificationsAsync(string userId, IEnumerable<string> notifications, CancellationToken cancellationToken)
+        {
+            try
+            {
+                await Database.ListLeftPushAsync($"user:notifications:{userId}", notifications.Reverse().Select(n => new RedisValue(n)).ToArray());
+                return true;
+            }
+            catch (Exception)
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+                return false;
+            }
+        }
 
         /// <inheritdoc cref="INotificationStore.PublishNotificationAsync(string, string)"/>
         public async Task PublishNotificationAsync(string userId, string message)

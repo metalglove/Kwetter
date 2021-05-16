@@ -74,3 +74,12 @@ spec:
         port:
           number: 80
         host: kwetter-timeline-service
+  - name: kwetter-notification-service-latest-routes
+    match:
+    - uri:
+        prefix: /api/Notification
+    route:
+    - destination:
+        port:
+          number: 80
+        host: kwetter-notification-service

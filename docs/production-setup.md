@@ -156,12 +156,20 @@ mkdir /mnt/data/rabbit-store-2
 mkdir /mnt/data/rabbit-store-3
 mkdir /mnt/data/eventstore
 mkdir /mnt/data/neo4j
+mkdir /mnt/data/redis
 chown -R 10001:0 /mnt/data
 ```
 
 Install the kwetter storage class
 ```
 kubectl apply -f ./K8s/kwetter-storage-class.yaml
+```
+
+Install redis
+```
+kubectl apply -f ./K8s/redis/redis-configmap.yaml
+kubectl apply -f ./K8s/redis/redis-storage-persistent-volume-and-claim.yaml
+kubectl apply -f ./K8s/redis/redis.deployment.yaml
 ```
 
 Install rabbitmq
@@ -225,6 +233,11 @@ kubectl apply -f ./K8s/services/authorization-service/kwetter-authorization-serv
 Spin up timeline service!
 ```
 kubectl apply -f ./K8s/services/timeline-service/kwetter-timeline-service.deployment.yaml
+```
+
+Spin up timeline service!
+```
+kubectl apply -f ./K8s/services/notification-service/kwetter-notification-service.deployment.yaml
 ```
 
 Validate deployment

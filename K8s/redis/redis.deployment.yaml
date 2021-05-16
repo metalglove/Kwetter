@@ -1,0 +1,67 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: redis
+  namespace: kwetter
+  labels:
+    app: redis
+spec:
+  ports:
+  - protocol: TCP
+    port: 6379
+    targetPort: 6379
+    name: tcp
+  selector:
+    app: redis
+  type: ClusterIP
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redis
+  namespace: kwetter
+spec:
+  replicas: 1
+  minReadySeconds: 30
+  selector:
+    matchLabels:
+      app: redis
+      version: 6.2.3
+  template:
+    metadata:
+      labels:
+        app: redis
+        version: 6.2.3
+    spec:
+      containers:
+      - name: redis
+        image: redis:6.2.3
+        command:
+          - "redis-server"
+          - "/config/redis.conf"
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: MASTER
+          value: "true"
+        ports:
+          - containerPort: 6379
+            name: tcp
+        resources:
+          limits:
+            memory: 500Mi
+            cpu: 300m
+        volumeMounts:
+        - name: redis-data-volume
+          mountPath: /data
+        - name: redis-config
+          mountPath: /config
+      volumes:
+      - name: redis-data-volume
+        persistentVolumeClaim:
+          claimName: redis-data-volume-claim
+      - name: redis-config
+        configMap:
+          name: redis-configmap
+          items:
+            - key: redis-config
+              path: redis.conf

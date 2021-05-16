@@ -10,7 +10,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Kwetter.Services.NotificationService.Domain\Kwetter.Services.NotificationService.Domain.csproj" />
+    <ProjectReference Include="..\Domain\Kwetter.Services.NotificationService.Domain.csproj" />
   </ItemGroup>
 
 </Project>

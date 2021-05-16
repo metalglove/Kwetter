@@ -183,9 +183,16 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "NotificationService", "Noti
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Kwetter.Services.NotificationService.API", "Services\NotificationService\API\Kwetter.Services.NotificationService.API.csproj", "{105EE2F5-B93C-4846-ABE5-49A376C5B7A2}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Kwetter.Services.NotificationService.Infrastructure", "Services\NotificationService\Kwetter.Services.NotificationService.Infrastructure\Kwetter.Services.NotificationService.Infrastructure.csproj", "{F00E0DF6-D06A-4CEF-8977-0CFA6BF9F28F}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "timeline-service", "timeline-service", "{47946B68-BD05-4D83-9201-E1E3863A5AF6}"
+	ProjectSection(SolutionItems) = preProject
+		..\K8s\services\timeline-service\kwetter-timeline-service.deployment.yaml = ..\K8s\services\timeline-service\kwetter-timeline-service.deployment.yaml
+	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kwetter.Services.NotificationService.Domain", "Services\NotificationService\Kwetter.Services.NotificationService.Domain\Kwetter.Services.NotificationService.Domain.csproj", "{EBE677CD-E6C8-4D1C-A901-96811F5DC60E}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "notification-service", "notification-service", "{477DC511-6D28-41E0-97A6-070FEFD7CD76}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Kwetter.Services.NotificationService.Infrastructure", "Services\NotificationService\Infrastructure\Kwetter.Services.NotificationService.Infrastructure.csproj", "{5AA6C1B2-8B15-4EE3-8F7A-87D36A2A3664}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Kwetter.Services.NotificationService.Domain", "Services\NotificationService\Domain\Kwetter.Services.NotificationService.Domain.csproj", "{DDD14B80-8B1B-4763-A19B-1F6759C292BA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -401,22 +408,22 @@ Global
 		{105EE2F5-B93C-4846-ABE5-49A376C5B7A2}.Services Build|Any CPU.Build.0 = Debug|Any CPU
 		{105EE2F5-B93C-4846-ABE5-49A376C5B7A2}.Services Release|Any CPU.ActiveCfg = Release|Any CPU
 		{105EE2F5-B93C-4846-ABE5-49A376C5B7A2}.Services Release|Any CPU.Build.0 = Release|Any CPU
-		{F00E0DF6-D06A-4CEF-8977-0CFA6BF9F28F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F00E0DF6-D06A-4CEF-8977-0CFA6BF9F28F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F00E0DF6-D06A-4CEF-8977-0CFA6BF9F28F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F00E0DF6-D06A-4CEF-8977-0CFA6BF9F28F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F00E0DF6-D06A-4CEF-8977-0CFA6BF9F28F}.Services Build|Any CPU.ActiveCfg = Debug|Any CPU
-		{F00E0DF6-D06A-4CEF-8977-0CFA6BF9F28F}.Services Build|Any CPU.Build.0 = Debug|Any CPU
-		{F00E0DF6-D06A-4CEF-8977-0CFA6BF9F28F}.Services Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F00E0DF6-D06A-4CEF-8977-0CFA6BF9F28F}.Services Release|Any CPU.Build.0 = Release|Any CPU
-		{EBE677CD-E6C8-4D1C-A901-96811F5DC60E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{EBE677CD-E6C8-4D1C-A901-96811F5DC60E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{EBE677CD-E6C8-4D1C-A901-96811F5DC60E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{EBE677CD-E6C8-4D1C-A901-96811F5DC60E}.Release|Any CPU.Build.0 = Release|Any CPU
-		{EBE677CD-E6C8-4D1C-A901-96811F5DC60E}.Services Build|Any CPU.ActiveCfg = Debug|Any CPU
-		{EBE677CD-E6C8-4D1C-A901-96811F5DC60E}.Services Build|Any CPU.Build.0 = Debug|Any CPU
-		{EBE677CD-E6C8-4D1C-A901-96811F5DC60E}.Services Release|Any CPU.ActiveCfg = Release|Any CPU
-		{EBE677CD-E6C8-4D1C-A901-96811F5DC60E}.Services Release|Any CPU.Build.0 = Release|Any CPU
+		{5AA6C1B2-8B15-4EE3-8F7A-87D36A2A3664}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5AA6C1B2-8B15-4EE3-8F7A-87D36A2A3664}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5AA6C1B2-8B15-4EE3-8F7A-87D36A2A3664}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5AA6C1B2-8B15-4EE3-8F7A-87D36A2A3664}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5AA6C1B2-8B15-4EE3-8F7A-87D36A2A3664}.Services Build|Any CPU.ActiveCfg = Debug|Any CPU
+		{5AA6C1B2-8B15-4EE3-8F7A-87D36A2A3664}.Services Build|Any CPU.Build.0 = Debug|Any CPU
+		{5AA6C1B2-8B15-4EE3-8F7A-87D36A2A3664}.Services Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5AA6C1B2-8B15-4EE3-8F7A-87D36A2A3664}.Services Release|Any CPU.Build.0 = Release|Any CPU
+		{DDD14B80-8B1B-4763-A19B-1F6759C292BA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DDD14B80-8B1B-4763-A19B-1F6759C292BA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DDD14B80-8B1B-4763-A19B-1F6759C292BA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DDD14B80-8B1B-4763-A19B-1F6759C292BA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DDD14B80-8B1B-4763-A19B-1F6759C292BA}.Services Build|Any CPU.ActiveCfg = Debug|Any CPU
+		{DDD14B80-8B1B-4763-A19B-1F6759C292BA}.Services Build|Any CPU.Build.0 = Debug|Any CPU
+		{DDD14B80-8B1B-4763-A19B-1F6759C292BA}.Services Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DDD14B80-8B1B-4763-A19B-1F6759C292BA}.Services Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -468,8 +475,10 @@ Global
 		{AF6D06CE-3273-483A-9EBF-3746A01FB578} = {732B40E6-6403-4361-9364-23E08475E2BF}
 		{43749B9E-8FBA-42A7-A3B9-75ECEC9EF06E} = {316126FB-31AD-403A-B600-CF5DC5489D43}
 		{105EE2F5-B93C-4846-ABE5-49A376C5B7A2} = {43749B9E-8FBA-42A7-A3B9-75ECEC9EF06E}
-		{F00E0DF6-D06A-4CEF-8977-0CFA6BF9F28F} = {43749B9E-8FBA-42A7-A3B9-75ECEC9EF06E}
-		{EBE677CD-E6C8-4D1C-A901-96811F5DC60E} = {43749B9E-8FBA-42A7-A3B9-75ECEC9EF06E}
+		{47946B68-BD05-4D83-9201-E1E3863A5AF6} = {732B40E6-6403-4361-9364-23E08475E2BF}
+		{477DC511-6D28-41E0-97A6-070FEFD7CD76} = {732B40E6-6403-4361-9364-23E08475E2BF}
+		{5AA6C1B2-8B15-4EE3-8F7A-87D36A2A3664} = {43749B9E-8FBA-42A7-A3B9-75ECEC9EF06E}
+		{DDD14B80-8B1B-4763-A19B-1F6759C292BA} = {43749B9E-8FBA-42A7-A3B9-75ECEC9EF06E}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {B4A5CA09-D8B5-43B6-BB96-97B00B1EC94A}

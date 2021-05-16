@@ -1,0 +1,56 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: kwetter-notification-service
+  namespace: kwetter
+  labels:
+    app: kwetter-notification-service
+    service: kwetter-notification-service
+spec:
+  selector:
+    app: kwetter-notification-service-pod
+  ports:
+  - protocol: TCP
+    name: http
+    port: 80
+    targetPort: 80
+  type: LoadBalancer
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kwetter-notification-service
+  namespace: kwetter
+spec:
+  replicas: 2
+  minReadySeconds: 10
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+  selector:
+    matchLabels:
+      app: kwetter-notification-service-pod
+      version: latest
+  template:
+    metadata:
+      labels:
+        app: kwetter-notification-service-pod
+        version: latest
+    spec:
+      containers:
+      - name: kwetter-notification-container
+        image: neuralm.net:7676/kwetter-notification-service:latest
+        imagePullPolicy: Always
+        envFrom:
+        - secretRef:
+            name: kwetter-notification-service-secret
+        resources:
+          limits:
+            memory: 600Mi
+            cpu: 500m
+        ports:
+        - containerPort: 80
+      imagePullSecrets:
+        - name: mydockercredentials
