@@ -16,7 +16,17 @@ The goal is to learn about enterprise software development; scalable architectur
 ![Kwetter notification](/docs/diagrams/kwetter%20notification.png)
 
 ### 2.2 Data Distribution
+UserService, KweetService, AuthorizationService, FollowService
+
+![Relational databases](/docs/diagrams/kwetter%20relational%20databases.png)
+
+TimelineService
+
 ![Timeline graph](/docs/diagrams/timeline%20graph.png)
+
+NotificationService
+
+![NotificationService KeyValueStore](/docs/diagrams/kwetter%20keyvalue%20stores.png)
 
 ## 3. DevOps
 ![Kwetter pipeline](/docs/diagrams/kwetter%20service%20pipeline.png)
