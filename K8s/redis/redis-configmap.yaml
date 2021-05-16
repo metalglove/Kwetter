@@ -4,11 +4,7 @@ metadata:
   name: redis-configmap
 data:
   redis-config: |
-    dir ./data/
-
-    ## logging
-    loglevel notice
-    logfile "redis-logs.log"
+    dir /redis/
 
     ### persistence
     save 900 1

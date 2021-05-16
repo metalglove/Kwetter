@@ -38,7 +38,7 @@ spec:
         image: redis:6.2.3
         command:
           - "redis-server"
-          - "/config/redis.conf"
+          - "/redis/redis.conf"
         imagePullPolicy: IfNotPresent
         env:
         - name: MASTER
@@ -52,9 +52,9 @@ spec:
             cpu: 300m
         volumeMounts:
         - name: redis-data-volume
-          mountPath: /data
+          mountPath: /redis/data
         - name: redis-config
-          mountPath: /config
+          mountPath: /redis
       volumes:
       - name: redis-data-volume
         persistentVolumeClaim:

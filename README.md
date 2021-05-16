@@ -13,6 +13,7 @@ The goal is to learn about enterprise software development; scalable architectur
 
 ### 2.1 Messaging Patterns
 ![Kwetter messaging](/docs/diagrams/kwetter%20messaging.png)
+![Kwetter notification](/docs/diagrams/kwetter%20notification.png)
 
 ### 2.2 Data Distribution
 ![Timeline graph](/docs/diagrams/timeline%20graph.png)
