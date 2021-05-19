@@ -8,3 +8,4 @@ export const firebaseConfig = {
 };
 
 export const GATEWAY_API_URL: string = process.env.VUE_APP_GATEWAY_API_URL!;
+export const GATEWAY_WS_API_URL: string = process.env.VUE_APP_GATEWAY_WS_API_URL!;

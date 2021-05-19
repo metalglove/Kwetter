@@ -43,7 +43,10 @@ export default class HttpCommunicator implements IHttpCommunicator {
     private async fetchAsync<TRequest, TResponse extends Response>(method: string, path: string, body?: TRequest | unknown): Promise<TResponse> {
         const request: RequestInit = {
             method: method,
-            headers: await this.getHeaders()
+            headers: {
+                'Content-Type': `application/json`,
+                'Authorization': `Bearer ${await this._firebaseApp.auth().currentUser?.getIdToken()}`
+            }
         };
         if (body)
             request.body = JSON.stringify(body);
@@ -52,14 +55,5 @@ export default class HttpCommunicator implements IHttpCommunicator {
         }, (error) => {
             return serviceUnreachableResponse as TResponse;
         });
-    }
-
-    private async getHeaders(): Promise<Headers> {
-        const headers: Headers = new Headers();
-        headers.append('Content-Type', 'application/json');
-        const firebaseUser: firebase.User | null = this._firebaseApp.auth().currentUser;
-        if (firebaseUser)
-            headers.append('Authorization', `Bearer ${await firebaseUser.getIdToken()}`);
-        return headers;
     }
 }

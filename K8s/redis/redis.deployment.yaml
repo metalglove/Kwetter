@@ -38,9 +38,7 @@ spec:
         image: redis:6.2.3
         command:
           - "redis-server"
-          - "/redis/redis.conf"
-          - "--requirepass"
-          - "$(REDIS_PASS)"
+          - "/redis-config/redis.conf"
         imagePullPolicy: IfNotPresent
         env:
         - name: MASTER
@@ -56,7 +54,7 @@ spec:
         - name: redis-data-volume
           mountPath: /redis/data
         - name: redis-config
-          mountPath: /redis
+          mountPath: /redis-config
       volumes:
       - name: redis-data-volume
         persistentVolumeClaim:

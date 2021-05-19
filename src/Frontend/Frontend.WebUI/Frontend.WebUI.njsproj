@@ -33,6 +33,8 @@
   </PropertyGroup>
   <ItemGroup>
     <Content Include=".env" />
+    <Content Include=".env.minikube" />
+    <Content Include=".env.production" />
     <Content Include="public\assets\annoyed-bird.png" />
     <Content Include="public\favicon.ico" />
     <Content Include="public\assets\heart icon fill.png" />
@@ -73,11 +75,13 @@
     <Folder Include="src\models\cqrs\Kweet\" />
     <Folder Include="src\models\cqrs\Authorization\" />
     <Folder Include="src\models\dtos\" />
+    <Folder Include="src\models\events\" />
     <Folder Include="src\modules\" />
     <Folder Include="src\interfaces\" />
     <Folder Include="src\modules\Kweet\" />
     <Folder Include="src\modules\User\" />
     <Folder Include="src\models\" />
+    <Folder Include="src\handlers\" />
     <Folder Include="src\services\" />
     <Folder Include="src\utils\" />
     <Folder Include="src\plugins\" />
@@ -96,6 +100,14 @@
       <SubType>Code</SubType>
     </TypeScriptCompile>
     <TypeScriptCompile Include="src\config.ts" />
+    <TypeScriptCompile Include="src\handlers\KwetterErrorHandler.ts" />
+    <TypeScriptCompile Include="src\handlers\UserMentionedHandler.ts" />
+    <TypeScriptCompile Include="src\handlers\UserUnauthorizedHandler.ts" />
+    <TypeScriptCompile Include="src\interfaces\INotificationService.ts" />
+    <TypeScriptCompile Include="src\models\events\KwetterErrorEvent.ts" />
+    <TypeScriptCompile Include="src\models\events\UserMentionedEvent.ts" />
+    <TypeScriptCompile Include="src\models\events\UserUnauthorizedEvent.ts" />
+    <TypeScriptCompile Include="src\services\NotificationService.ts" />
     <TypeScriptCompile Include="src\interfaces\IAuthorizationService.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
@@ -122,6 +134,7 @@
     <TypeScriptCompile Include="src\models\cqrs\Response.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
+    <TypeScriptCompile Include="src\models\events\BaseEvent.ts" />
     <TypeScriptCompile Include="src\modules\App\App.getters.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>

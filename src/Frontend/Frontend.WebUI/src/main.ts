@@ -2,7 +2,7 @@ import { createApp } from 'vue';
 import App from '@/App.vue';
 
 // Config
-import { firebaseConfig, GATEWAY_API_URL } from '@/config';
+import { firebaseConfig, GATEWAY_API_URL, GATEWAY_WS_API_URL } from '@/config';
 
 // Plugins
 import { createKwetterRouter, KwetterRoute } from '@/plugins/vuerouter';
@@ -14,12 +14,17 @@ import 'firebase/auth';
 // Services
 import IHttpCommunicator from '@/interfaces/IHttpCommunicator';
 import HttpCommunicator from '@/utils/HttpCommunicator';
-import IAuthorizationService from "@/interfaces/IAuthorizationService";
-import AuthorizationService from "@/services/AuthorizationService";
+import IAuthorizationService from '@/interfaces/IAuthorizationService';
+import AuthorizationService from '@/services/AuthorizationService';
 import IKweetService from '@/interfaces/IKweetService';
 import KweetService from '@/services/KweetService';
 import ITimelineService from '@/interfaces/ITimelineService';
 import TimelineService from '@/services/TimelineService';
+import { INotificationService } from './interfaces/INotificationService';
+import NotificationService from './services/NotificationService';
+
+// Handlers
+import UserMentionedHandler from './handlers/UserMentionedHandler';
 
 // Styling
 import 'typeface-nunito';
@@ -37,6 +42,8 @@ const httpCommunicator: IHttpCommunicator = new HttpCommunicator(GATEWAY_API_URL
 const authorizationService: IAuthorizationService = new AuthorizationService(httpCommunicator);
 const kweetService: IKweetService = new KweetService(httpCommunicator);
 const timelineService: ITimelineService = new TimelineService(httpCommunicator);
+const notificationService: INotificationService = new NotificationService(GATEWAY_WS_API_URL);
+notificationService.addEventHandler(new UserMentionedHandler());
 
 const app = createApp(App);
 

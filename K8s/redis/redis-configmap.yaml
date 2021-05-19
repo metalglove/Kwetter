@@ -14,3 +14,4 @@ data:
     rdbcompression yes
     stop-writes-on-bgsave-error yes
     
+    requirepass <password>

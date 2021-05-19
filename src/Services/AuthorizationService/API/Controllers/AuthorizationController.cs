@@ -13,6 +13,7 @@ namespace Kwetter.Services.AuthorizationService.API.Controllers
     /// <summary>
     /// Represents the <see cref="AuthorizationController"/> class.
     /// </summary>
+    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class AuthorizationController : ControllerBase
