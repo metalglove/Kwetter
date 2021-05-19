@@ -181,7 +181,8 @@ namespace Kwetter.Services.Common.API
             {
                 AbortOnConnectFail = false,
                 ConnectRetry = 3,
-                EndPoints = { { configuration["Redis:Host"], int.Parse(configuration["Redis:Port"]) } }
+                EndPoints = { { configuration["Redis:Host"], int.Parse(configuration["Redis:Port"]) } },
+                Password = configuration["Redis:Password"]
             };
             IConnectionMultiplexer redis = ConnectionMultiplexer.Connect(configurationOptions);
             return serviceCollection.AddSingleton<IConnectionMultiplexer>(redis);

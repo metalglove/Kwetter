@@ -119,10 +119,12 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Minikube", "Minikube", "{71
 		..\K8s\Minikube\kwetter-follow-storage-persistent-volume-and-claim.yaml = ..\K8s\Minikube\kwetter-follow-storage-persistent-volume-and-claim.yaml
 		..\K8s\Minikube\kwetter-kweet-storage-persistent-volume-and-claim.yaml = ..\K8s\Minikube\kwetter-kweet-storage-persistent-volume-and-claim.yaml
 		..\K8s\Minikube\kwetter-user-storage-persistent-volume-and-claim.yaml = ..\K8s\Minikube\kwetter-user-storage-persistent-volume-and-claim.yaml
+		..\K8s\Minikube\neo4j-storage-persistent-volume-and-claim.yaml = ..\K8s\Minikube\neo4j-storage-persistent-volume-and-claim.yaml
 		..\K8s\Minikube\rabbit-pv-1.yaml = ..\K8s\Minikube\rabbit-pv-1.yaml
 		..\K8s\Minikube\rabbit-pv-2.yaml = ..\K8s\Minikube\rabbit-pv-2.yaml
 		..\K8s\Minikube\rabbit-pv-3.yaml = ..\K8s\Minikube\rabbit-pv-3.yaml
 		..\K8s\Minikube\rabbit-pv.yaml = ..\K8s\Minikube\rabbit-pv.yaml
+		..\K8s\Minikube\redis-storage-persistent-volume-and-claim.yaml = ..\K8s\Minikube\redis-storage-persistent-volume-and-claim.yaml
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "rabbitmq", "rabbitmq", "{3A444BA7-0C8F-4AFB-95A7-057705612009}"
@@ -146,8 +148,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "secrets", "secrets", "{C70C
 		..\K8s\secrets\kwetter-follow-service-secret.yaml = ..\K8s\secrets\kwetter-follow-service-secret.yaml
 		..\K8s\secrets\kwetter-kweet-db-secret.yaml = ..\K8s\secrets\kwetter-kweet-db-secret.yaml
 		..\K8s\secrets\kwetter-kweet-service-secret.yaml = ..\K8s\secrets\kwetter-kweet-service-secret.yaml
+		..\K8s\secrets\kwetter-notification-service-secret.yaml = ..\K8s\secrets\kwetter-notification-service-secret.yaml
+		..\K8s\secrets\kwetter-timeline-service-secret.yaml = ..\K8s\secrets\kwetter-timeline-service-secret.yaml
 		..\K8s\secrets\kwetter-user-db-secret.yaml = ..\K8s\secrets\kwetter-user-db-secret.yaml
 		..\K8s\secrets\kwetter-user-service-secret.yaml = ..\K8s\secrets\kwetter-user-service-secret.yaml
+		..\K8s\secrets\neo4j-secret.yaml = ..\K8s\secrets\neo4j-secret.yaml
 		..\K8s\secrets\rabbit-secret.yaml = ..\K8s\secrets\rabbit-secret.yaml
 	EndProjectSection
 EndProject
@@ -189,10 +194,26 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "timeline-service", "timelin
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "notification-service", "notification-service", "{477DC511-6D28-41E0-97A6-070FEFD7CD76}"
+	ProjectSection(SolutionItems) = preProject
+		..\K8s\services\notification-service\kwetter-notification-service.deployment.yaml = ..\K8s\services\notification-service\kwetter-notification-service.deployment.yaml
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Kwetter.Services.NotificationService.Infrastructure", "Services\NotificationService\Infrastructure\Kwetter.Services.NotificationService.Infrastructure.csproj", "{5AA6C1B2-8B15-4EE3-8F7A-87D36A2A3664}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Kwetter.Services.NotificationService.Domain", "Services\NotificationService\Domain\Kwetter.Services.NotificationService.Domain.csproj", "{DDD14B80-8B1B-4763-A19B-1F6759C292BA}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "redis", "redis", "{63EEAFB7-2AE3-4E18-8A79-2EC519DB015C}"
+	ProjectSection(SolutionItems) = preProject
+		..\K8s\redis\redis-configmap.yaml = ..\K8s\redis\redis-configmap.yaml
+		..\K8s\redis\redis-storage-persistent-volume-and-claim.yaml = ..\K8s\redis\redis-storage-persistent-volume-and-claim.yaml
+		..\K8s\redis\redis.deployment.yaml = ..\K8s\redis\redis.deployment.yaml
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "neo4j", "neo4j", "{B1243551-7F56-4B32-9B9D-3BFE8C4BF964}"
+	ProjectSection(SolutionItems) = preProject
+		..\K8s\neo4j\neo4j-storage-persistent-volume-and-claim.yaml = ..\K8s\neo4j\neo4j-storage-persistent-volume-and-claim.yaml
+		..\K8s\neo4j\neo4j.deployment.yaml = ..\K8s\neo4j\neo4j.deployment.yaml
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -479,6 +500,8 @@ Global
 		{477DC511-6D28-41E0-97A6-070FEFD7CD76} = {732B40E6-6403-4361-9364-23E08475E2BF}
 		{5AA6C1B2-8B15-4EE3-8F7A-87D36A2A3664} = {43749B9E-8FBA-42A7-A3B9-75ECEC9EF06E}
 		{DDD14B80-8B1B-4763-A19B-1F6759C292BA} = {43749B9E-8FBA-42A7-A3B9-75ECEC9EF06E}
+		{63EEAFB7-2AE3-4E18-8A79-2EC519DB015C} = {AC4D1981-C4B8-484D-8302-FB94B92F96E6}
+		{B1243551-7F56-4B32-9B9D-3BFE8C4BF964} = {AC4D1981-C4B8-484D-8302-FB94B92F96E6}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {B4A5CA09-D8B5-43B6-BB96-97B00B1EC94A}
