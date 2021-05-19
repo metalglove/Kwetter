@@ -39,6 +39,8 @@ spec:
         command:
           - "redis-server"
           - "/redis/redis.conf"
+          - "--requirepass"
+          - "$(REDIS_PASS)"
         imagePullPolicy: IfNotPresent
         env:
         - name: MASTER

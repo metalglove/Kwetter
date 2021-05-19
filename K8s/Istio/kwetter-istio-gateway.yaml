@@ -38,6 +38,19 @@ spec:
         port:
           number: 80
         host: kwetter-user-service
+    corsPolicy:
+      allowOrigins:
+      - exact: http://neuralm.net
+      - exact: http://localhost:8080
+      allowMethods:
+      - POST
+      - GET
+      - OPTIONS
+      allowHeaders:
+      - Authorization
+      - Content-Type
+      maxAge: 24h
+      allowCredentials: false
   - name: kwetter-authorization-service-latest-routes
     match:
     - uri:
@@ -47,6 +60,18 @@ spec:
         port:
           number: 80
         host: kwetter-authorization-service
+    corsPolicy:
+      allowOrigins:
+      - exact: http://neuralm.net
+      - exact: http://localhost:8080
+      allowMethods:
+      - POST
+      - OPTIONS
+      allowHeaders:
+      - Authorization
+      - Content-Type
+      maxAge: 24h
+      allowCredentials: false
   - name: kwetter-kweet-service-latest-routes
     match:
     - uri:
@@ -56,6 +81,19 @@ spec:
         port:
           number: 80
         host: kwetter-kweet-service
+    corsPolicy:
+      allowOrigins:
+      - exact: http://neuralm.net
+      - exact: http://localhost:8080
+      allowMethods:
+      - POST
+      - DELETE
+      - OPTIONS
+      allowHeaders:
+      - Authorization
+      - Content-Type
+      maxAge: 24h
+      allowCredentials: false
   - name: kwetter-follow-service-latest-routes
     match:
     - uri:
@@ -65,6 +103,20 @@ spec:
         port:
           number: 80
         host: kwetter-follow-service
+    corsPolicy:
+      allowOrigins:
+      - exact: http://neuralm.net
+      - exact: http://localhost:8080
+      allowMethods:
+      - POST
+      - DELETE
+      - GET
+      - OPTIONS
+      allowHeaders:
+      - Authorization
+      - Content-Type
+      maxAge: 24h
+      allowCredentials: false
   - name: kwetter-timeline-service-latest-routes
     match:
     - uri:
@@ -74,6 +126,18 @@ spec:
         port:
           number: 80
         host: kwetter-timeline-service
+    corsPolicy:
+      allowOrigins:
+      - exact: http://neuralm.net
+      - exact: http://localhost:8080
+      allowMethods:
+      - GET
+      - OPTIONS
+      allowHeaders:
+      - Authorization
+      - Content-Type
+      maxAge: 24h
+      allowCredentials: false
   - name: kwetter-notification-service-latest-routes
     match:
     - uri:
@@ -83,3 +147,15 @@ spec:
         port:
           number: 80
         host: kwetter-notification-service
+    corsPolicy:
+      allowOrigins:
+      - exact: http://neuralm.net
+      - exact: http://localhost:8080
+      allowMethods:
+      - GET
+      - OPTIONS
+      allowHeaders:
+      - Authorization
+      - Content-Type
+      maxAge: 24h
+      allowCredentials: false
