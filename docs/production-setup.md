@@ -256,6 +256,11 @@ First, the metrics-server needs to be present in the cluster.
 kubectl apply -f ./K8s/metrics-server.yaml
 ```
 
+Apply auto scale for authorization-service
+```
+kubectl apply -f ./K8s/services/authorization-service/kwetter-authorization-service.autoscaler.yaml
+```
+
 Validate rights for volumes
 https://blog.dbi-services.com/using-non-root-sql-server-containers-on-docker-and-k8s/
 Should be properly setup.
