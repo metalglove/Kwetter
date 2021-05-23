@@ -86,6 +86,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "K8s", "K8s", "{AC4D1981-C4B
 	ProjectSection(SolutionItems) = preProject
 		..\K8s\kwetter-namespace.yaml = ..\K8s\kwetter-namespace.yaml
 		..\K8s\kwetter-storage-class.yaml = ..\K8s\kwetter-storage-class.yaml
+		..\K8s\metrics-server.yaml = ..\K8s\metrics-server.yaml
 		..\K8s\networking.yaml = ..\K8s\networking.yaml
 	EndProjectSection
 EndProject

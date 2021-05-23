@@ -250,6 +250,12 @@ if there are any warnings or errors, restart the deployment
 kubectl rollout restart deployment
 ```
 
+Setup autoscaling
+First, the metrics-server needs to be present in the cluster.
+```
+kubectl apply -f ./K8s/metrics-server.yaml
+```
+
 Validate rights for volumes
 https://blog.dbi-services.com/using-non-root-sql-server-containers-on-docker-and-k8s/
 Should be properly setup.
