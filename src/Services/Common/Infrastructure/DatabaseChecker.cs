@@ -70,10 +70,6 @@ namespace Kwetter.Services.Common.Infrastructure
                 logger.LogInformation($"VerifyDatabaseConnection is cancelled. {e.Message}");
                 throw;
             }
-            finally
-            {
-                dbContext.Dispose();
-            }
         }
     }
 }
