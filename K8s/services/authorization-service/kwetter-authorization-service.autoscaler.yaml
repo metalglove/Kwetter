@@ -1,0 +1,13 @@
+apiVersion: autoscaling/v1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: kwetter-authorization-service-autoscaler
+  namespace: kwetter
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: kwetter-authorization-service
+  minReplicas: 1
+  maxReplicas: 5
+  targetCPUUtilizationPercentage: 75

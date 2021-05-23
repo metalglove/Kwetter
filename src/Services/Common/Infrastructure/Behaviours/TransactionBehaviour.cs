@@ -53,22 +53,22 @@ namespace Kwetter.Services.Common.Infrastructure.Behaviours
         public async Task<TResponse> Handle(TRequest request, CancellationToken cancellationToken, RequestHandlerDelegate<TResponse> next)
         {
             TResponse response = default;
-            string typeName = request.GetGenericTypeName();
+            string typeName = typeof(TRequest).Name;
             try
             {
                 IExecutionStrategy strategy = _unitOfWork.Database.CreateExecutionStrategy();
                 await strategy.ExecuteAsync(async () =>
                 {
                     _logger.LogInformation($"Started transactions for {typeName} {request}");
-                    
+
                     await _unitOfWork.StartTransactionAsync(cancellationToken);         // Start database transaction.
                     await _eventStore.StartTransactionAsync(cancellationToken);             // Start event store transaction.
-                    
+
                     response = await next();                                                    // Continues the middleware flow...
-                    
+
                     await _eventStore.CommitTransactionAsync(cancellationToken);            // End event store transaction.
                     await _unitOfWork.CommitTransactionAsync(cancellationToken);        // End database transaction.
-                    
+
                     _logger.LogInformation($"Commited transactions for {typeName} {request}");
 
                     // NOTE: Persist aggregate changes -> Publish integration events
@@ -84,6 +84,10 @@ namespace Kwetter.Services.Common.Infrastructure.Behaviours
             {
                 _logger.LogError(ex, $"ERROR Handling transactions for {typeName} {request}");
                 throw;
+            }
+            finally
+            {
+                _unitOfWork.Dispose();
             }
         }
     }

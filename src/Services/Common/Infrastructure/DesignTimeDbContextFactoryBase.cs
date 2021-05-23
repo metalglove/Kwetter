@@ -92,7 +92,7 @@ namespace Kwetter.Services.Common.Infrastructure
                     optionsBuilder.UseInMemoryDatabase(Guid.NewGuid().ToString());
                     break;
                 case "psql":
-                    optionsBuilder.UseNpgsql(connectionString);
+                    optionsBuilder.UseNpgsql(connectionString, options => options.EnableRetryOnFailure());
                     break;
                 case "sqlite":
                     optionsBuilder.UseSqlite(connectionString);

@@ -34,7 +34,7 @@ namespace Kwetter.Services.AuthorizationService.Infrastructure
         /// <param name="logger">The logger.</param>
         public IdentityDbContext(DbContextOptions<IdentityDbContext> options, IMediator mediator, ILogger<IdentityDbContext> logger) : base(options, mediator, logger)
         {
-
+            
         }
 
         /// <summary>

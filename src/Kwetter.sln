@@ -159,6 +159,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "authorization-service", "authorization-service", "{6FE94FE8-EF0C-4A88-A923-1076C5FF5A5D}"
 	ProjectSection(SolutionItems) = preProject
 		..\K8s\services\authorization-service\kwetter-authorization-db.deployment.yaml = ..\K8s\services\authorization-service\kwetter-authorization-db.deployment.yaml
+		..\K8s\services\authorization-service\kwetter-authorization-service.autoscaler.yaml = ..\K8s\services\authorization-service\kwetter-authorization-service.autoscaler.yaml
 		..\K8s\services\authorization-service\kwetter-authorization-service.deployment.yaml = ..\K8s\services\authorization-service\kwetter-authorization-service.deployment.yaml
 		..\K8s\services\authorization-service\kwetter-authorization-storage-persistent-volume-and-claim.yaml = ..\K8s\services\authorization-service\kwetter-authorization-storage-persistent-volume-and-claim.yaml
 	EndProjectSection
@@ -214,6 +215,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "neo4j", "neo4j", "{B1243551
 		..\K8s\neo4j\neo4j-storage-persistent-volume-and-claim.yaml = ..\K8s\neo4j\neo4j-storage-persistent-volume-and-claim.yaml
 		..\K8s\neo4j\neo4j.deployment.yaml = ..\K8s\neo4j\neo4j.deployment.yaml
 	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Testing", "Testing", "{1FE90F2E-C3E4-4962-950A-FBD9FB6B53C4}"
+EndProject
+Project("{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}") = "Kwetter.LoadTests", "Testing\Kwetter.LoadTests\Kwetter.LoadTests.njsproj", "{EC90CA15-9174-4922-85C8-6D601D891733}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -445,6 +450,14 @@ Global
 		{DDD14B80-8B1B-4763-A19B-1F6759C292BA}.Services Build|Any CPU.Build.0 = Debug|Any CPU
 		{DDD14B80-8B1B-4763-A19B-1F6759C292BA}.Services Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DDD14B80-8B1B-4763-A19B-1F6759C292BA}.Services Release|Any CPU.Build.0 = Release|Any CPU
+		{EC90CA15-9174-4922-85C8-6D601D891733}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EC90CA15-9174-4922-85C8-6D601D891733}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EC90CA15-9174-4922-85C8-6D601D891733}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EC90CA15-9174-4922-85C8-6D601D891733}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EC90CA15-9174-4922-85C8-6D601D891733}.Services Build|Any CPU.ActiveCfg = Debug|Any CPU
+		{EC90CA15-9174-4922-85C8-6D601D891733}.Services Build|Any CPU.Build.0 = Debug|Any CPU
+		{EC90CA15-9174-4922-85C8-6D601D891733}.Services Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EC90CA15-9174-4922-85C8-6D601D891733}.Services Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -502,6 +515,7 @@ Global
 		{DDD14B80-8B1B-4763-A19B-1F6759C292BA} = {43749B9E-8FBA-42A7-A3B9-75ECEC9EF06E}
 		{63EEAFB7-2AE3-4E18-8A79-2EC519DB015C} = {AC4D1981-C4B8-484D-8302-FB94B92F96E6}
 		{B1243551-7F56-4B32-9B9D-3BFE8C4BF964} = {AC4D1981-C4B8-484D-8302-FB94B92F96E6}
+		{EC90CA15-9174-4922-85C8-6D601D891733} = {1FE90F2E-C3E4-4962-950A-FBD9FB6B53C4}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {B4A5CA09-D8B5-43B6-BB96-97B00B1EC94A}

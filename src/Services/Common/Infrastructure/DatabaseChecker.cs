@@ -25,9 +25,9 @@ namespace Kwetter.Services.Common.Infrastructure
         {
             ServiceProvider buildServiceProvider = serviceCollection.BuildServiceProvider();
             ILogger logger = buildServiceProvider.GetRequiredService<ILogger<TDbContext>>();
+            TDbContext dbContext = buildServiceProvider.GetRequiredService<TDbContext>();
             try
             {
-                TDbContext dbContext = buildServiceProvider.GetService<TDbContext>();
                 logger.LogInformation("Starting database verification..");
                 if (dbContext.Database.IsInMemory())
                 {
@@ -69,6 +69,10 @@ namespace Kwetter.Services.Common.Infrastructure
             {
                 logger.LogInformation($"VerifyDatabaseConnection is cancelled. {e.Message}");
                 throw;
+            }
+            finally
+            {
+                dbContext.Dispose();
             }
         }
     }

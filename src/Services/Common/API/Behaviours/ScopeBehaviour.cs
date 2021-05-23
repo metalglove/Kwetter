@@ -27,7 +27,7 @@ namespace Kwetter.Services.Common.API.Behaviours
         {
             _logger = logger;
             _serviceScopeFactory = serviceScopeFactory;
-            _logger.LogInformation($"----- Scope start {typeof(TRequest).GetGenericTypeName()}");
+            _logger.LogInformation($"----- Scope start {typeof(TRequest).Name}");
             _scope = _serviceScopeFactory.CreateScope();
         }
 
@@ -41,7 +41,7 @@ namespace Kwetter.Services.Common.API.Behaviours
         public async Task<TResponse> Handle(TRequest request, CancellationToken cancellationToken, RequestHandlerDelegate<TResponse> next)
         {
             TResponse response = await next();
-            _logger.LogInformation($"----- Scope end {request.GetGenericTypeName()}");
+            _logger.LogInformation($"----- Scope end {typeof(TRequest).Name}");
             return response;
         }
     }

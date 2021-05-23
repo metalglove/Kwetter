@@ -48,7 +48,7 @@ spec:
             name: kwetter-authorization-service-secret
         resources:
           limits:
-            memory: 300Mi
+            memory: 250Mi
             cpu: 200m
         ports:
         - containerPort: 80

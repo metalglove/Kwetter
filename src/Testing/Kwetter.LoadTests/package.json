@@ -1,0 +1,12 @@
+{
+  "name": "kwetter.load-tests",
+  "version": "0.0.0",
+  "description": "Kwetter.LoadTests",
+  "main": "script.js",
+  "author": {
+    "name": ""
+  },
+  "scripts": {
+    "load-test": "docker run -i --rm --network host loadimpact/k6 run - <script.js"
+  }
+}

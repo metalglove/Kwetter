@@ -79,7 +79,7 @@ namespace Kwetter.Services.Common.Infrastructure
             return true;
         }
 
-        /// <inheritdoc cref="IAggregateUnitOfWork.BeginTransactionAsync(CancellationToken)"/>
+        /// <inheritdoc cref="IAggregateUnitOfWork.StartTransactionAsync(CancellationToken)"/>
         public async Task<Guid> StartTransactionAsync(CancellationToken cancellationToken = default)
         {
             if (CurrentTransaction is not null)
@@ -99,7 +99,6 @@ namespace Kwetter.Services.Common.Infrastructure
                 await SaveChangesAsync(cancellationToken);
                 await CurrentTransaction.CommitAsync(cancellationToken);
                 _logger.LogInformation($"Commited the database transaction {CurrentTransaction.TransactionId} for {GetType().Name}");
-
             }
             catch
             {
