@@ -85,10 +85,6 @@ namespace Kwetter.Services.Common.Infrastructure.Behaviours
                 _logger.LogError(ex, $"ERROR Handling transactions for {typeName} {request}");
                 throw;
             }
-            finally
-            {
-                _unitOfWork.Dispose();
-            }
         }
     }
 }
