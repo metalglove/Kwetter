@@ -11,7 +11,10 @@ export let options = {
     ],
     thresholds: {
         http_req_duration: ['avg < 400', 'p(99) < 2000'],
+        checks: ['rate>0.9']
     }
+    //vus: 10,
+    //duration: "10s"
 };
 
 function verifyUserNameUniqueness(username) {
