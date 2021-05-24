@@ -40,6 +40,11 @@ Tests are run by applying the custom resource definition.
 kubectl apply -f ./K8s/k6/verify-username-uniqueness-load-test.yaml
 ```
 
+Check if the test is running
+```
+kubectl get k6
+```
+
 Get the logs from the container
 ```
 kubectl logs verify-username-uniqueness-load-test-*
