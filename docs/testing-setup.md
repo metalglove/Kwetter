@@ -31,13 +31,14 @@ make deploy
 ## Setting up the tests
 Tests in K6 are based on javascript files embedded in configmaps.
 ```
-kubectl create configmap verify-username-uniqueness-load-test-configmap --from-file src/Testing/Kwetter.LoadTests/test.js --dry-run=client -o yaml | kubectl apply -f -
+kubectl create namespace kwetter-testing
+kubectl create configmap -n kwetter-testing verify-username-uniqueness-load-test-configmap --from-file src/Testing/Kwetter.LoadTests/test.js --dry-run=client -o yaml | kubectl apply -n kwetter-testing -f -
 ```
 
 ## Run the tests
 Tests are run by applying the custom resource definition.
 ```
-kubectl apply -f ./K8s/k6/verify-username-uniqueness-load-test.yaml
+kubectl apply -n kwetter-testing -f ./K8s/k6/verify-username-uniqueness-load-test.yaml
 ```
 
 Check if the test is running
