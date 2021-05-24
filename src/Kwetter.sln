@@ -74,6 +74,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{6D06590F-5
 		..\commands.md = ..\commands.md
 		..\docs\minikube-setup.md = ..\docs\minikube-setup.md
 		..\docs\production-setup.md = ..\docs\production-setup.md
+		..\docs\testing-setup.md = ..\docs\testing-setup.md
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "queries", "queries", "{073E84ED-63CC-447D-9B04-D3D28F0E2BC6}"
@@ -220,6 +221,11 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Testing", "Testing", "{1FE90F2E-C3E4-4962-950A-FBD9FB6B53C4}"
 EndProject
 Project("{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}") = "Kwetter.LoadTests", "Testing\Kwetter.LoadTests\Kwetter.LoadTests.njsproj", "{EC90CA15-9174-4922-85C8-6D601D891733}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "k6", "k6", "{5478E6C6-CBDF-4C3E-B263-769299D9EB6D}"
+	ProjectSection(SolutionItems) = preProject
+		..\K8s\k6\verify-username-uniqueness-load-test.yaml = ..\K8s\k6\verify-username-uniqueness-load-test.yaml
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -511,6 +517,7 @@ Global
 		{63EEAFB7-2AE3-4E18-8A79-2EC519DB015C} = {AC4D1981-C4B8-484D-8302-FB94B92F96E6}
 		{B1243551-7F56-4B32-9B9D-3BFE8C4BF964} = {AC4D1981-C4B8-484D-8302-FB94B92F96E6}
 		{EC90CA15-9174-4922-85C8-6D601D891733} = {1FE90F2E-C3E4-4962-950A-FBD9FB6B53C4}
+		{5478E6C6-CBDF-4C3E-B263-769299D9EB6D} = {AC4D1981-C4B8-484D-8302-FB94B92F96E6}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {B4A5CA09-D8B5-43B6-BB96-97B00B1EC94A}
