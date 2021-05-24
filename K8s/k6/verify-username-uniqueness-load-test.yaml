@@ -2,7 +2,7 @@ apiVersion: k6.io/v1alpha1
 kind: K6
 metadata:
   name: verify-username-uniqueness-load-test
-  namespace: kwetter
+  namespace: kwetter-testing
 spec:
   parallelism: 1
   script: verify-username-uniqueness-load-test-configmap
