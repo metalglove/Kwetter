@@ -241,7 +241,7 @@ kubectl apply -f ./K8s/services/timeline-service/kwetter-timeline-service.deploy
 kubectl apply -f ./K8s/services/timeline-service/kwetter-timeline-service.autoscaler.yaml
 ```
 
-Spin up timeline service!
+Spin up notification service!
 ```
 kubectl apply -f ./K8s/services/notification-service/kwetter-notification-service.deployment.yaml
 kubectl apply -f ./K8s/services/notification-service/kwetter-notification-service.autoscaler.yaml
