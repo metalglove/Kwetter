@@ -22,7 +22,7 @@ metadata:
   name: kwetter-follow-service
   namespace: kwetter
 spec:
-  replicas: 2
+  replicas: 1
   minReadySeconds: 10
   strategy:
     type: RollingUpdate

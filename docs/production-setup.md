@@ -88,9 +88,10 @@ Add credentials to store
 kubectl create secret docker-registry mydockercredentials --docker-server neuralm.net:7676 --docker-username <USERNAME> --docker-password <PASSWORD>
 ```
 
-Apply more secrets.
+Apply more secrets & configs.
 ```
 kubectl apply -f ./K8s/secrets/
+kubectl apply -f ./K8s/configs/
 ```
 
 Download Istio from the Istio https://istio.io/latest/docs/setup/getting-started/#download
@@ -207,6 +208,7 @@ Spin up user service!
 kubectl apply -f ./K8s/services/user-service/kwetter-user-storage-persistent-volume-and-claim.yaml
 kubectl apply -f ./K8s/services/user-service/kwetter-user-db.deployment.yaml
 kubectl apply -f ./K8s/services/user-service/kwetter-user-service.deployment.yaml
+kubectl apply -f ./K8s/services/user-service/kwetter-user-service.autoscaler.yaml
 ```
 
 Spin up follow service!
@@ -214,6 +216,7 @@ Spin up follow service!
 kubectl apply -f ./K8s/services/follow-service/kwetter-follow-storage-persistent-volume-and-claim.yaml
 kubectl apply -f ./K8s/services/follow-service/kwetter-follow-db.deployment.yaml
 kubectl apply -f ./K8s/services/follow-service/kwetter-follow-service.deployment.yaml
+kubectl apply -f ./K8s/services/follow-service/kwetter-follow-service.autoscaler.yaml
 ```
 
 Spin up kweet service!
@@ -221,6 +224,7 @@ Spin up kweet service!
 kubectl apply -f ./K8s/services/kweet-service/kwetter-kweet-storage-persistent-volume-and-claim.yaml
 kubectl apply -f ./K8s/services/kweet-service/kwetter-kweet-db.deployment.yaml
 kubectl apply -f ./K8s/services/kweet-service/kwetter-kweet-service.deployment.yaml
+kubectl apply -f ./K8s/services/kweet-service/kwetter-kweet-service.autoscaler.yaml
 ```
 
 Spin up authorization service!
@@ -228,16 +232,19 @@ Spin up authorization service!
 kubectl apply -f ./K8s/services/authorization-service/kwetter-authorization-storage-persistent-volume-and-claim.yaml
 kubectl apply -f ./K8s/services/authorization-service/kwetter-authorization-db.deployment.yaml
 kubectl apply -f ./K8s/services/authorization-service/kwetter-authorization-service.deployment.yaml
+kubectl apply -f ./K8s/services/authorization-service/kwetter-authorization-service.autoscaler.yaml
 ```
 
 Spin up timeline service!
 ```
 kubectl apply -f ./K8s/services/timeline-service/kwetter-timeline-service.deployment.yaml
+kubectl apply -f ./K8s/services/timeline-service/kwetter-timeline-service.autoscaler.yaml
 ```
 
 Spin up timeline service!
 ```
 kubectl apply -f ./K8s/services/notification-service/kwetter-notification-service.deployment.yaml
+kubectl apply -f ./K8s/services/notification-service/kwetter-notification-service.autoscaler.yaml
 ```
 
 Validate deployment
@@ -254,11 +261,6 @@ Setup autoscaling
 First, the metrics-server needs to be present in the cluster.
 ```
 kubectl apply -f ./K8s/metrics-server.yaml
-```
-
-Apply auto scale for authorization-service
-```
-kubectl apply -f ./K8s/services/authorization-service/kwetter-authorization-service.autoscaler.yaml
 ```
 
 Validate rights for volumes

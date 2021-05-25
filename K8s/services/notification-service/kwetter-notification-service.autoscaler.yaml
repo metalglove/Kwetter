@@ -1,13 +1,13 @@
 apiVersion: autoscaling/v1
 kind: HorizontalPodAutoscaler
 metadata:
-  name: kwetter-authorization-service-autoscaler
+  name: kwetter-notification-service-autoscaler
   namespace: kwetter
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
-    name: kwetter-authorization-service
+    name: kwetter-notification-service
   minReplicas: 1
   maxReplicas: 3
   targetCPUUtilizationPercentage: 75

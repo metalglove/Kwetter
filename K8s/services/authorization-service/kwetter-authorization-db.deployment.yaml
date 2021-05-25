@@ -34,12 +34,12 @@ spec:
     spec:
       containers:
       - name: kwetter-authorization-db-container
-        image: postgres:13.2
+        image: postgres:13.3
         imagePullPolicy: "IfNotPresent"
         resources:
           limits:
             memory: 800Mi
-            cpu: 500m
+            cpu: 300m
         ports:
         - containerPort: 5432
         envFrom:
@@ -48,7 +48,17 @@ spec:
         volumeMounts:
         - name: kwetter-authorization-db-volume
           mountPath: /var/lib/postgresql/data
+        - name: config
+          mountPath: /var/lib/postgresql/postgresql.conf
+          subPath: postgresql.conf
+          readOnly: true
+        args:
+          - "-c"
+          - "config_file=/var/lib/postgresql/postgresql.conf"
       volumes:
       - name: kwetter-authorization-db-volume
         persistentVolumeClaim:
           claimName: kwetter-authorization-db-volume-claim
+      - name: config
+        configMap:
+          name: kwetter-postgres-configmap

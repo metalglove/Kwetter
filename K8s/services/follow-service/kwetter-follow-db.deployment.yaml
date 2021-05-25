@@ -38,7 +38,7 @@ spec:
         imagePullPolicy: "IfNotPresent"
         resources:
           limits:
-            memory: 200Mi
+            memory: 800Mi
             cpu: 300m
         ports:
         - containerPort: 5432
@@ -48,7 +48,17 @@ spec:
         volumeMounts:
         - name: kwetter-follow-db-volume-mount
           mountPath: /var/lib/postgresql/data
+        - name: config
+          mountPath: /var/lib/postgresql/postgresql.conf
+          subPath: postgresql.conf
+          readOnly: true
+        args:
+          - "-c"
+          - "config_file=/var/lib/postgresql/postgresql.conf"
       volumes:
       - name: kwetter-follow-db-volume-mount
         persistentVolumeClaim:
           claimName: kwetter-follow-db-volume-claim
+      - name: config
+        configMap:
+          name: kwetter-postgres-configmap

@@ -55,3 +55,8 @@ Delete the resources
 ```
 kubectl delete -f ./K8s/k6/verify-username-uniqueness-load-test.yaml
 ```
+# Uninstalling K6 operator
+Delete the operator
+```
+make delete
+```

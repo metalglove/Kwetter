@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: kwetter-postgres-configmap
+  namespace: kwetter
+data:
+  postgresql.conf: |
+    max_connections = 300
+    shared_buffers = 200MB
+    effective_cache_size = 600MB
+    maintenance_work_mem = 50MB
+    checkpoint_completion_target = 0.9
+    wal_buffers = 6MB
+    default_statistics_target = 100
+    random_page_cost = 4
+    effective_io_concurrency = 2
+    work_mem = 341kB
+    min_wal_size = 1GB
+    max_wal_size = 4GB

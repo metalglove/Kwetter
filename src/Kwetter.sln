@@ -169,6 +169,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "kweet-service", "kweet-service", "{339023D9-46CF-4BD3-A44F-D556BC363611}"
 	ProjectSection(SolutionItems) = preProject
 		..\K8s\services\kweet-service\kwetter-kweet-db.deployment.yaml = ..\K8s\services\kweet-service\kwetter-kweet-db.deployment.yaml
+		..\K8s\services\kweet-service\kwetter-kweet-service.autoscaler.yaml = ..\K8s\services\kweet-service\kwetter-kweet-service.autoscaler.yaml
 		..\K8s\services\kweet-service\kwetter-kweet-service.deployment.yaml = ..\K8s\services\kweet-service\kwetter-kweet-service.deployment.yaml
 		..\K8s\services\kweet-service\kwetter-kweet-storage-persistent-volume-and-claim.yaml = ..\K8s\services\kweet-service\kwetter-kweet-storage-persistent-volume-and-claim.yaml
 	EndProjectSection
@@ -176,6 +177,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "user-service", "user-service", "{3D4CF2F0-CC99-444C-A62E-8DAC30E6873E}"
 	ProjectSection(SolutionItems) = preProject
 		..\K8s\services\user-service\kwetter-user-db.deployment.yaml = ..\K8s\services\user-service\kwetter-user-db.deployment.yaml
+		..\K8s\services\user-service\kwetter-user-service.autoscaler.yaml = ..\K8s\services\user-service\kwetter-user-service.autoscaler.yaml
 		..\K8s\services\user-service\kwetter-user-service.deployment.yaml = ..\K8s\services\user-service\kwetter-user-service.deployment.yaml
 		..\K8s\services\user-service\kwetter-user-storage-persistent-volume-and-claim.yaml = ..\K8s\services\user-service\kwetter-user-storage-persistent-volume-and-claim.yaml
 	EndProjectSection
@@ -183,6 +185,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "follow-service", "follow-service", "{AF6D06CE-3273-483A-9EBF-3746A01FB578}"
 	ProjectSection(SolutionItems) = preProject
 		..\K8s\services\follow-service\kwetter-follow-db.deployment.yaml = ..\K8s\services\follow-service\kwetter-follow-db.deployment.yaml
+		..\K8s\services\follow-service\kwetter-follow-service.autoscaler.yaml = ..\K8s\services\follow-service\kwetter-follow-service.autoscaler.yaml
 		..\K8s\services\follow-service\kwetter-follow-service.deployment.yaml = ..\K8s\services\follow-service\kwetter-follow-service.deployment.yaml
 		..\K8s\services\follow-service\kwetter-follow-storage-persistent-volume-and-claim.yaml = ..\K8s\services\follow-service\kwetter-follow-storage-persistent-volume-and-claim.yaml
 	EndProjectSection
@@ -193,11 +196,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Kwetter.Services.Notificati
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "timeline-service", "timeline-service", "{47946B68-BD05-4D83-9201-E1E3863A5AF6}"
 	ProjectSection(SolutionItems) = preProject
+		..\K8s\services\timeline-service\kwetter-timeline-service.autoscaler.yaml = ..\K8s\services\timeline-service\kwetter-timeline-service.autoscaler.yaml
 		..\K8s\services\timeline-service\kwetter-timeline-service.deployment.yaml = ..\K8s\services\timeline-service\kwetter-timeline-service.deployment.yaml
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "notification-service", "notification-service", "{477DC511-6D28-41E0-97A6-070FEFD7CD76}"
 	ProjectSection(SolutionItems) = preProject
+		..\K8s\services\notification-service\kwetter-notification-service.autoscaler.yaml = ..\K8s\services\notification-service\kwetter-notification-service.autoscaler.yaml
 		..\K8s\services\notification-service\kwetter-notification-service.deployment.yaml = ..\K8s\services\notification-service\kwetter-notification-service.deployment.yaml
 	EndProjectSection
 EndProject
@@ -225,6 +230,11 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "k6", "k6", "{5478E6C6-CBDF-4C3E-B263-769299D9EB6D}"
 	ProjectSection(SolutionItems) = preProject
 		..\K8s\k6\verify-username-uniqueness-load-test.yaml = ..\K8s\k6\verify-username-uniqueness-load-test.yaml
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "configs", "configs", "{6F52FCFA-ECCF-4B54-B273-8EF053ED9012}"
+	ProjectSection(SolutionItems) = preProject
+		..\K8s\configs\kwetter-postgres.configmap.yaml = ..\K8s\configs\kwetter-postgres.configmap.yaml
 	EndProjectSection
 EndProject
 Global
@@ -518,6 +528,7 @@ Global
 		{B1243551-7F56-4B32-9B9D-3BFE8C4BF964} = {AC4D1981-C4B8-484D-8302-FB94B92F96E6}
 		{EC90CA15-9174-4922-85C8-6D601D891733} = {1FE90F2E-C3E4-4962-950A-FBD9FB6B53C4}
 		{5478E6C6-CBDF-4C3E-B263-769299D9EB6D} = {AC4D1981-C4B8-484D-8302-FB94B92F96E6}
+		{6F52FCFA-ECCF-4B54-B273-8EF053ED9012} = {AC4D1981-C4B8-484D-8302-FB94B92F96E6}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {B4A5CA09-D8B5-43B6-BB96-97B00B1EC94A}
