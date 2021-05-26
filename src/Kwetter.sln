@@ -237,6 +237,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "configs", "configs", "{6F52
 		..\K8s\configs\kwetter-postgres.configmap.yaml = ..\K8s\configs\kwetter-postgres.configmap.yaml
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "frontend", "frontend", "{1760F20E-A78A-431D-A0D6-F1F59BB2A6A1}"
+	ProjectSection(SolutionItems) = preProject
+		..\K8s\frontend\kwetter-frontend.deployment.yaml = ..\K8s\frontend\kwetter-frontend.deployment.yaml
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -529,6 +534,7 @@ Global
 		{EC90CA15-9174-4922-85C8-6D601D891733} = {1FE90F2E-C3E4-4962-950A-FBD9FB6B53C4}
 		{5478E6C6-CBDF-4C3E-B263-769299D9EB6D} = {AC4D1981-C4B8-484D-8302-FB94B92F96E6}
 		{6F52FCFA-ECCF-4B54-B273-8EF053ED9012} = {AC4D1981-C4B8-484D-8302-FB94B92F96E6}
+		{1760F20E-A78A-431D-A0D6-F1F59BB2A6A1} = {AC4D1981-C4B8-484D-8302-FB94B92F96E6}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {B4A5CA09-D8B5-43B6-BB96-97B00B1EC94A}

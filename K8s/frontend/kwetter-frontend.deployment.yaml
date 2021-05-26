@@ -1,0 +1,56 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: kwetter-frontend-service
+  namespace: kwetter
+  labels:
+    app: kwetter-frontend-service
+    service: kwetter-frontend-service
+spec:
+  selector:
+    app: kwetter-frontend-service-pod
+  ports:
+  - protocol: TCP
+    name: http
+    port: 80
+    targetPort: 80
+  type: LoadBalancer
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kwetter-frontend-service
+  namespace: kwetter
+spec:
+  replicas: 1
+  minReadySeconds: 10
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+  selector:
+    matchLabels:
+      app: kwetter-frontend-service-pod
+      version: latest
+  template:
+    metadata:
+      labels:
+        app: kwetter-frontend-service-pod
+        version: latest
+    spec:
+      containers:
+      - name: kwetter-frontend-container
+        image: neuralm.net:7676/kwetter-frontend:latest
+        imagePullPolicy: Always
+        envFrom:
+        - secretRef:
+            name: kwetter-frontend-service-secret
+        resources:
+          limits:
+            memory: 600Mi
+            cpu: 500m
+        ports:
+        - containerPort: 80
+      imagePullSecrets:
+        - name: mydockercredentials

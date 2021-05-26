@@ -15,3 +15,6 @@ docker push neuralm.net:7676/kwetter-follow-service:latest
 
 docker build --tag neuralm.net:7676/kwetter-authorization-service:latest -f ./kwetter-authorization-service.Dockerfile .
 docker push neuralm.net:7676/kwetter-authorization-service:latest
+
+docker build --tag neuralm.net:7676/kwetter-frontend:latest -f ./kwetter-frontend.Dockerfile . 
+docker push neuralm.net:7676/kwetter-frontend:latest
