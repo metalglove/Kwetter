@@ -32,6 +32,8 @@ spec:
   - name: kwetter-frontend-service-latest-routes
     match:
     - uri:
+        exact: /
+    - uri:
         prefix: /web
     - uri:
         prefix: /css
@@ -39,6 +41,8 @@ spec:
         prefix: /js
     - uri:
         regex: '^.*\.(ico|png|jpg|woff|woff2|ttf)$'
+    rewrite:
+      uri: /web
     route:
     - destination:
         port:
