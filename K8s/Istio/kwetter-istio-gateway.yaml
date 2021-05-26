@@ -29,6 +29,15 @@ spec:
   gateways:
   - kwetter-ingress-gateway
   http:
+  - name: kwetter-frontend-service-latest-routes
+    match:
+    - uri:
+        prefix: /
+    route:
+    - destination:
+        port:
+          number: 80
+        host: kwetter-frontend-service
   - name: kwetter-user-service-latest-routes
     match:
     - uri:
