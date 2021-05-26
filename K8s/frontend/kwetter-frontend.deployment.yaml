@@ -10,10 +10,10 @@ spec:
   selector:
     app: kwetter-frontend-service-pod
   ports:
-  - protocol: TCP
-    name: http
-    port: 80
-    targetPort: 80
+    - protocol: TCP
+      name: http
+      port: 80
+      targetPort: 80
   type: LoadBalancer
 ---
 apiVersion: apps/v1
@@ -40,23 +40,23 @@ spec:
         version: latest
     spec:
       containers:
-      - name: kwetter-frontend-container
-        image: neuralm.net:7676/kwetter-frontend:latest
-        imagePullPolicy: Always
-        envFrom:
-        - secretRef:
-            name: kwetter-frontend-service-secret
-        volumeMounts:
-        - name: config
-          mountPath: /.env.production
-          subPath: .env.production
-          readOnly: true
-        resources:
-          limits:
-            memory: 600Mi
-            cpu: 500m
-        ports:
-        - containerPort: 80
+        - name: kwetter-frontend-container
+          image: neuralm.net:7676/kwetter-frontend:latest
+          imagePullPolicy: Always
+          envFrom:
+            - secretRef:
+                name: kwetter-frontend-service-secret
+          volumeMounts:
+            - name: config
+              mountPath: /.env.production
+              subPath: .env.production
+              readOnly: true
+          resources:
+            limits:
+              memory: 600Mi
+              cpu: 500m
+          ports:
+            - containerPort: 80
       imagePullSecrets:
         - name: mydockercredentials
       volumes:

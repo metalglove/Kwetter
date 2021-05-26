@@ -10,10 +10,10 @@ spec:
   selector:
     app: kwetter-authorization-service-pod
   ports:
-  - protocol: TCP
-    name: http
-    port: 80
-    targetPort: 80
+    - protocol: TCP
+      name: http
+      port: 80
+      targetPort: 80
   type: LoadBalancer
 ---
 apiVersion: apps/v1
@@ -40,17 +40,17 @@ spec:
         version: latest
     spec:
       containers:
-      - name: kwetter-authorization-container
-        image: neuralm.net:7676/kwetter-authorization-service:latest
-        imagePullPolicy: Always
-        envFrom:
-        - secretRef:
-            name: kwetter-authorization-service-secret
-        resources:
-          limits:
-            memory: 250Mi
-            cpu: 200m
-        ports:
-        - containerPort: 80
+        - name: kwetter-authorization-container
+          image: neuralm.net:7676/kwetter-authorization-service:latest
+          imagePullPolicy: Always
+          envFrom:
+            - secretRef:
+                name: kwetter-authorization-service-secret
+          resources:
+            limits:
+              memory: 250Mi
+              cpu: 200m
+          ports:
+            - containerPort: 80
       imagePullSecrets:
         - name: mydockercredentials
