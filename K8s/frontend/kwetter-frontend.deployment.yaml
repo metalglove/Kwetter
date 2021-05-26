@@ -59,7 +59,7 @@ spec:
         - containerPort: 80
       imagePullSecrets:
         - name: mydockercredentials
-    volumes:
-      - name: config
-        configMap:
-          name: kwetter-frontend-service-configmap
+      volumes:
+        - name: config
+          configMap:
+            name: kwetter-frontend-service-configmap
