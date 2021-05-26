@@ -38,7 +38,7 @@ spec:
     - uri:
         prefix: /js
     - uri:
-        regex: '^.*\.(ico|png|jpg)$'
+        regex: '^.*\.(ico|png|jpg|woff|woff2|ttf)$'
     route:
     - destination:
         port:
