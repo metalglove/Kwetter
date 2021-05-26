@@ -46,11 +46,6 @@ spec:
           envFrom:
             - secretRef:
                 name: kwetter-frontend-service-secret
-          volumeMounts:
-            - name: config
-              mountPath: /.env.production
-              subPath: .env.production
-              readOnly: true
           resources:
             limits:
               memory: 600Mi
@@ -59,7 +54,3 @@ spec:
             - containerPort: 80
       imagePullSecrets:
         - name: mydockercredentials
-      volumes:
-        - name: config
-          configMap:
-            name: kwetter-frontend-service-configmap

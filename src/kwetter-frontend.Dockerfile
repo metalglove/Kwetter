@@ -41,4 +41,6 @@ RUN envsubst /app < /temp/prod.conf > /etc/nginx/conf.d/default.conf
 
 EXPOSE 80
 
-CMD ["nginx", "-g", "daemon off;"]
+COPY Frontend/Frontend.WebUI/entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+CMD ["sh", "/entrypoint.sh"]
