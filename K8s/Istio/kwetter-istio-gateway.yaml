@@ -33,8 +33,12 @@ spec:
     match:
     - uri:
         prefix: /web
-    rewrite:
-      uri: /
+    - uri:
+        prefix: /css
+    - uri:
+        prefix: /js
+    - uri:
+        regex: '^.*\.(ico|png|jpg)$'
     route:
     - destination:
         port:
