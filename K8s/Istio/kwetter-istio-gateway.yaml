@@ -32,7 +32,9 @@ spec:
   - name: kwetter-frontend-service-latest-routes
     match:
     - uri:
-        prefix: /
+        prefix: /web
+    rewrite:
+      uri: /
     route:
     - destination:
         port:
