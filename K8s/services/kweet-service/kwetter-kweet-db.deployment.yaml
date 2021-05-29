@@ -34,7 +34,7 @@ spec:
     spec:
       containers:
       - name: kwetter-kweet-db-container
-        image: postgres:13.2
+        image: postgres:13.3
         imagePullPolicy: "IfNotPresent"
         resources:
           limits:

@@ -279,6 +279,11 @@ Port forwards the eventstore
 kubectl port-forward service/eventstore 2113:2113 --address 192.168.1.136
 ```
 
+Port forwards the neo4j
+```
+kubectl port-forward service/neo4j 7687:7687 --address 192.168.1.136
+```
+
 Port forwards the kiali ui.
 ```
 istioctl dashboard kiali --address 192.168.1.136
