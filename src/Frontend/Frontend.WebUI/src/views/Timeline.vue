@@ -10,7 +10,7 @@
                     style="overflow:auto"
                     infinite-scroll-disabled="disabled">
                     <li v-for="kweet in kweets" class="infinite-list-item">
-                        <kweet :kweet="kweet"/>
+                        <kweet :kweet="kweet" :userId="GET_USER.userId"/>
                     </li>
                 </ul>
             </el-main>
@@ -26,6 +26,8 @@
     import { Kweet as KweetType } from '@/modules/Kweet/Kweet';
     import QueryResponse from '@/models/cqrs/QueryResponse';
     import { ElMessage } from 'element-plus';
+    import { mapGetters } from 'vuex';
+    import { UserGetterTypes } from '@/modules/User/User.getters';
 
     export default defineComponent({
         name: 'Timeline',
@@ -42,7 +44,8 @@
         computed: {
             disabled(): boolean {
                 return this.$data.loading || this.$data.noMore;
-            }
+            },
+            ...mapGetters('user', [UserGetterTypes.GET_USER])
         },
         components: {
             KweetComposer,

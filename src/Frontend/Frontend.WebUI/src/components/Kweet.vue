@@ -38,12 +38,13 @@
     export default defineComponent({
         name: 'Kweet',
         props: {
-            kweet: Object as PropType<Kweet>
+            kweet: Object as PropType<Kweet>,
+            userId: String as PropType<string>
         },
         methods: {
             async unlike() {
                 const kweetId: string = this.$props.kweet!.id;
-                const userId: string = this.$props.kweet!.userId;
+                const userId: string = this.$props.userId!;
                 const response: Response = await this.$kweetService.unlikeKweet(kweetId, userId);
                 if (response.success) {
                     this.$props.kweet!.liked = false;
@@ -66,7 +67,7 @@
             },
             async like() {
                 const kweetId: string = this.$props.kweet!.id;
-                const userId: string = this.$props.kweet!.userId;
+                const userId: string = this.$props.userId!;
                 const response: Response = await this.$kweetService.likeKweet(kweetId, userId);
                 if (response.success) {
                     this.$props.kweet!.liked = true;

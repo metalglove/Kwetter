@@ -27,7 +27,6 @@
     import firebase from 'firebase/app';
     import 'firebase/auth';
     import { ElMessage } from 'element-plus';
-    import CommandResponse from '@/models/cqrs/CommandResponse';
 
     export default defineComponent({
         name: 'Profile',
