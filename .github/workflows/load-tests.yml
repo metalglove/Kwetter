@@ -11,10 +11,6 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v2
 
-    - name: Update manifest tags
-      run: |
-        sed -i'' -e 's/PLACEHOLDER/${{ secrets.TEST_API_ENDPOINT }}/g' ./K8s/k6/verify-username-uniqueness-load-test.yaml
-        
     - name: Set kubernetes context
       uses: azure/k8s-set-context@v1
       with:
@@ -25,6 +21,5 @@ jobs:
     - name: Verify Username Uniqueness Load Test
       uses: jtalk/k8s-deploy@v2
       with:
-        namespace: kwetter
         manifests: |
             ./K8s/k6/verify-username-uniqueness-load-test.yaml

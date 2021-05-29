@@ -1,7 +1,7 @@
 import http from 'k6/http';
 import { check, sleep } from 'k6';
 
-export const GATEWAY_API_URL = "PLACEHOLDER";
+export const GATEWAY_API_URL = "http://neuralm.net/api";
 
 export let options = {
     stages: [
