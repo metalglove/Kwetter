@@ -271,12 +271,17 @@ Quick and dirty fix is to chmod 777. (DON'T DO THIS IN PRODUCTION!)
 Useful commands
 Port forwards the rabbitmq management ui.
 ```
-kubectl -n kwetter port-forward rabbitmq-0 8080:15672 --address 192.168.1.136
+kubectl port-forward rabbitmq-0 15672:15672 --address 192.168.1.136
 ```
 
 Port forwards the eventstore
 ```
 kubectl port-forward service/eventstore 2113:2113 --address 192.168.1.136
+```
+
+Port forwards a database
+```
+kubectl port-forward service/kwetter-authorization-db 5432:5432 --address 192.168.1.136
 ```
 
 Port forwards the neo4j
