@@ -13,16 +13,34 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v2
 
-    - name: Set kubernetes context
-      uses: azure/k8s-set-context@v1
+    - name: Create Verify Username Uniqueness Load Test ConfigMap
+      uses: steebchen/kubectl@master
+      env:
+        KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG }}
+        KUBECTL_VERSION: "1.20"
       with:
-        method: kubeconfig
-        kubeconfig: ${{ secrets.KUBE_CONFIG }}
-        context: kwetter
+        args: '"create configmap -n kwetter-testing verify-username-uniqueness-load-test-configmap --from-file src/Testing/Kwetter.LoadTests/test.js"'
 
-    - name: Verify Username Uniqueness Load Test
-      uses: jtalk/k8s-deploy@v2
+    - name: Run Verify Username Uniqueness Load Test
+      uses: steebchen/kubectl@master
+      env:
+        KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG }}
+        KUBECTL_VERSION: "1.20"
       with:
-        namespace: kwetter-testing
-        manifests: |
-            ./K8s/k6/verify-username-uniqueness-load-test.yaml
+        args: '"apply -n kwetter-testing -f ./K8s/k6/verify-username-uniqueness-load-test.yaml"'
+    
+    - name: Get K6
+      uses: steebchen/kubectl@master
+      env:
+        KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG }}
+        KUBECTL_VERSION: "1.20"
+      with:
+        args: '"logs -n kwetter-testing -l k6_cr=verify-username-uniqueness-load-test"'
+
+    #- name: Clean Up Load Tests
+    #  uses: steebchen/kubectl@master
+    #  env:
+    #    KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG }}
+    #    KUBECTL_VERSION: "1.20"
+    #  with:
+    #    args: '"delete -n kwetter-testing -f ./K8s/k6/verify-username-uniqueness-load-test.yaml"'

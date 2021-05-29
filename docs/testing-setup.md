@@ -48,7 +48,7 @@ kubectl get k6
 
 Get the logs from the container
 ```
-kubectl logs verify-username-uniqueness-load-test-*
+kubectl logs -n kwetter-testing -l k6_cr=verify-username-uniqueness-load-test
 ```
 
 Delete the resources
