@@ -32,7 +32,7 @@
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <ItemGroup>
-    <Content Include=".env" />
+    <Content Include=".env.development" />
     <Content Include=".env.minikube" />
     <Content Include=".env.production" />
     <Content Include="public\assets\annoyed-bird.png" />

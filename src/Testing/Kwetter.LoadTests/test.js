@@ -1,7 +1,7 @@
 import http from 'k6/http';
 import { check, sleep } from 'k6';
 
-export const GATEWAY_API_URL = "http://neuralm.net/api"; //"http://host.docker.internal:5000/api"; <-- localhost test
+export const GATEWAY_API_URL = "PLACEHOLDER";
 
 export let options = {
     stages: [
@@ -13,8 +13,6 @@ export let options = {
         http_req_duration: ['avg < 400', 'p(99) < 2000'],
         checks: ['rate>0.9']
     }
-    //vus: 10,
-    //duration: "10s"
 };
 
 function verifyUserNameUniqueness(username) {

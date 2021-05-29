@@ -1,0 +1,30 @@
+name: Load Tests
+
+on:
+  workflow_dispatch:
+
+jobs:
+  test:
+    name: Authorization Load Tests
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: Update manifest tags
+      run: |
+        sed -i'' -e 's/PLACEHOLDER/${{ secrets.TEST_API_ENDPOINT }}/g' ./K8s/k6/verify-username-uniqueness-load-test.yaml
+        
+    - name: Set kubernetes context
+      uses: azure/k8s-set-context@v1
+      with:
+        method: kubeconfig
+        kubeconfig: ${{ secrets.KUBE_CONFIG }}
+        context: kwetter
+
+    - name: Verify Username Uniqueness Load Test
+      uses: jtalk/k8s-deploy@v2
+      with:
+        namespace: kwetter
+        manifests: |
+            ./K8s/k6/verify-username-uniqueness-load-test.yaml
