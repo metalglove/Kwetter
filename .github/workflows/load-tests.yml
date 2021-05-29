@@ -5,6 +5,8 @@ on:
 
 jobs:
   test:
+    environment:
+      name: production
     name: Authorization Load Tests
     runs-on: ubuntu-latest
     steps:
