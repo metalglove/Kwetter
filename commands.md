@@ -69,7 +69,6 @@ if persistent volumes get stuck
 kubectl patch pv pvname -p '{"metadata":{"finalizers":null}}'
 ```
 
-
 Windows check local nginx instances
 ```
 tasklist /fi "imagename eq nginx.exe"

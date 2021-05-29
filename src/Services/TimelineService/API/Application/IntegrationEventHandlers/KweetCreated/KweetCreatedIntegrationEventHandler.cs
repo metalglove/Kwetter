@@ -36,7 +36,9 @@ namespace Kwetter.Services.TimelineService.API.Application.IntegrationEventHandl
                 Id = @event.KweetId,
                 Message = @event.Message,
                 UserId = @event.UserId,
-                CreatedDateTime = @event.CreatedDateTime
+                CreatedDateTime = @event.CreatedDateTime,
+                Mentions = @event.Mentions,
+                HashTags = @event.HashTags
             };
             bool success = await _timelineGraphStore.CreateKweetAsync(kweet);
             if (!success)

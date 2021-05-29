@@ -3,6 +3,7 @@ using Microsoft.Extensions.Logging;
 using Neo4j.Driver;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Kwetter.Services.TimelineService.Infrastructure
@@ -70,14 +71,33 @@ namespace Kwetter.Services.TimelineService.Infrastructure
                 result = await session.WriteTransactionAsync(async transaction =>
                 {
                     IResultCursor cursor = await transaction.RunAsync(@"
-                        MATCH (a:User { id: $userId }) 
-                        CREATE (a)<-[:KWEETED_BY]-(:Kweet {id: $kweetId, message: $message, createdDateTime: $createdDateTime})",
+                        MATCH (a:User { id: $userId })
+                        CREATE (a)<-[:KWEETED_BY]-(kweet:Kweet {id: $kweetId, message: $message, createdDateTime: $createdDateTime})
+                        WITH kweet
+                        CALL 
+                        {
+                            WITH kweet
+                            UNWIND ($mentions) AS mentions
+                            OPTIONAL MATCH (mention:User {name: mentions })
+                            CREATE (kweet)<-[:MENTIONED_IN]-(mention)
+                            RETURN true AS ok
+                            UNION
+                            WITH kweet
+                            UNWIND ($tags) AS tags
+                            MERGE (tag:Tag { tag: tags })
+                            CREATE (kweet)<-[:TAGGED_IN]-(tag)
+                            RETURN true AS ok
+                        }
+                        RETURN ok
+                        ",
                         new
                         {
                             kweetId = kweet.Id.ToString(),
                             userId = kweet.UserId.ToString(),
                             message = kweet.Message,
-                            createdDateTime = kweet.CreatedDateTime
+                            createdDateTime = kweet.CreatedDateTime,
+                            mentions = kweet.Mentions,
+                            tags = kweet.HashTags
                         }
                     );
                     return await cursor.ConsumeAsync();
@@ -92,7 +112,7 @@ namespace Kwetter.Services.TimelineService.Infrastructure
             {
                 await session.CloseAsync();
             }
-            return result.Counters.RelationshipsCreated == 1 && result.Counters.NodesCreated == 1;
+            return result.Counters.RelationshipsCreated == (1 + kweet.Mentions.Count() + kweet.HashTags.Count()) && result.Counters.NodesCreated >= 1;
         }
 
         /// <inheritdoc cref="ITimelineGraphStore.CreateKweetLikeAsync(KweetLike)"/>
@@ -182,6 +202,9 @@ namespace Kwetter.Services.TimelineService.Infrastructure
                             RETURN user, kweet
                             UNION
                             MATCH (user:User {id: $userId})<-[:KWEETED_BY]-(kweet:Kweet)
+                            RETURN user, kweet
+                            UNION
+                            MATCH (:User {id: $userId})-[:MENTIONED_IN]->(kweet:Kweet)-[:KWEETED_BY]->(user:User)
                             RETURN user, kweet
                         }
                         WITH user, kweet
