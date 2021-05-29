@@ -28,19 +28,35 @@ jobs:
         KUBECTL_VERSION: "1.20"
       with:
         args: '"apply -n kwetter-testing -f ./K8s/k6/verify-username-uniqueness-load-test.yaml"'
-    
-    - name: Get K6
+
+    - name: Await Verify Username Uniqueness Load Test Completion
       uses: steebchen/kubectl@master
       env:
         KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG }}
         KUBECTL_VERSION: "1.20"
       with:
-        args: '"logs -n kwetter-testing -l k6_cr=verify-username-uniqueness-load-test"'
+        args: '"wait -n kwetter-testing --timeout=600s --for=condition=complete job -l k6_cr=verify-username-uniqueness-load-test,job-name!=verify-username-uniqueness-load-test-starter"'
+    
+    - name: Get Logs From Load Test
+      uses: steebchen/kubectl@master
+      env:
+        KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG }}
+        KUBECTL_VERSION: "1.20"
+      with:
+        args: '"logs -n kwetter-testing --tail 23 -l k6_cr=verify-username-uniqueness-load-test,job-name!=verify-username-uniqueness-load-test-starter"'
 
-    #- name: Clean Up Load Tests
-    #  uses: steebchen/kubectl@master
-    #  env:
-    #    KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG }}
-    #    KUBECTL_VERSION: "1.20"
-    #  with:
-    #    args: '"delete -n kwetter-testing -f ./K8s/k6/verify-username-uniqueness-load-test.yaml"'
+    - name: Clean Up Verify Username Uniqueness Load Test Pods
+      uses: steebchen/kubectl@master
+      env:
+        KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG }}
+        KUBECTL_VERSION: "1.20"
+      with:
+        args: '"delete -n kwetter-testing -f ./K8s/k6/verify-username-uniqueness-load-test.yaml"'
+
+    - name: Delete Verify Username Uniqueness Load Test ConfigMap
+      uses: steebchen/kubectl@master
+      env:
+        KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG }}
+        KUBECTL_VERSION: "1.20"
+      with:
+        args: '"delete cm -n kwetter-testing verify-username-uniqueness-load-test-configmap"'
