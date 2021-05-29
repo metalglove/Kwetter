@@ -37,7 +37,7 @@ jobs:
       with:
         args: '"wait -n kwetter-testing --timeout=600s --for=condition=complete job -l k6_cr=verify-username-uniqueness-load-test,job-name!=verify-username-uniqueness-load-test-starter"'
     
-    - name: Get Logs From Load Test
+    - name: Get Logs From Verify Username Uniqueness Load Test
       uses: steebchen/kubectl@master
       env:
         KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG }}
