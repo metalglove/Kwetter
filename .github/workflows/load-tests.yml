@@ -23,5 +23,6 @@ jobs:
     - name: Verify Username Uniqueness Load Test
       uses: jtalk/k8s-deploy@v2
       with:
+        namepace: kwetter-testing
         manifests: |
             ./K8s/k6/verify-username-uniqueness-load-test.yaml
