@@ -23,6 +23,7 @@ jobs:
 
     - name: Run Verify Username Uniqueness Load Test
       uses: steebchen/kubectl@master
+      if: ${{ success() }}
       env:
         KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG }}
         KUBECTL_VERSION: "1.20"
@@ -31,6 +32,7 @@ jobs:
 
     - name: Await Verify Username Uniqueness Load Test Completion
       uses: steebchen/kubectl@master
+      if: ${{ success() }}
       env:
         KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG }}
         KUBECTL_VERSION: "1.20"
@@ -39,14 +41,16 @@ jobs:
     
     - name: Get Logs From Verify Username Uniqueness Load Test
       uses: steebchen/kubectl@master
+      if: ${{ success() }}
       env:
         KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG }}
         KUBECTL_VERSION: "1.20"
       with:
         args: '"logs -n kwetter-testing --tail 23 -l k6_cr=verify-username-uniqueness-load-test,job-name!=verify-username-uniqueness-load-test-starter"'
 
-    - name: Clean Up Verify Username Uniqueness Load Test Pods
+    - name: Delete Verify Username Uniqueness Load Test Pods
       uses: steebchen/kubectl@master
+      if: ${{ always() }}
       env:
         KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG }}
         KUBECTL_VERSION: "1.20"
@@ -55,6 +59,7 @@ jobs:
 
     - name: Delete Verify Username Uniqueness Load Test ConfigMap
       uses: steebchen/kubectl@master
+      if: ${{ always() }}
       env:
         KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG }}
         KUBECTL_VERSION: "1.20"
