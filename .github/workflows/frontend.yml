@@ -77,7 +77,8 @@ jobs:
 
   docker:
     needs: 
-     #- test
+     # build is normmaly test
+     - build 
      - semver
     name: Build and push Docker images
     env:
