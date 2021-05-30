@@ -61,7 +61,7 @@ namespace Kwetter.Services.KweetService.Domain.AggregatesModel.UserAggregate
             KweetId = kweet.Id;
             UserId = userId;
             LikedDateTime = DateTime.UtcNow;
-            AddDomainEvent(new KweetLikedDomainEvent(KweetId, kweet.Id, UserId, LikedDateTime));
+            AddDomainEvent(new KweetLikedDomainEvent(KweetId, kweet.UserId, UserId, LikedDateTime));
         }
     }
 }
