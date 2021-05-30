@@ -13,7 +13,7 @@ export default class UserMentionedHandler extends EventHandler<UserMentionedEven
     private userMentioned(data: UserMentionedEvent): void {
         console.log('UserMentionedEvent', data);
         ElMessage({
-            message: 'You were just mentioned in a kweet!',
+            message: 'You were mentioned in a kweet!',
             type: 'info'
         });
     }

@@ -36,6 +36,7 @@ namespace Kwetter.Services.NotificationService.API.Application.IntegrationEventH
             // if the user who liked the kweet is the same as the user who kweeted it, ignore notification.
             if (@event.UserId == @event.KweetUserId)
                 return;
+
             string userId = @event.KweetUserId.ToString();
             string message = _eventSerializer.SerializeToString(@event);
 

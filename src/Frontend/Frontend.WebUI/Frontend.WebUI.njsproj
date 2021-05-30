@@ -100,11 +100,23 @@
       <SubType>Code</SubType>
     </TypeScriptCompile>
     <TypeScriptCompile Include="src\config.ts" />
+    <TypeScriptCompile Include="src\handlers\KweetLikedHandler.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
     <TypeScriptCompile Include="src\handlers\KwetterErrorHandler.ts" />
+    <TypeScriptCompile Include="src\handlers\UserFollowedHandler.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
     <TypeScriptCompile Include="src\handlers\UserMentionedHandler.ts" />
     <TypeScriptCompile Include="src\handlers\UserUnauthorizedHandler.ts" />
     <TypeScriptCompile Include="src\interfaces\INotificationService.ts" />
+    <TypeScriptCompile Include="src\models\events\KweetLikedEvent.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
     <TypeScriptCompile Include="src\models\events\KwetterErrorEvent.ts" />
+    <TypeScriptCompile Include="src\models\events\UserFollowedEvent.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
     <TypeScriptCompile Include="src\models\events\UserMentionedEvent.ts" />
     <TypeScriptCompile Include="src\models\events\UserUnauthorizedEvent.ts" />
     <TypeScriptCompile Include="src\services\NotificationService.ts" />

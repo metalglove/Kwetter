@@ -33,6 +33,9 @@ namespace Kwetter.Services.NotificationService.API.Application.IntegrationEventH
         /// <returns>Returns an awaitable task.</returns>
         public async override ValueTask HandleAsync(UserFollowedIntegrationEvent @event, CancellationToken cancellationToken)
         {
+            if (@event.FollowerId == @event.FollowingId)
+                throw new NotificationIntegrationException("UserFollowedIntegrationEvent has same follower and following id.");
+
             string userId = @event.FollowingId.ToString();
             string message = _eventSerializer.SerializeToString(@event);
 

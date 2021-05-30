@@ -33,6 +33,9 @@ namespace Kwetter.Services.NotificationService.API.Application.IntegrationEventH
         /// <returns>Returns an awaitable task.</returns>
         public async override ValueTask HandleAsync(UserMentionedIntegrationEvent @event, CancellationToken cancellationToken)
         {
+            if (@event.UserId == @event.MentionedByUserId)
+                return;
+
             string userId = @event.UserId.ToString();
             string message = _eventSerializer.SerializeToString(@event);
 

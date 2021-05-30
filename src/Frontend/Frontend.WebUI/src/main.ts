@@ -25,6 +25,8 @@ import NotificationService from './services/NotificationService';
 
 // Handlers
 import UserMentionedHandler from './handlers/UserMentionedHandler';
+import KweetLikedHandler from './handlers/KweetLikedHandler';
+import UserFollowedHandler from './handlers/UserFollowedHandler';
 
 // Styling
 import 'typeface-nunito';
@@ -44,6 +46,8 @@ const kweetService: IKweetService = new KweetService(httpCommunicator);
 const timelineService: ITimelineService = new TimelineService(httpCommunicator);
 const notificationService: INotificationService = new NotificationService(GATEWAY_WS_API_URL);
 notificationService.addEventHandler(new UserMentionedHandler());
+notificationService.addEventHandler(new KweetLikedHandler());
+notificationService.addEventHandler(new UserFollowedHandler());
 
 const app = createApp(App);
 
