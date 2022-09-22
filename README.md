@@ -22,14 +22,14 @@ UserService, KweetService, AuthorizationService, FollowService
 
 TimelineService
 
+![Timeline graph](/docs/diagrams/kwetter%20timeline%20frontend.png)
 ![Timeline graph](/docs/diagrams/timeline%20graph.png)
+![Timeline graph](/docs/diagrams/kwetter%20timeline%20tags.png)
 
 NotificationService
 
+![NotificationService example](/docs/diagrams/kwetter%20notifications.png)
 ![NotificationService KeyValueStore](/docs/diagrams/kwetter%20keyvalue%20stores.png)
 
 ## 3. DevOps
 ![Kwetter pipeline](/docs/diagrams/kwetter%20service%20pipeline.png)
-
-# Conclusion
-soonTM
